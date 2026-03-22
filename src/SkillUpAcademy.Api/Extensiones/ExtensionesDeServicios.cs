@@ -29,6 +29,15 @@ public static class ExtensionesDeServicios
         servicios.AddScoped<IServicioQuiz, ServicioQuiz>();
         servicios.AddScoped<IServicioEscenario, ServicioEscenario>();
         servicios.AddScoped<IServicioProgreso, ServicioProgreso>();
+        servicios.AddScoped<IServicioEscenas, ServicioEscenas>();
+        servicios.AddScoped<IServicioSeguridadIA, ServicioSeguridadIA>();
+
+        // Servicios con HttpClient
+        servicios.AddHttpClient<IServicioChatIA, ServicioChatIA>();
+        servicios.AddHttpClient<IServicioTts, ServicioTts>();
+
+        // Cache en memoria
+        servicios.AddMemoryCache();
 
         return servicios;
     }

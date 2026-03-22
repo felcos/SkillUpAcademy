@@ -84,6 +84,15 @@ try
 
     WebApplication app = builder.Build();
 
+    // Aplicar migraciones y sembrar datos en desarrollo
+    if (app.Environment.IsDevelopment())
+    {
+        using IServiceScope scope = app.Services.CreateScope();
+        AppDbContext contexto = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        await contexto.Database.MigrateAsync();
+        await SembradoDatos.SembrarAsync(contexto);
+    }
+
     // Pipeline
     if (app.Environment.IsDevelopment())
     {

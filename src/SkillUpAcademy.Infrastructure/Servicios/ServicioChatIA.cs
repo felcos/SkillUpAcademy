@@ -1,0 +1,390 @@
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using SkillUpAcademy.Core.DTOs.IA;
+using SkillUpAcademy.Core.Entidades;
+using SkillUpAcademy.Core.Enums;
+using SkillUpAcademy.Core.Excepciones;
+using SkillUpAcademy.Core.Interfaces.Repositorios;
+using SkillUpAcademy.Core.Interfaces.Servicios;
+
+namespace SkillUpAcademy.Infrastructure.Servicios;
+
+/// <summary>
+/// Servicio de chat con la IA (Aria) usando la API de Anthropic.
+/// </summary>
+public class ServicioChatIA : IServicioChatIA
+{
+    private readonly IRepositorioChatIA _repositorio;
+    private readonly IConfiguration _configuracion;
+    private readonly ILogger<ServicioChatIA> _logger;
+    private readonly HttpClient _httpClient;
+
+    private const string UrlApiAnthropic = "https://api.anthropic.com/v1/messages";
+    private const string VersionApi = "2023-06-01";
+    private const int MaxMensajesPorSesion = 50;
+
+    private const string PromptSistemaAria = """
+        Eres Aria, instructora virtual de SkillUp Academy. Tu especialidad es enseñar habilidades blandas profesionales.
+
+        Reglas:
+        - Responde SIEMPRE en español.
+        - Sé motivadora, profesional y empática.
+        - Usa ejemplos prácticos del mundo laboral real.
+        - Si el usuario pregunta algo fuera de habilidades profesionales, redirige amablemente.
+        - Máximo 300 palabras por respuesta.
+        - Usa formato Markdown cuando ayude a la claridad.
+        - Si es una sesión de roleplay, actúa como el personaje del escenario.
+        - Si es una sesión de guía de lección, ayuda a profundizar en el tema.
+        - Termina siempre con una pregunta o sugerencia para mantener la conversación activa.
+        """;
+
+    /// <summary>
+    /// Constructor del servicio de chat IA.
+    /// </summary>
+    public ServicioChatIA(
+        IRepositorioChatIA repositorio,
+        IConfiguration configuracion,
+        ILogger<ServicioChatIA> logger,
+        HttpClient httpClient)
+    {
+        _repositorio = repositorio;
+        _configuracion = configuracion;
+        _logger = logger;
+        _httpClient = httpClient;
+
+        string? apiKey = _configuracion["Anthropic:ApiKey"];
+        if (!string.IsNullOrWhiteSpace(apiKey))
+        {
+            _httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
+            _httpClient.DefaultRequestHeaders.Add("anthropic-version", VersionApi);
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<SesionIADto> IniciarSesionAsync(PeticionIniciarSesionIA peticion, Guid usuarioId)
+    {
+        if (!Enum.TryParse<TipoSesionIA>(peticion.TipoSesion, true, out TipoSesionIA tipoSesion))
+        {
+            throw new ExcepcionValidacion("TipoSesion no válido. Valores permitidos: GuiaLeccion, Roleplay, PracticaLibre.");
+        }
+
+        SesionChatIA sesion = new SesionChatIA
+        {
+            UsuarioId = usuarioId,
+            LeccionId = peticion.LeccionId,
+            TipoSesion = tipoSesion,
+            FechaInicio = DateTime.UtcNow,
+            Activa = true
+        };
+
+        await _repositorio.CrearSesionAsync(sesion);
+
+        // Guardar el prompt del sistema como primer mensaje
+        string promptSistema = ConstruirPromptSistema(tipoSesion, peticion.LeccionId);
+        MensajeChatIA mensajeSistema = new MensajeChatIA
+        {
+            SesionId = sesion.Id,
+            Rol = "system",
+            Contenido = promptSistema,
+            FechaEnvio = DateTime.UtcNow
+        };
+        await _repositorio.AgregarMensajeAsync(mensajeSistema);
+
+        string mensajeBienvenida = GenerarMensajeBienvenida(tipoSesion);
+
+        // Guardar mensaje de bienvenida como mensaje del asistente
+        MensajeChatIA mensajeAsistente = new MensajeChatIA
+        {
+            SesionId = sesion.Id,
+            Rol = "assistant",
+            Contenido = mensajeBienvenida,
+            FechaEnvio = DateTime.UtcNow
+        };
+        await _repositorio.AgregarMensajeAsync(mensajeAsistente);
+
+        sesion.ContadorMensajes = 1;
+        await _repositorio.ActualizarSesionAsync(sesion);
+
+        _logger.LogInformation("Sesión de chat IA {SesionId} iniciada para usuario {UsuarioId}, tipo {TipoSesion}",
+            sesion.Id, usuarioId, tipoSesion);
+
+        return new SesionIADto
+        {
+            Id = sesion.Id,
+            TipoSesion = tipoSesion.ToString(),
+            LeccionId = peticion.LeccionId,
+            FechaInicio = sesion.FechaInicio,
+            MensajeInicial = mensajeBienvenida
+        };
+    }
+
+    /// <inheritdoc />
+    public async Task<RespuestaMensajeIADto> EnviarMensajeAsync(Guid sesionId, PeticionMensajeIA peticion, Guid usuarioId)
+    {
+        SesionChatIA? sesion = await _repositorio.ObtenerSesionConMensajesAsync(sesionId);
+        if (sesion == null)
+            throw new ExcepcionNoEncontrado("SesionChatIA", sesionId);
+
+        if (sesion.UsuarioId != usuarioId)
+            throw new ExcepcionNoAutorizado("No tienes acceso a esta sesión de chat.");
+
+        if (!sesion.Activa)
+            throw new ExcepcionValidacion("Esta sesión de chat ya fue cerrada.");
+
+        int totalMensajes = await _repositorio.ContarMensajesEnSesionAsync(sesionId);
+        if (totalMensajes >= MaxMensajesPorSesion)
+        {
+            throw new ExcepcionValidacion($"Se alcanzó el límite de {MaxMensajesPorSesion} mensajes por sesión. Inicia una nueva sesión.");
+        }
+
+        // Guardar mensaje del usuario
+        MensajeChatIA mensajeUsuario = new MensajeChatIA
+        {
+            SesionId = sesionId,
+            Rol = "user",
+            Contenido = peticion.Mensaje,
+            FechaEnvio = DateTime.UtcNow
+        };
+        await _repositorio.AgregarMensajeAsync(mensajeUsuario);
+
+        // Obtener historial para contexto
+        IReadOnlyList<MensajeChatIA> historial = sesion.Mensajes.ToList();
+
+        // Llamar a la API de Anthropic
+        (string respuestaTexto, int tokensUsados) = await LlamarApiAnthropicAsync(historial, peticion.Mensaje);
+
+        // Guardar respuesta del asistente
+        MensajeChatIA mensajeAsistente = new MensajeChatIA
+        {
+            SesionId = sesionId,
+            Rol = "assistant",
+            Contenido = respuestaTexto,
+            TokensUsados = tokensUsados,
+            FechaEnvio = DateTime.UtcNow
+        };
+        await _repositorio.AgregarMensajeAsync(mensajeAsistente);
+
+        // Actualizar contador
+        sesion.ContadorMensajes += 2;
+        await _repositorio.ActualizarSesionAsync(sesion);
+
+        // Generar sugerencias
+        List<string> sugerencias = GenerarSugerencias(sesion.TipoSesion, peticion.Mensaje);
+
+        return new RespuestaMensajeIADto
+        {
+            Respuesta = respuestaTexto,
+            TokensUsados = tokensUsados,
+            Sugerencias = sugerencias
+        };
+    }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<MensajeIADto>> ObtenerHistorialAsync(Guid sesionId, Guid usuarioId)
+    {
+        SesionChatIA? sesion = await _repositorio.ObtenerSesionAsync(sesionId);
+        if (sesion == null)
+            throw new ExcepcionNoEncontrado("SesionChatIA", sesionId);
+
+        if (sesion.UsuarioId != usuarioId)
+            throw new ExcepcionNoAutorizado("No tienes acceso a esta sesión de chat.");
+
+        IReadOnlyList<MensajeChatIA> mensajes = await _repositorio.ObtenerMensajesAsync(sesionId);
+
+        List<MensajeIADto> resultado = new List<MensajeIADto>();
+        foreach (MensajeChatIA mensaje in mensajes)
+        {
+            // No devolver mensajes del sistema al usuario
+            if (mensaje.Rol == "system")
+                continue;
+
+            resultado.Add(new MensajeIADto
+            {
+                Id = mensaje.Id,
+                Rol = mensaje.Rol,
+                Contenido = mensaje.Contenido,
+                FechaEnvio = mensaje.FechaEnvio
+            });
+        }
+
+        return resultado;
+    }
+
+    /// <inheritdoc />
+    public async Task CerrarSesionAsync(Guid sesionId, Guid usuarioId)
+    {
+        SesionChatIA? sesion = await _repositorio.ObtenerSesionAsync(sesionId);
+        if (sesion == null)
+            throw new ExcepcionNoEncontrado("SesionChatIA", sesionId);
+
+        if (sesion.UsuarioId != usuarioId)
+            throw new ExcepcionNoAutorizado("No tienes acceso a esta sesión de chat.");
+
+        sesion.Activa = false;
+        sesion.FechaFin = DateTime.UtcNow;
+        await _repositorio.ActualizarSesionAsync(sesion);
+
+        _logger.LogInformation("Sesión de chat IA {SesionId} cerrada por usuario {UsuarioId}",
+            sesionId, usuarioId);
+    }
+
+    private async Task<(string Respuesta, int TokensUsados)> LlamarApiAnthropicAsync(
+        IReadOnlyList<MensajeChatIA> historial, string mensajeNuevo)
+    {
+        string? apiKey = _configuracion["Anthropic:ApiKey"];
+        if (string.IsNullOrWhiteSpace(apiKey))
+        {
+            _logger.LogWarning("API key de Anthropic no configurada. Usando respuesta de fallback.");
+            return (GenerarRespuestaFallback(mensajeNuevo), 0);
+        }
+
+        string modelo = _configuracion["Anthropic:ModeloChat"] ?? "claude-sonnet-4-20250514";
+        int maxTokens = int.TryParse(_configuracion["Anthropic:MaxTokens"], out int mt) ? mt : 1000;
+        double temperatura = double.TryParse(_configuracion["Anthropic:Temperatura"], out double t) ? t : 0.7;
+
+        // Extraer prompt del sistema del historial
+        string promptSistema = historial
+            .FirstOrDefault(m => m.Rol == "system")?.Contenido ?? PromptSistemaAria;
+
+        // Construir mensajes para la API (sin el system message)
+        List<object> mensajesApi = new List<object>();
+        foreach (MensajeChatIA mensaje in historial.Where(m => m.Rol != "system"))
+        {
+            mensajesApi.Add(new { role = mensaje.Rol, content = mensaje.Contenido });
+        }
+        // Añadir el mensaje nuevo
+        mensajesApi.Add(new { role = "user", content = mensajeNuevo });
+
+        object payload = new
+        {
+            model = modelo,
+            max_tokens = maxTokens,
+            temperature = temperatura,
+            system = promptSistema,
+            messages = mensajesApi
+        };
+
+        string jsonPayload = JsonSerializer.Serialize(payload);
+        StringContent contenido = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+        try
+        {
+            HttpResponseMessage respuesta = await _httpClient.PostAsync(UrlApiAnthropic, contenido);
+            string jsonRespuesta = await respuesta.Content.ReadAsStringAsync();
+
+            if (!respuesta.IsSuccessStatusCode)
+            {
+                _logger.LogError("Error de la API de Anthropic: {StatusCode} - {Body}",
+                    respuesta.StatusCode, jsonRespuesta);
+                return (GenerarRespuestaFallback(mensajeNuevo), 0);
+            }
+
+            using JsonDocument documento = JsonDocument.Parse(jsonRespuesta);
+            JsonElement raiz = documento.RootElement;
+
+            string textoRespuesta = raiz
+                .GetProperty("content")[0]
+                .GetProperty("text")
+                .GetString() ?? "Lo siento, no pude generar una respuesta.";
+
+            int tokensEntrada = raiz.GetProperty("usage").GetProperty("input_tokens").GetInt32();
+            int tokensSalida = raiz.GetProperty("usage").GetProperty("output_tokens").GetInt32();
+
+            return (textoRespuesta, tokensEntrada + tokensSalida);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al llamar a la API de Anthropic");
+            return (GenerarRespuestaFallback(mensajeNuevo), 0);
+        }
+    }
+
+    private static string GenerarRespuestaFallback(string mensajeUsuario)
+    {
+        return "¡Gracias por tu mensaje! En este momento estoy en modo de demostración. " +
+               "Cuando se configure la API key de Anthropic, podré mantener conversaciones completas contigo. " +
+               "Mientras tanto, te animo a seguir explorando las lecciones y practicando los ejercicios. " +
+               "¿Hay algo específico sobre habilidades profesionales que te gustaría aprender?";
+    }
+
+    private static string ConstruirPromptSistema(TipoSesionIA tipoSesion, int? leccionId)
+    {
+        string promptBase = PromptSistemaAria;
+
+        string contextoAdicional = tipoSesion switch
+        {
+            TipoSesionIA.RepasoDeLeccion => "\n\nContexto: El estudiante está en una sesión de repaso de lección. " +
+                "Ayúdale a entender mejor los conceptos y a profundizar en el tema.",
+            TipoSesionIA.Roleplay => "\n\nContexto: El estudiante está en una sesión de roleplay. " +
+                "Actúa como un personaje del mundo laboral para que practique sus habilidades. " +
+                "Mantente en personaje y da feedback constructivo después de cada interacción.",
+            TipoSesionIA.ConsultaLibre => "\n\nContexto: El estudiante está en consulta libre. " +
+                "Puede preguntar sobre cualquier tema de habilidades profesionales. " +
+                "Sé abierta y explora los temas que le interesen.",
+            _ => ""
+        };
+
+        if (leccionId.HasValue)
+        {
+            contextoAdicional += $"\n\nLección asociada ID: {leccionId.Value}. Adapta tus respuestas al tema de esta lección.";
+        }
+
+        return promptBase + contextoAdicional;
+    }
+
+    private static string GenerarMensajeBienvenida(TipoSesionIA tipoSesion)
+    {
+        return tipoSesion switch
+        {
+            TipoSesionIA.RepasoDeLeccion =>
+                "¡Hola! Soy **Aria**, tu instructora en SkillUp Academy. " +
+                "Estoy aquí para ayudarte a profundizar en esta lección. " +
+                "¿Qué concepto te gustaría explorar o qué dudas tienes?",
+            TipoSesionIA.Roleplay =>
+                "¡Bienvenido a la sesión de roleplay! Soy **Aria** y voy a interpretar un personaje " +
+                "para que puedas practicar tus habilidades en un entorno seguro. " +
+                "Cuando estés listo, cuéntame qué escenario te gustaría practicar.",
+            TipoSesionIA.ConsultaLibre =>
+                "¡Hola! Soy **Aria**, tu compañera de aprendizaje. " +
+                "En esta sesión libre puedes preguntarme sobre cualquier habilidad profesional: " +
+                "comunicación, liderazgo, trabajo en equipo, inteligencia emocional, networking o persuasión. " +
+                "¿Por dónde quieres empezar?",
+            _ =>
+                "¡Hola! Soy **Aria** de SkillUp Academy. ¿En qué puedo ayudarte hoy?"
+        };
+    }
+
+    private static List<string> GenerarSugerencias(TipoSesionIA tipoSesion, string ultimoMensaje)
+    {
+        return tipoSesion switch
+        {
+            TipoSesionIA.RepasoDeLeccion => new List<string>
+            {
+                "¿Puedes darme un ejemplo práctico?",
+                "¿Cómo aplico esto en mi trabajo?",
+                "¿Qué errores comunes debo evitar?"
+            },
+            TipoSesionIA.Roleplay => new List<string>
+            {
+                "Continuemos con el escenario",
+                "¿Cómo lo hice? Dame feedback",
+                "Quiero intentar un enfoque diferente"
+            },
+            TipoSesionIA.ConsultaLibre => new List<string>
+            {
+                "Háblame sobre comunicación efectiva",
+                "¿Cómo puedo mejorar mi liderazgo?",
+                "Dame consejos para networking"
+            },
+            _ => new List<string>
+            {
+                "Cuéntame más",
+                "¿Qué más puedo aprender?",
+                "Dame un consejo práctico"
+            }
+        };
+    }
+}
