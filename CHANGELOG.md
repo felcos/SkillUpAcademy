@@ -21,7 +21,16 @@
 
 ### Archivos modificados
 - `Api/Program.cs` — Auto-migración + seeder
-- `Api/Extensiones/ExtensionesDeServicios.cs` — 4 servicios nuevos en DI — SkillUp Academy
+- `Api/Extensiones/ExtensionesDeServicios.cs` — 4 servicios nuevos en DI
+
+### feat: Tests unitarios
+- 10 tests para ServicioSeguridadIA (formato, rate limit, inyección, salida)
+- 8 tests para ServicioQuiz (preguntas, quiz completo, aprobado/reprobado)
+- Paquetes: InMemory EF Core, Moq, FluentAssertions
+
+### feat: Docker
+- `Dockerfile` — Multi-stage build Alpine, usuario no-root, healthcheck
+- `docker-compose.yml` — Servicio API + depends_on PostgreSQL — SkillUp Academy
 
 ## 2026-03-22
 
