@@ -1,5 +1,51 @@
 # Sesión — SkillUp Academy
 
+## Sesión 2 — 2026-03-22 (continuación)
+
+### Qué se hizo
+1. Commit inicial y push al repositorio GitHub (felcos/SkillUpAcademy)
+2. Creación de rama develop (GitFlow)
+3. **ServicioChatIA** — Chat con API de Anthropic vía HttpClient directo, fallback sin API key, historial de conversación, prompt personalizado por tipo de sesión
+4. **ServicioSeguridadIA** — 5 capas de protección: rate limiting (IMemoryCache), validación formato, filtro palabras prohibidas, detección inyección de prompt (regex), clasificador IA (preparado)
+5. **ServicioTts** — Fallback Web Speech API para MVP + integración Azure Speech REST API para producción
+6. **ServicioEscenas** — Motor de escenas con generación automática desde contenido markdown, actualización parcial, reordenamiento
+7. **SembradoDatos** completo:
+   - 6 áreas de habilidad con colores, iconos y descripciones
+   - 18 niveles (3 por área: Fundamentos, Práctica, Dominio)
+   - 30 lecciones de nivel 1 (5 por área: 2 teoría + quiz + escenario + roleplay)
+   - 30 preguntas de quiz con 4 opciones y retroalimentación cada una
+   - 6 escenarios interactivos con 3 opciones (positiva, neutral, negativa)
+   - Escenas visuales para todas las lecciones teóricas (5 escenas por lección)
+   - 1 ConfiguracionAvatar por defecto (Aria)
+   - 10 logros iniciales
+8. Registro de todos los servicios en DI (ExtensionesDeServicios.cs)
+9. Program.cs actualizado con MigrateAsync + SembrarAsync en desarrollo
+
+### Estadísticas
+- **141 archivos .cs** creados
+- **~7000 líneas de código** (sin contar migraciones)
+- **0 errores, 0 warnings**
+- **Tests pasando** (2/2)
+- **Contenido educativo real** en 6 áreas de soft skills
+
+### Qué queda pendiente
+- Tests unitarios reales (ServicioChatIA, ServicioSeguridadIA, ServicioQuiz, etc.)
+- Tests de integración (controladores API)
+- Dockerfile para la API
+- Frontend React completo (motor de escenas, avatar SVG, chat, quizzes, transiciones)
+- Contenido de niveles 2 y 3 (Práctica y Dominio)
+- Implementar streaming en ServicioChatIA
+- Integrar ServicioSeguridadIA en el flujo de ServicioChatIA
+
+### Problemas encontrados
+- Worktree de git no funcionaba por path de Windows → se implementó secuencialmente
+- Enums reales diferían de los asumidos (AccionTomada, TipoSesionIA, TipoViolacion, TipoContenidoVisual) → corregido
+
+### Siguiente paso sugerido
+Crear tests unitarios para los servicios clave (ServicioChatIA, ServicioSeguridadIA, ServicioQuiz) y luego iniciar el frontend React.
+
+---
+
 ## Sesión 1 — 2026-03-22
 
 ### Qué se hizo
@@ -22,26 +68,6 @@
 17. docker-compose.yml con PostgreSQL 16
 18. Archivos de proyecto: CONTEXT.md, CHANGELOG.md, ESTRUCTURA.md, .gitignore, .editorconfig
 
-### Estadísticas
-- **134 archivos .cs** creados
-- **~4500 líneas de código** (sin contar migraciones)
-- **0 errores, 0 warnings**
-- **Tests pasando** (2/2)
-
-### Qué queda pendiente
-- Seeders con contenido real del nivel 1 de las 6 áreas
-- Servicio de Chat IA (implementación con HttpClient a Anthropic)
-- Servicio de Seguridad IA (5 capas)
-- Servicio de TTS
-- Servicio de Escenas (motor del avatar)
-- Frontend React completo (motor de escenas, avatar, chat, quizzes, etc.)
-- Tests unitarios reales (AuthService, QuizService, etc.)
-- Tests de integración
-- Dockerfile para la API
-
 ### Problemas encontrados
 - Npgsql 10.x requiere .NET 10 → resuelto fijando versión 8.x
 - System.IdentityModel.Tokens.Jwt no incluido en Infrastructure → añadido
-
-### Siguiente paso sugerido
-Crear los seeders con contenido real completo del nivel 1 de las 6 áreas, y luego el servicio de Chat IA con HttpClient a la API de Anthropic.

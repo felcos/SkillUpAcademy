@@ -1,4 +1,27 @@
-# Changelog — SkillUp Academy
+# Changelog
+
+## [2026-03-22] — Sesión 2
+
+### feat: Servicios de IA y contenido educativo
+- `ServicioChatIA` — Chat con API de Anthropic via HttpClient, fallback, historial
+- `ServicioSeguridadIA` — 5 capas anti-abuso (rate limit, formato, keywords, regex, clasificador)
+- `ServicioTts` — Web Speech API + Azure Speech
+- `ServicioEscenas` — Motor de escenas con generación automática
+- `SembradoDatos` — 6 áreas × 5 lecciones = 30 lecciones de nivel 1 con contenido real
+- 30 preguntas quiz, 6 escenarios interactivos, 10 logros, config avatar Aria
+- Todos los servicios registrados en DI con HttpClientFactory
+- Program.cs con auto-migración y seeding en desarrollo
+
+### Archivos creados
+- `Infrastructure/Servicios/ServicioChatIA.cs`
+- `Infrastructure/Servicios/ServicioSeguridadIA.cs`
+- `Infrastructure/Servicios/ServicioTts.cs`
+- `Infrastructure/Servicios/ServicioEscenas.cs`
+- `Infrastructure/Datos/SembradoDatos.cs`
+
+### Archivos modificados
+- `Api/Program.cs` — Auto-migración + seeder
+- `Api/Extensiones/ExtensionesDeServicios.cs` — 4 servicios nuevos en DI — SkillUp Academy
 
 ## 2026-03-22
 
