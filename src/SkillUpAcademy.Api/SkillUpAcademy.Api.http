@@ -1,0 +1,6 @@
+@SkillUpAcademy.Api_HostAddress = http://localhost:5261
+
+GET {{SkillUpAcademy.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

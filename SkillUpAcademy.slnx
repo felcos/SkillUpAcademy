@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SkillUpAcademy.Api/SkillUpAcademy.Api.csproj" />
+    <Project Path="src/SkillUpAcademy.Core/SkillUpAcademy.Core.csproj" />
+    <Project Path="src/SkillUpAcademy.Infrastructure/SkillUpAcademy.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SkillUpAcademy.IntegrationTests/SkillUpAcademy.IntegrationTests.csproj" />
+    <Project Path="tests/SkillUpAcademy.UnitTests/SkillUpAcademy.UnitTests.csproj" />
+  </Folder>
+</Solution>
