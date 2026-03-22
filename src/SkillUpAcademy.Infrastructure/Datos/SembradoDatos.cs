@@ -792,21 +792,21 @@ public static class SembradoDatos
             {
                 EscenarioId = escenario.Id, Orden = 1,
                 TextoOpcion = "Escuchar sin interrumpir, validar su frustración y luego presentar los hechos con calma: «Entiendo su frustración. Tiene razón en que el plazo se ha extendido. Permítame mostrarle el cronograma con los cambios que se solicitaron para que juntos encontremos la mejor solución.»",
-                TipoResultado = TipoResultadoEscenario.Positivo, PuntosOtorgados = 20,
+                TipoResultado = TipoResultadoEscenario.Optimo, PuntosOtorgados = 20,
                 TextoRetroalimentacion = "¡Excelente! Usaste los 4 pilares: escuchaste activamente, mostraste empatía, fuiste claro con los hechos y asertivo al proponer una solución. El cliente se siente escuchado y puedes avanzar constructivamente."
             },
             new OpcionEscenario
             {
                 EscenarioId = escenario.Id, Orden = 2,
                 TextoOpcion = "Responder profesionalmente pero a la defensiva: «Disculpe las molestias, pero debo recordarle que hubo varios cambios de requisitos durante el proyecto que causaron el retraso.»",
-                TipoResultado = TipoResultadoEscenario.Neutral, PuntosOtorgados = 10,
+                TipoResultado = TipoResultadoEscenario.Aceptable, PuntosOtorgados = 10,
                 TextoRetroalimentacion = "Tu respuesta es correcta en los hechos, pero al empezar a la defensiva puedes hacer que el cliente se sienta atacado. Hubiera sido mejor validar primero su emoción antes de presentar los hechos."
             },
             new OpcionEscenario
             {
                 EscenarioId = escenario.Id, Orden = 3,
                 TextoOpcion = "Decir directamente: «El retraso es por los cambios que usted pidió. No es justo que nos culpe a nosotros.»",
-                TipoResultado = TipoResultadoEscenario.Negativo, PuntosOtorgados = 0,
+                TipoResultado = TipoResultadoEscenario.Inadecuado, PuntosOtorgados = 0,
                 TextoRetroalimentacion = "Aunque tengas razón en los hechos, responder así daña la relación con el cliente. Faltó empatía y escucha activa. En comunicación profesional, cómo dices algo importa tanto como qué dices."
             }
         };
@@ -834,21 +834,21 @@ public static class SembradoDatos
             {
                 EscenarioId = escenario.Id, Orden = 1,
                 TextoOpcion = "Reunir al equipo para una conversación honesta. Preguntar qué les bloquea, escuchar sus preocupaciones, compartir la presión que tienes, y juntos redefinir prioridades y objetivos alcanzables.",
-                TipoResultado = TipoResultadoEscenario.Positivo, PuntosOtorgados = 20,
+                TipoResultado = TipoResultadoEscenario.Optimo, PuntosOtorgados = 20,
                 TextoRetroalimentacion = "¡Gran liderazgo! Combinaste vulnerabilidad, escucha y participación. Al involucrar al equipo en la solución, generas compromiso genuino y recuperas la moral."
             },
             new OpcionEscenario
             {
                 EscenarioId = escenario.Id, Orden = 2,
                 TextoOpcion = "Hablar individualmente con cada persona para entender su situación, y luego reorganizar tareas según las fortalezas de cada uno.",
-                TipoResultado = TipoResultadoEscenario.Neutral, PuntosOtorgados = 12,
+                TipoResultado = TipoResultadoEscenario.Aceptable, PuntosOtorgados = 12,
                 TextoRetroalimentacion = "Buen enfoque al hablar individualmente, pero te faltó la conversación grupal. El equipo necesita sentirse unido y parte de la solución, no solo recibir indicaciones individuales."
             },
             new OpcionEscenario
             {
                 EscenarioId = escenario.Id, Orden = 3,
                 TextoOpcion = "Enviar un email exigiendo que todos cumplan los objetivos esta semana o habrá consecuencias. Hay que ser firme.",
-                TipoResultado = TipoResultadoEscenario.Negativo, PuntosOtorgados = 0,
+                TipoResultado = TipoResultadoEscenario.Inadecuado, PuntosOtorgados = 0,
                 TextoRetroalimentacion = "Las amenazas pueden generar resultados a corto plazo, pero destruyen la confianza y la motivación. Un líder que solo presiona sin escuchar pierde a su equipo."
             }
         };
@@ -876,21 +876,21 @@ public static class SembradoDatos
             {
                 EscenarioId = escenario.Id, Orden = 1,
                 TextoOpcion = "Reunirte primero con cada uno por separado para escuchar su versión, y luego facilitar una conversación conjunta enfocada en intereses comunes y acuerdos de colaboración.",
-                TipoResultado = TipoResultadoEscenario.Positivo, PuntosOtorgados = 20,
+                TipoResultado = TipoResultadoEscenario.Optimo, PuntosOtorgados = 20,
                 TextoRetroalimentacion = "¡Excelente mediación! Escuchar por separado primero evita que se pongan a la defensiva, y la reunión conjunta permite construir acuerdos. Aplicaste perfectamente la resolución de conflictos."
             },
             new OpcionEscenario
             {
                 EscenarioId = escenario.Id, Orden = 2,
                 TextoOpcion = "Reunir a ambos inmediatamente y pedirles que resuelvan sus diferencias como profesionales.",
-                TipoResultado = TipoResultadoEscenario.Neutral, PuntosOtorgados = 8,
+                TipoResultado = TipoResultadoEscenario.Aceptable, PuntosOtorgados = 8,
                 TextoRetroalimentacion = "Aunque es importante abordar el tema, juntar a dos personas en conflicto sin preparación previa puede escalar la situación. Escuchar individualmente primero hubiera sido más efectivo."
             },
             new OpcionEscenario
             {
                 EscenarioId = escenario.Id, Orden = 3,
                 TextoOpcion = "Ignorar el conflicto y redistribuir las tareas para que no tengan que interactuar.",
-                TipoResultado = TipoResultadoEscenario.Negativo, PuntosOtorgados = 0,
+                TipoResultado = TipoResultadoEscenario.Inadecuado, PuntosOtorgados = 0,
                 TextoRetroalimentacion = "Evitar el conflicto es la 2ª disfunción de Lencioni. Separar a las personas no resuelve el problema y puede crear más tensión en el equipo."
             }
         };
@@ -918,21 +918,21 @@ public static class SembradoDatos
             {
                 EscenarioId = escenario.Id, Orden = 1,
                 TextoOpcion = "Hacer la pausa de 6 segundos internamente, reconocer tu emoción («estoy enfadado»), respirar y responder con calma: «Agradezco el feedback. Me gustaría entender mejor qué esperaba para mejorar el próximo informe. ¿Podemos hablarlo después de la reunión?»",
-                TipoResultado = TipoResultadoEscenario.Positivo, PuntosOtorgados = 20,
+                TipoResultado = TipoResultadoEscenario.Optimo, PuntosOtorgados = 20,
                 TextoRetroalimentacion = "¡Perfecto! Aplicaste la pausa de 6 segundos, el etiquetado emocional y el reencuadre cognitivo. Convertiste una crítica en una oportunidad de aprendizaje sin perder la compostura."
             },
             new OpcionEscenario
             {
                 EscenarioId = escenario.Id, Orden = 2,
                 TextoOpcion = "Aceptar la crítica sin decir nada, pero por dentro sentirte resentido.",
-                TipoResultado = TipoResultadoEscenario.Neutral, PuntosOtorgados = 5,
+                TipoResultado = TipoResultadoEscenario.Aceptable, PuntosOtorgados = 5,
                 TextoRetroalimentacion = "Controlar la reacción externa está bien, pero suprimir la emoción sin procesarla genera resentimiento. Hubiera sido mejor expresar calmadamente tu perspectiva."
             },
             new OpcionEscenario
             {
                 EscenarioId = escenario.Id, Orden = 3,
                 TextoOpcion = "Responder inmediatamente: «El informe está bien hecho. Si usted quería algo diferente, debería haberlo especificado desde el principio.»",
-                TipoResultado = TipoResultadoEscenario.Negativo, PuntosOtorgados = 0,
+                TipoResultado = TipoResultadoEscenario.Inadecuado, PuntosOtorgados = 0,
                 TextoRetroalimentacion = "Reaccionaste impulsivamente, dominado por la amígdala. Aunque tengas razón, esta respuesta daña tu imagen profesional y la relación con tu jefe."
             }
         };
@@ -960,21 +960,21 @@ public static class SembradoDatos
             {
                 EscenarioId = escenario.Id, Orden = 1,
                 TextoOpcion = "Acercarte con una sonrisa, comentar algo sobre el evento, mostrar interés genuino en su trabajo preguntándole qué le ha traído al evento, y luego compartir brevemente tu experiencia buscando puntos en común.",
-                TipoResultado = TipoResultadoEscenario.Positivo, PuntosOtorgados = 20,
+                TipoResultado = TipoResultadoEscenario.Optimo, PuntosOtorgados = 20,
                 TextoRetroalimentacion = "¡Perfecto networking! Empezaste con algo natural, mostraste interés genuino antes de hablar de ti, y buscaste conexión auténtica. Así se construyen relaciones profesionales duraderas."
             },
             new OpcionEscenario
             {
                 EscenarioId = escenario.Id, Orden = 2,
                 TextoOpcion = "Acercarte y presentarte directamente con tu elevator pitch, explicando quién eres y qué haces.",
-                TipoResultado = TipoResultadoEscenario.Neutral, PuntosOtorgados = 10,
+                TipoResultado = TipoResultadoEscenario.Aceptable, PuntosOtorgados = 10,
                 TextoRetroalimentacion = "Está bien que te acercaras, pero lanzar tu pitch directamente puede parecer transaccional. Hubiera sido mejor mostrar interés primero en la otra persona antes de hablar de ti."
             },
             new OpcionEscenario
             {
                 EscenarioId = escenario.Id, Orden = 3,
                 TextoOpcion = "No acercarte porque no quieres parecer desesperado. Ya intentarás conectar por LinkedIn después.",
-                TipoResultado = TipoResultadoEscenario.Negativo, PuntosOtorgados = 0,
+                TipoResultado = TipoResultadoEscenario.Inadecuado, PuntosOtorgados = 0,
                 TextoRetroalimentacion = "Perder la oportunidad por miedo es el mayor obstáculo del networking. Un mensaje de LinkedIn no tiene ni de lejos el impacto de una conversación cara a cara."
             }
         };
@@ -1002,21 +1002,21 @@ public static class SembradoDatos
             {
                 EscenarioId = escenario.Id, Orden = 1,
                 TextoOpcion = "Preparar una presentación con datos (autoridad), mostrar que otros equipos ya la usan con éxito (prueba social), ofrecer encargarte tú de la migración (reciprocidad), y proponer un período de prueba de 2 semanas sin compromiso.",
-                TipoResultado = TipoResultadoEscenario.Positivo, PuntosOtorgados = 20,
+                TipoResultado = TipoResultadoEscenario.Optimo, PuntosOtorgados = 20,
                 TextoRetroalimentacion = "¡Brillante! Combinaste 3 principios de Cialdini de forma ética: autoridad con datos, prueba social con casos reales, y reciprocidad al ofrecer tu esfuerzo. El período de prueba reduce la resistencia al cambio."
             },
             new OpcionEscenario
             {
                 EscenarioId = escenario.Id, Orden = 2,
                 TextoOpcion = "Enviar un email al equipo explicando las ventajas de la nueva herramienta con datos concretos.",
-                TipoResultado = TipoResultadoEscenario.Neutral, PuntosOtorgados = 8,
+                TipoResultado = TipoResultadoEscenario.Aceptable, PuntosOtorgados = 8,
                 TextoRetroalimentacion = "Los datos son importantes pero un email puede ser fácilmente ignorado. La persuasión efectiva requiere conexión personal y storytelling, no solo información."
             },
             new OpcionEscenario
             {
                 EscenarioId = escenario.Id, Orden = 3,
                 TextoOpcion = "Decir al jefe que imponga el cambio directamente. Es la forma más rápida.",
-                TipoResultado = TipoResultadoEscenario.Negativo, PuntosOtorgados = 0,
+                TipoResultado = TipoResultadoEscenario.Inadecuado, PuntosOtorgados = 0,
                 TextoRetroalimentacion = "Imponer cambios genera rechazo y sabotaje pasivo. La persuasión ética busca que las personas quieran el cambio, no que lo sufran."
             }
         };
