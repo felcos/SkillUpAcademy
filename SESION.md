@@ -3,36 +3,42 @@
 ## Sesión 3 — 2026-03-23
 
 ### Qué se hizo
-1. **Frontend React completo** — Aplicación creada con Vite + TypeScript + Tailwind CSS
-2. **10 páginas implementadas** con React Router y TanStack Query:
-   - **Home** — Landing page pública
-   - **Login / Register** — Autenticación con formularios
-   - **Areas** — Listado de las 6 áreas de habilidades
-   - **AreaDetail** — Detalle de área con niveles y lecciones
-   - **Lesson** — Motor de escenas del avatar con TTS integrado
-   - **Quiz** — Preguntas con opciones y retroalimentación
-   - **Scenario** — Escenarios interactivos con decisiones
-   - **Dashboard** — Panel de progreso del usuario
-   - **Achievements** — Logros desbloqueados y pendientes
-   - **Chat** — Conversación con IA (Aria)
-3. **Providers configurados** — QueryClient, React Router, AuthContext
-4. **Rutas protegidas** — Redirección a login para páginas autenticadas
+1. **Frontend React completo** — 13 páginas con Vite + TypeScript + Tailwind CSS
+   - Home, Login, Register, Areas, AreaDetail, Lesson (motor de escenas + TTS Web Speech API), Quiz, Scenario, Dashboard, Achievements, Chat IA, Profile, 404
+2. **Componentes reutilizables** — LoadingSpinner, ErrorMessage, AvatarAria, Navbar, Layout, ProtectedRoute
+3. **Custom hooks** — useSkills, useLessons, useProgress, useChat (wrapping TanStack Query)
+4. **Cliente API tipado** — 29 endpoints en client/src/lib/api.ts
+5. **CI/CD** — GitHub Actions con jobs paralelos: backend (.NET build+test) + frontend (tsc+vite build)
+6. **Seguridad IA integrada** — ServicioSeguridadIA conectado en ServicioChatIA: validación entrada 5 capas, validación salida, strikes y bloqueo
+7. **Contenido niveles 2-3** — 60 lecciones nuevas (30 por nivel) con quizzes, escenarios y contenido real
+8. **SPA serving** — Program.cs sirve React en producción con fallback a index.html
+9. **Dockerfile** actualizado — Multi-stage con Node 20 para compilar React + .NET 8 runtime
+10. **Tests frontend** — Vitest + Testing Library configurado con tests de API, AuthContext y páginas
+11. **Refactoring páginas** — Todas las páginas usan custom hooks en lugar de queries inline
+12. **.dockerignore** — Optimización de contexto Docker
+
+### Estadísticas
+- **13 páginas React**, 6 componentes, 4 archivos de hooks
+- **90 lecciones totales** (30 × 3 niveles), 18 quizzes, 18 escenarios
+- **19 tests backend** pasando (18 unit + 1 integration)
+- **Build frontend**: 97KB gzip
+- **4 commits** en develop (frontend, CI/seguridad, niveles 2-3, refactoring)
 
 ### Qué queda pendiente
-- Tests frontend (React Testing Library + Vitest)
-- CI/CD pipeline (GitHub Actions)
-- Contenido de niveles 2 y 3 (Práctica y Dominio)
 - Tests de integración backend (controladores API con WebApplicationFactory)
 - Implementar streaming en ServicioChatIA (SSE)
-- Integrar ServicioSeguridadIA en el flujo de ServicioChatIA
 - Tests unitarios para ServicioChatIA y ServicioEscenas
 - Configuración de producción (secrets, HTTPS, rate limiting real)
+- Escenas visuales para lecciones de niveles 2-3
+- Animaciones de avatar SVG más elaboradas
 
 ### Problemas encontrados
-- (ninguno relevante en esta sesión)
+- Nombres de entidades incorrectos en seeder (EscenarioInteractivo→Escenario, Retroalimentacion→TextoRetroalimentacion)
+- Agentes de background sin permisos de escritura (resuelto haciendo cambios manualmente)
+- File lock de DLL durante builds paralelos (resuelto reintentando)
 
 ### Siguiente paso sugerido
-Añadir tests frontend con Vitest + React Testing Library, o bien implementar CI/CD con GitHub Actions.
+Tests de integración backend con WebApplicationFactory, o implementar SSE streaming en el chat.
 
 ---
 

@@ -1,6 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { skillsApi, type AreaDetalle, type NivelDetalle } from '../lib/api';
+import { useAreaDetalle, useNivel } from '../hooks/useSkills';
 import { ArrowLeft, Lock, CheckCircle2, Play, MessageSquare, HelpCircle, Theater } from 'lucide-react';
 
 const iconosTipo: Record<string, typeof Play> = {
@@ -19,19 +18,11 @@ const colorEstado: Record<string, string> = {
 export default function AreaDetailPage() {
   const { slug } = useParams<{ slug: string }>();
 
-  const { data: area, isLoading: cargandoArea } = useQuery({
-    queryKey: ['area', slug],
-    queryFn: () => skillsApi.detalle(slug!),
-    enabled: !!slug,
-  });
+  const { data: area, isLoading: cargandoArea } = useAreaDetalle(slug);
 
   const nivelActivo = area?.niveles?.[0]?.numeroNivel ?? 1;
 
-  const { data: nivel, isLoading: cargandoNivel } = useQuery({
-    queryKey: ['nivel', slug, nivelActivo],
-    queryFn: () => skillsApi.nivel(slug!, nivelActivo),
-    enabled: !!slug && !!area,
-  });
+  const { data: nivel, isLoading: cargandoNivel } = useNivel(slug, nivelActivo);
 
   if (cargandoArea || cargandoNivel) {
     return (

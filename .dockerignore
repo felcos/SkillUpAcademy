@@ -1,0 +1,12 @@
+.git
+.github
+.claude
+.vs
+.vscode
+**/bin
+**/obj
+**/node_modules
+client/dist
+tests/
+*.md
+!client/README.md

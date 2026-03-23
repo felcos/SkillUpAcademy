@@ -1,15 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
-import { progressApi, type Dashboard } from '../lib/api';
+import { useDashboard } from '../hooks/useProgress';
 import { useAuth } from '../contexts/AuthContext';
 import { Flame, Star, BookOpen, Clock, TrendingUp } from 'lucide-react';
 
 export default function DashboardPage() {
   const { usuario } = useAuth();
 
-  const { data: dashboard, isLoading } = useQuery({
-    queryKey: ['dashboard'],
-    queryFn: progressApi.dashboard,
-  });
+  const { data: dashboard, isLoading } = useDashboard();
 
   if (isLoading || !dashboard) {
     return (

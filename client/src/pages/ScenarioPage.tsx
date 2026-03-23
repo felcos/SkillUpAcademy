@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { scenarioApi, type ResultadoEscenario } from '../lib/api';
+import { type ResultadoEscenario } from '../lib/api';
+import { useEscenario, useElegirEscenario } from '../hooks/useLessons';
 import { ArrowLeft, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
 
 const iconoResultado: Record<string, typeof CheckCircle2> = {
@@ -22,16 +22,9 @@ export default function ScenarioPage() {
   const leccionId = Number(id);
   const [resultado, setResultado] = useState<ResultadoEscenario | null>(null);
 
-  const { data: escenario, isLoading } = useQuery({
-    queryKey: ['escenario', leccionId],
-    queryFn: () => scenarioApi.obtener(leccionId),
-    enabled: !!leccionId,
-  });
+  const { data: escenario, isLoading } = useEscenario(leccionId);
 
-  const elegirMut = useMutation({
-    mutationFn: (opcionId: number) => scenarioApi.elegir(leccionId, opcionId),
-    onSuccess: (data) => setResultado(data),
-  });
+  const elegirMut = useElegirEscenario(leccionId);
 
   if (isLoading || !escenario) {
     return (
@@ -87,7 +80,7 @@ export default function ScenarioPage() {
             {escenario.opciones.map((opcion) => (
               <button
                 key={opcion.id}
-                onClick={() => elegirMut.mutate(opcion.id)}
+                onClick={() => elegirMut.mutate(opcion.id, { onSuccess: (data) => setResultado(data) })}
                 disabled={elegirMut.isPending}
                 className="w-full text-left p-5 rounded-xl bg-[#25254A] border border-white/5 hover:border-[#3498DB]/40 hover:bg-[#3498DB]/5 transition-all disabled:opacity-50"
               >

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { quizApi, type ResultadoQuiz } from '../lib/api';
+import { type ResultadoQuiz } from '../lib/api';
+import { usePreguntas, useEnviarQuiz } from '../hooks/useLessons';
 import { CheckCircle2, XCircle, ArrowRight, RotateCcw } from 'lucide-react';
 
 export default function QuizPage() {
@@ -12,22 +12,9 @@ export default function QuizPage() {
   const [respuestas, setRespuestas] = useState<Record<number, number>>({});
   const [resultado, setResultado] = useState<ResultadoQuiz | null>(null);
 
-  const { data: preguntas, isLoading } = useQuery({
-    queryKey: ['quiz', leccionId],
-    queryFn: () => quizApi.preguntas(leccionId),
-    enabled: !!leccionId,
-  });
+  const { data: preguntas, isLoading } = usePreguntas(leccionId);
 
-  const enviarMut = useMutation({
-    mutationFn: () => {
-      const respuestasArray = Object.entries(respuestas).map(([preguntaId, opcionSeleccionadaId]) => ({
-        preguntaId: Number(preguntaId),
-        opcionSeleccionadaId,
-      }));
-      return quizApi.enviar(leccionId, respuestasArray);
-    },
-    onSuccess: (data) => setResultado(data),
-  });
+  const enviarMut = useEnviarQuiz(leccionId);
 
   if (isLoading || !preguntas) {
     return (
@@ -129,7 +116,13 @@ export default function QuizPage() {
 
         {esUltima && todasRespondidas ? (
           <button
-            onClick={() => enviarMut.mutate()}
+            onClick={() => {
+              const respuestasArray = Object.entries(respuestas).map(([preguntaId, opcionSeleccionadaId]) => ({
+                preguntaId: Number(preguntaId),
+                opcionSeleccionadaId,
+              }));
+              enviarMut.mutate(respuestasArray, { onSuccess: (data) => setResultado(data) });
+            }}
             disabled={enviarMut.isPending}
             className="flex items-center gap-2 px-6 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium transition-colors"
           >

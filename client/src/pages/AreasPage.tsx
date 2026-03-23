@@ -1,13 +1,10 @@
 import { Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { skillsApi, type AreaHabilidad } from '../lib/api';
+import { type AreaHabilidad } from '../lib/api';
+import { useAreas } from '../hooks/useSkills';
 import { BookOpen } from 'lucide-react';
 
 export default function AreasPage() {
-  const { data: areas, isLoading, error } = useQuery({
-    queryKey: ['areas'],
-    queryFn: skillsApi.listar,
-  });
+  const { data: areas, isLoading, error } = useAreas();
 
   if (isLoading) {
     return (

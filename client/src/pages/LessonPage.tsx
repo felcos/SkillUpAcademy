@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { lessonsApi, type Escena } from '../lib/api';
+import { type Escena } from '../lib/api';
+import { useLeccion, useEscenas, useIniciarLeccion, useCompletarLeccion } from '../hooks/useLessons';
 import { ChevronLeft, ChevronRight, Volume2, VolumeX, Pause, Play } from 'lucide-react';
 
 export default function LessonPage() {
@@ -13,29 +13,16 @@ export default function LessonPage() {
   const [hablando, setHablando] = useState(false);
   const synthRef = useRef(window.speechSynthesis);
 
-  const { data: leccion } = useQuery({
-    queryKey: ['leccion', leccionId],
-    queryFn: () => lessonsApi.detalle(leccionId),
-    enabled: !!leccionId,
-  });
+  const { data: leccion } = useLeccion(leccionId);
 
-  const { data: escenas } = useQuery({
-    queryKey: ['escenas', leccionId],
-    queryFn: () => lessonsApi.escenas(leccionId),
-    enabled: !!leccionId,
-  });
+  const { data: escenas } = useEscenas(leccionId);
 
-  const iniciarMut = useMutation({
-    mutationFn: () => lessonsApi.iniciar(leccionId),
-  });
+  const iniciarMut = useIniciarLeccion();
 
-  const completarMut = useMutation({
-    mutationFn: () => lessonsApi.completar(leccionId),
-    onSuccess: () => navigate(-1),
-  });
+  const completarMut = useCompletarLeccion();
 
   useEffect(() => {
-    if (leccionId) iniciarMut.mutate();
+    if (leccionId) iniciarMut.mutate(leccionId);
   }, [leccionId]);
 
   const escena = escenas?.[escenaActual];
@@ -124,7 +111,7 @@ export default function LessonPage() {
 
         {esUltima ? (
           <button
-            onClick={() => completarMut.mutate()}
+            onClick={() => completarMut.mutate(leccionId, { onSuccess: () => navigate(-1) })}
             disabled={completarMut.isPending}
             className="px-6 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium transition-colors"
           >

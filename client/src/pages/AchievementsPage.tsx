@@ -1,12 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
-import { progressApi, type LogroDto } from '../lib/api';
+import { type LogroDto } from '../lib/api';
+import { useLogros } from '../hooks/useProgress';
 import { Trophy, Lock } from 'lucide-react';
 
 export default function AchievementsPage() {
-  const { data: logros, isLoading } = useQuery({
-    queryKey: ['logros'],
-    queryFn: progressApi.logros,
-  });
+  const { data: logros, isLoading } = useLogros();
 
   if (isLoading) {
     return (

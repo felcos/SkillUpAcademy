@@ -2,27 +2,37 @@
 
 ## [2026-03-23] — Sesión 3
 
-### feat: crear frontend React completo con 10 páginas
-- Aplicación React con Vite, TypeScript, Tailwind CSS, React Router, TanStack Query
-- 10 páginas: Home, Login, Register, Areas, AreaDetail, Lesson (motor de escenas + TTS), Quiz, Scenario, Dashboard, Achievements, Chat con IA
-- Providers configurados en main.tsx (QueryClient, Router, AuthContext)
-- Enrutamiento completo en App.tsx con rutas protegidas
+### feat: frontend React completo con 13 páginas
+- 13 páginas: Home, Login, Register, Areas, AreaDetail, Lesson, Quiz, Scenario, Dashboard, Achievements, Chat, Profile, 404
+- Componentes: LoadingSpinner, ErrorMessage, AvatarAria, Navbar, Layout, ProtectedRoute
+- Custom hooks: useSkills, useLessons, useProgress, useChat
+- Cliente API tipado con 29 endpoints
+- Build: 97KB gzip
 
-### Archivos creados
-- `client/src/main.tsx` — Entry point con providers
-- `client/src/App.tsx` — Router con rutas protegidas
-- `client/src/pages/AreasPage.tsx`
-- `client/src/pages/AreaDetailPage.tsx`
-- `client/src/pages/LessonPage.tsx`
-- `client/src/pages/QuizPage.tsx`
-- `client/src/pages/ScenarioPage.tsx`
-- `client/src/pages/DashboardPage.tsx`
-- `client/src/pages/AchievementsPage.tsx`
-- `client/src/pages/ChatPage.tsx`
+### feat: CI/CD con GitHub Actions
+- Jobs paralelos: backend (.NET 8 build+test) + frontend (tsc+vite build)
+- Triggers: push/PR a develop y main
 
-### Archivos modificados
-- `client/src/main.tsx` — Configuración de providers (QueryClient, Router, Auth)
-- `client/src/App.tsx` — Definición de rutas con React Router
+### feat: seguridad IA integrada en chat
+- ServicioSeguridadIA conectado en ServicioChatIA
+- Validación entrada (5 capas) + validación salida + sistema de strikes
+
+### feat: contenido niveles 2-3
+- 60 lecciones nuevas (30 por nivel) con contenido educativo real
+- 12 quizzes (60 preguntas, 240 opciones)
+- 12 escenarios interactivos
+- Archivos parciales: SembradoDatos.Nivel2.cs, SembradoDatos.Nivel3.cs
+
+### feat: SPA serving y Dockerfile
+- Program.cs: UseStaticFiles + MapFallbackToFile para producción
+- Dockerfile multi-stage con Node 20 + .NET 8
+
+### refactor: páginas usan custom hooks
+- Todas las páginas refactorizadas para usar hooks reutilizables
+
+### feat: tests frontend con Vitest
+- Setup: Vitest + Testing Library + jsdom
+- Tests de API client, AuthContext, HomePage
 
 ---
 
