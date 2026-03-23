@@ -2,6 +2,18 @@
 
 ## [2026-03-23] — Sesión 3
 
+### feat: tests unitarios ServicioChatIA y ServicioEscenas
+- 15 tests unitarios para ServicioChatIA (sesiones, mensajes, seguridad, fallback, historial)
+- 10 tests unitarios para ServicioEscenas (CRUD, generación automática, reordenamiento)
+- Archivos: ServicioChatIATests.cs, ServicioEscenasTests.cs
+
+### feat: tests de integración con WebApplicationFactory
+- 23 tests de integración: Health (2), Auth (6), Skills (5), Endpoints protegidos (9), placeholder (1)
+- CustomWebApplicationFactory con InMemory DB reemplazando PostgreSQL
+- IntegrationTestCollection para ejecución secuencial de tests
+- Program.cs: clase parcial para WebApplicationFactory
+- Archivos: CustomWebApplicationFactory.cs, IntegrationTestCollection.cs, 4 archivos de tests
+
 ### feat: frontend React completo con 13 páginas
 - 13 páginas: Home, Login, Register, Areas, AreaDetail, Lesson, Quiz, Scenario, Dashboard, Achievements, Chat, Profile, 404
 - Componentes: LoadingSpinner, ErrorMessage, AvatarAria, Navbar, Layout, ProtectedRoute

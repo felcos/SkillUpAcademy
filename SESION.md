@@ -16,18 +16,20 @@
 10. **Tests frontend** — Vitest + Testing Library configurado con tests de API, AuthContext y páginas
 11. **Refactoring páginas** — Todas las páginas usan custom hooks en lugar de queries inline
 12. **.dockerignore** — Optimización de contexto Docker
+13. **Tests unitarios ServicioChatIA** — 15 tests: sesiones, mensajes, seguridad 5 capas, fallback sin API key, historial
+14. **Tests unitarios ServicioEscenas** — 10 tests: CRUD, generación automática, reordenamiento, actualización parcial
+15. **Tests de integración** — 23 tests con WebApplicationFactory + InMemory DB: Health, Auth (registro/login/perfil), Skills, endpoints protegidos
 
 ### Estadísticas
 - **13 páginas React**, 6 componentes, 4 archivos de hooks
 - **90 lecciones totales** (30 × 3 niveles), 18 quizzes, 18 escenarios
-- **19 tests backend** pasando (18 unit + 1 integration)
+- **66 tests backend** pasando (43 unit + 23 integration)
+- **21 tests frontend** pasando (API client, AuthContext, HomePage)
 - **Build frontend**: 97KB gzip
-- **4 commits** en develop (frontend, CI/seguridad, niveles 2-3, refactoring)
+- **6 commits** en develop
 
 ### Qué queda pendiente
-- Tests de integración backend (controladores API con WebApplicationFactory)
 - Implementar streaming en ServicioChatIA (SSE)
-- Tests unitarios para ServicioChatIA y ServicioEscenas
 - Configuración de producción (secrets, HTTPS, rate limiting real)
 - Escenas visuales para lecciones de niveles 2-3
 - Animaciones de avatar SVG más elaboradas
