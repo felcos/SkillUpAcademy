@@ -49,7 +49,7 @@ public class ServicioAutenticacion(
             throw new ExcepcionValidacion(errores);
         }
 
-        return GenerarRespuestaLogin(usuario);
+        return await GenerarRespuestaLoginAsync(usuario);
     }
 
     /// <inheritdoc />
@@ -73,7 +73,7 @@ public class ServicioAutenticacion(
         usuario.UltimoAcceso = DateTime.UtcNow;
         await _userManager.UpdateAsync(usuario);
 
-        return GenerarRespuestaLogin(usuario);
+        return await GenerarRespuestaLoginAsync(usuario);
     }
 
     /// <inheritdoc />
@@ -107,7 +107,7 @@ public class ServicioAutenticacion(
         if (usuario == null)
             throw new ExcepcionNoEncontrado("Usuario", usuarioId);
 
-        return MapearAPerfil(usuario);
+        return await MapearAPerfilConRolesAsync(usuario);
     }
 
     /// <inheritdoc />
@@ -133,7 +133,7 @@ public class ServicioAutenticacion(
             usuario.IdiomaPreferido = peticion.IdiomaPreferido;
 
         await _userManager.UpdateAsync(usuario);
-        return MapearAPerfil(usuario);
+        return await MapearAPerfilConRolesAsync(usuario);
     }
 
     /// <inheritdoc />
@@ -151,7 +151,7 @@ public class ServicioAutenticacion(
         }
     }
 
-    private RespuestaLogin GenerarRespuestaLogin(UsuarioApp usuario)
+    private async Task<RespuestaLogin> GenerarRespuestaLoginAsync(UsuarioApp usuario)
     {
         string secret = _configuracion["Jwt:Secret"] ?? throw new InvalidOperationException("JWT Secret no configurado");
         string issuer = _configuracion["Jwt:Issuer"] ?? "SkillUpAcademy";
@@ -165,6 +165,13 @@ public class ServicioAutenticacion(
             new Claim(ClaimTypes.Name, $"{usuario.Nombre} {usuario.Apellidos}"),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
+
+        // Agregar roles del usuario como claims para autorización basada en roles
+        IList<string> roles = await _userManager.GetRolesAsync(usuario);
+        foreach (string rol in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, rol));
+        }
 
         SymmetricSecurityKey clave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
         SigningCredentials credenciales = new SigningCredentials(clave, SecurityAlgorithms.HmacSha256);
@@ -185,7 +192,7 @@ public class ServicioAutenticacion(
             TokenAcceso = tokenString,
             TokenRenovacion = refreshToken,
             ExpiraEnSegundos = expiracionMinutos * 60,
-            Usuario = MapearAPerfil(usuario)
+            Usuario = await MapearAPerfilConRolesAsync(usuario)
         };
     }
 
@@ -197,8 +204,9 @@ public class ServicioAutenticacion(
         return Convert.ToBase64String(bytes);
     }
 
-    private static PerfilUsuarioDto MapearAPerfil(UsuarioApp usuario)
+    private async Task<PerfilUsuarioDto> MapearAPerfilConRolesAsync(UsuarioApp usuario)
     {
+        IList<string> roles = await _userManager.GetRolesAsync(usuario);
         return new PerfilUsuarioDto
         {
             Id = usuario.Id,
@@ -209,7 +217,9 @@ public class ServicioAutenticacion(
             PuntosTotales = usuario.PuntosTotales,
             RachaDias = usuario.RachaDias,
             AudioHabilitado = usuario.AudioHabilitado,
-            IdiomaPreferido = usuario.IdiomaPreferido
+            IdiomaPreferido = usuario.IdiomaPreferido,
+            Roles = roles.ToList(),
+            EsAdmin = roles.Contains("Admin")
         };
     }
 }

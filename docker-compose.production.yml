@@ -1,0 +1,42 @@
+# Docker Compose override para producción
+# Uso: docker compose -f docker-compose.yml -f docker-compose.production.yml up -d
+# Requiere archivo .env con las variables definidas en .env.example
+
+services:
+  db:
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: skillup_academy
+    # Sin puertos expuestos — solo accesible desde la red interna
+    ports: !override []
+    restart: always
+
+  api:
+    image: skillup-academy-api:latest
+    build:
+      context: .
+      dockerfile: src/SkillUpAcademy.Api/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=${CONNECTION_STRING}
+      - Jwt__Secret=${JWT_SECRET}
+      - Anthropic__ApiKey=${ANTHROPIC_API_KEY}
+      - Tts__AzureSpeechKey=${AZURE_SPEECH_KEY}
+      - Tts__AzureSpeechRegion=${AZURE_SPEECH_REGION}
+      - Cors__OrigenesPermitidos__0=${CORS_ORIGINS}
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+    volumes:
+      - logs_api:/app/logs
+    networks:
+      - default
+
+volumes:
+  pgdata:
+  logs_api:

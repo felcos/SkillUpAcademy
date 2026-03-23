@@ -8,6 +8,9 @@ using SkillUpAcademy.Core.Entidades;
 using SkillUpAcademy.Infrastructure.Datos;
 using System.Text;
 
+// Alias para RoleManager usado en el sembrado de admin
+using RoleManagerType = Microsoft.AspNetCore.Identity.RoleManager<Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>>;
+
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateBootstrapLogger();
@@ -42,8 +45,16 @@ try
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-    // JWT
+    // JWT — Validar que el secret no sea el placeholder en producción
     string jwtSecret = builder.Configuration["Jwt:Secret"] ?? "CAMBIAR_ESTA_CLAVE_SECRETA_POR_UNA_REAL_DE_32_CARACTERES_MINIMO";
+    if (!builder.Environment.IsDevelopment()
+        && !builder.Environment.IsEnvironment("Testing")
+        && jwtSecret.StartsWith("CAMBIAR_ESTA_CLAVE"))
+    {
+        throw new InvalidOperationException(
+            "El Jwt:Secret no puede ser el placeholder en producción. " +
+            "Configure la variable de entorno Jwt__Secret con una clave segura de al menos 64 caracteres.");
+    }
     builder.Services.AddAuthentication(opciones =>
     {
         opciones.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -72,11 +83,15 @@ try
     // Servicios de la aplicación (repositorios + servicios)
     builder.Services.AgregarServiciosDeAplicacion();
 
-    // CORS
+    // CORS — Orígenes desde configuración (producción) o localhost (desarrollo)
+    string[] origenesPermitidos = builder.Environment.IsDevelopment()
+        ? new[] { "http://localhost:5173", "http://localhost:3000" }
+        : builder.Configuration.GetSection("Cors:OrigenesPermitidos").Get<string[]>() ?? Array.Empty<string>();
+
     builder.Services.AddCors(opciones =>
     {
         opciones.AddPolicy("PermitirFrontend", politica =>
-            politica.WithOrigins("http://localhost:5173", "http://localhost:3000")
+            politica.WithOrigins(origenesPermitidos)
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials());
@@ -91,6 +106,11 @@ try
         AppDbContext contexto = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         await contexto.Database.MigrateAsync();
         await SembradoDatos.SembrarAsync(contexto);
+
+        // Sembrar rol Admin y usuario administrador
+        RoleManagerType roleManager = scope.ServiceProvider.GetRequiredService<RoleManagerType>();
+        UserManager<UsuarioApp> userManager = scope.ServiceProvider.GetRequiredService<UserManager<UsuarioApp>>();
+        await SembradoAdmin.SembrarAsync(roleManager, userManager);
     }
 
     // Pipeline
@@ -98,6 +118,11 @@ try
     {
         app.UseSwagger();
         app.UseSwaggerUI();
+    }
+    else
+    {
+        app.UseHsts();
+        app.UseHttpsRedirection();
     }
 
     app.UseMiddleware<SkillUpAcademy.Api.Middleware.MiddlewareCabecerasSeguridad>();

@@ -1,9 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { BookOpen, LayoutDashboard, Trophy, LogOut, User } from 'lucide-react';
+import { BookOpen, LayoutDashboard, Trophy, LogOut, User, Shield } from 'lucide-react';
 
 export default function Navbar() {
-  const { usuario, estaAutenticado, logout } = useAuth();
+  const { usuario, estaAutenticado, esAdmin, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -35,6 +35,12 @@ export default function Navbar() {
               <Trophy size={18} />
               <span className="hidden sm:inline">Logros</span>
             </Link>
+            {esAdmin && (
+              <Link to="/admin" className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 transition-colors text-sm">
+                <Shield size={18} />
+                <span className="hidden sm:inline">Admin</span>
+              </Link>
+            )}
 
             <div className="flex items-center gap-3 ml-4 pl-4 border-l border-white/10">
               <div className="hidden sm:block text-right">

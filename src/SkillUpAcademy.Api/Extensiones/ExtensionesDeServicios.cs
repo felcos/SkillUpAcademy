@@ -29,6 +29,7 @@ public static class ExtensionesDeServicios
         servicios.AddScoped<IServicioQuiz, ServicioQuiz>();
         servicios.AddScoped<IServicioEscenario, ServicioEscenario>();
         servicios.AddScoped<IServicioProgreso, ServicioProgreso>();
+        servicios.AddScoped<IServicioAdmin, ServicioAdmin>();
         servicios.AddScoped<IServicioEscenas, ServicioEscenas>();
         servicios.AddScoped<IServicioSeguridadIA, ServicioSeguridadIA>();
 

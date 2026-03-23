@@ -9,6 +9,7 @@ interface AuthContextType {
   registrar: (datos: PeticionRegistro) => Promise<void>;
   logout: () => void;
   estaAutenticado: boolean;
+  esAdmin: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -66,6 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       registrar,
       logout,
       estaAutenticado: !!token && !!usuario,
+      esAdmin: !!usuario?.esAdmin,
     }}>
       {children}
     </AuthContext.Provider>

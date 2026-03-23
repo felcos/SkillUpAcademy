@@ -40,6 +40,9 @@ public class UsuarioApp : IdentityUser<Guid>
     /// <summary>Fecha del último día de actividad para calcular racha.</summary>
     public DateTime? UltimaFechaActividad { get; set; }
 
+    /// <summary>Indica si el usuario tiene bloqueado el acceso al chat con IA.</summary>
+    public bool EstaBloqueadoIA { get; set; }
+
     // Navegación
     public ICollection<ProgresoUsuario> Progresos { get; set; } = new List<ProgresoUsuario>();
     public ICollection<RespuestaQuizUsuario> RespuestasQuiz { get; set; } = new List<RespuestaQuizUsuario>();

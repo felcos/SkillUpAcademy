@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { aiApi, type EventoStreamChat } from '../lib/api';
 import { Send, Sparkles, Bot, User } from 'lucide-react';
+import AvatarAria from '../components/avatar/AvatarAria';
 
 interface Mensaje {
   rol: 'usuario' | 'asistente';
@@ -19,8 +20,15 @@ export default function ChatPage() {
   const [sugerencias, setSugerencias] = useState<string[]>([]);
   const [iniciando, setIniciando] = useState(false);
   const [enviando, setEnviando] = useState(false);
+  const [estadoAria, setEstadoAria] = useState<'idle' | 'hablando' | 'pensando' | 'saludando'>('saludando');
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+
+  // Saludo inicial: 2 segundos saludando, luego idle
+  useEffect(() => {
+    const timer = setTimeout(() => setEstadoAria('idle'), 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Auto-scroll
   useEffect(() => {
@@ -50,6 +58,7 @@ export default function ChatPage() {
     setInput('');
     setSugerencias([]);
     setEnviando(true);
+    setEstadoAria('pensando');
 
     // Añadir mensaje vacío del asistente que se irá llenando
     setMensajes((prev) => [...prev, { rol: 'asistente', contenido: '' }]);
@@ -62,6 +71,7 @@ export default function ChatPage() {
       msg,
       (evento: EventoStreamChat) => {
         if (evento.tipo === 'texto' && evento.contenido) {
+          setEstadoAria('hablando');
           setMensajes((prev) => {
             const copia = [...prev];
             const ultimo = copia[copia.length - 1];
@@ -83,6 +93,7 @@ export default function ChatPage() {
         } else if (evento.tipo === 'fin') {
           setSugerencias(evento.sugerencias || []);
           setEnviando(false);
+          setEstadoAria('idle');
         }
       },
       abortController.signal,
@@ -96,6 +107,7 @@ export default function ChatPage() {
         return copia;
       });
       setEnviando(false);
+      setEstadoAria('idle');
     });
   }, [input, sesionId, enviando]);
 
@@ -103,8 +115,8 @@ export default function ChatPage() {
   if (!sesionId) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#3498DB] to-[#9B59B6] flex items-center justify-center mx-auto mb-6 text-2xl font-bold">
-          A
+        <div className="mx-auto mb-6">
+          <AvatarAria size={64} estado={estadoAria} />
         </div>
         <h1 className="text-2xl font-bold mb-2">Chatea con Aria</h1>
         <p className="text-gray-400 mb-10">Tu instructora IA de habilidades profesionales</p>
@@ -137,13 +149,15 @@ export default function ChatPage() {
       <div ref={scrollRef} className="flex-1 overflow-y-auto space-y-4 py-4">
         {mensajes.map((msg, i) => (
           <div key={i} className={`flex gap-3 ${msg.rol === 'usuario' ? 'flex-row-reverse' : ''}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-              msg.rol === 'asistente'
-                ? 'bg-gradient-to-br from-[#3498DB] to-[#9B59B6]'
-                : 'bg-white/10'
-            }`}>
-              {msg.rol === 'asistente' ? <Bot size={16} /> : <User size={16} />}
-            </div>
+            {msg.rol === 'asistente' ? (
+              <div className="flex-shrink-0">
+                <AvatarAria size={32} estado={enviando && i === mensajes.length - 1 ? estadoAria : 'idle'} />
+              </div>
+            ) : (
+              <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-white/10">
+                <User size={16} />
+              </div>
+            )}
             <div className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
               msg.rol === 'asistente'
                 ? 'bg-[#25254A] border border-white/5 text-gray-200'
@@ -156,8 +170,8 @@ export default function ChatPage() {
 
         {enviando && (
           <div className="flex gap-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#3498DB] to-[#9B59B6] flex items-center justify-center flex-shrink-0">
-              <Bot size={16} />
+            <div className="flex-shrink-0">
+              <AvatarAria size={32} estado={estadoAria} />
             </div>
             <div className="bg-[#25254A] border border-white/5 rounded-2xl px-4 py-3">
               <div className="flex gap-1">

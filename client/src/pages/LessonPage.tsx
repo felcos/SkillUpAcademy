@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { type Escena } from '../lib/api';
 import { useLeccion, useEscenas, useIniciarLeccion, useCompletarLeccion } from '../hooks/useLessons';
 import { ChevronLeft, ChevronRight, Volume2, VolumeX, Pause, Play } from 'lucide-react';
+import AvatarAria from '../components/avatar/AvatarAria';
 
 export default function LessonPage() {
   const { id } = useParams<{ id: string }>();
@@ -136,8 +137,8 @@ function EscenaVisual({ escena, hablando }: { escena: Escena; hablando: boolean 
     <div className="bg-[#25254A] rounded-2xl p-8 border border-white/5 min-h-[400px] flex flex-col">
       {/* Avatar + título */}
       <div className="flex items-center gap-4 mb-6">
-        <div className={`w-14 h-14 rounded-full bg-gradient-to-br from-[#3498DB] to-[#9B59B6] flex items-center justify-center text-xl font-bold flex-shrink-0 ${hablando ? 'animate-pulse' : ''}`}>
-          A
+        <div className="flex-shrink-0">
+          <AvatarAria size={56} estado={hablando ? 'hablando' : 'idle'} />
         </div>
         <div>
           <h2 className="text-lg font-semibold">{escena.tituloEscena}</h2>

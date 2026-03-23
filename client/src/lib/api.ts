@@ -77,6 +77,8 @@ export interface PerfilUsuario {
   puntosTotales: number;
   rachaDias: number;
   fechaRegistro: string;
+  roles: string[];
+  esAdmin: boolean;
 }
 
 export const authApi = {
@@ -411,6 +413,71 @@ export interface LogroDto {
 export const progressApi = {
   dashboard: () => request<Dashboard>('/progress/dashboard'),
   logros: () => request<LogroDto[]>('/progress/achievements'),
+};
+
+// === Admin ===
+
+export interface ActividadDiaria {
+  fecha: string;
+  usuariosActivos: number;
+  leccionesCompletadas: number;
+  mensajesIA: number;
+}
+
+export interface ResumenAdmin {
+  totalUsuarios: number;
+  usuariosActivos7Dias: number;
+  totalSesionesIA: number;
+  totalMensajesIA: number;
+  totalLeccionesCompletadas: number;
+  totalQuizzesCompletados: number;
+  promedioProgreso: number;
+  actividadUltimos30Dias: ActividadDiaria[];
+}
+
+export interface UsuarioAdmin {
+  id: string;
+  email: string;
+  nombreCompleto: string;
+  fechaRegistro: string;
+  ultimoAcceso: string | null;
+  leccionesCompletadas: number;
+  logrosDesbloqueados: number;
+  progresoGeneral: number;
+  estaBloqueadoIA: boolean;
+}
+
+export interface RespuestaUsuariosAdmin {
+  usuarios: UsuarioAdmin[];
+  total: number;
+  pagina: number;
+  tamano: number;
+}
+
+export interface AreaEstadistica {
+  nombreArea: string;
+  vecesCompletada: number;
+  promedioCalificacion: number;
+}
+
+export interface EstadisticasContenido {
+  totalAreas: number;
+  totalNiveles: number;
+  totalLecciones: number;
+  totalPreguntas: number;
+  totalEscenarios: number;
+  totalEscenas: number;
+  areasPorCompletados: AreaEstadistica[];
+}
+
+export const adminApi = {
+  obtenerResumen: () => request<ResumenAdmin>('/admin/resumen'),
+  obtenerUsuarios: (pagina: number, tamano: number) =>
+    request<RespuestaUsuariosAdmin>(`/admin/usuarios?pagina=${pagina}&tamano=${tamano}`),
+  obtenerEstadisticasContenido: () =>
+    request<EstadisticasContenido>('/admin/estadisticas-contenido'),
+  alternarBloqueoIA: (id: string) =>
+    request<{ estaBloqueadoIA: boolean }>(`/admin/usuarios/${id}/alternar-bloqueo-ia`, { method: 'POST' }),
 };
 
 export { ApiError };

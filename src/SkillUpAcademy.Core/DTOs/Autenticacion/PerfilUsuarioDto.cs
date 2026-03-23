@@ -31,4 +31,10 @@ public class PerfilUsuarioDto
 
     /// <summary>Código del idioma preferido por el usuario.</summary>
     public string IdiomaPreferido { get; set; } = "es";
+
+    /// <summary>Roles asignados al usuario.</summary>
+    public IReadOnlyList<string> Roles { get; set; } = new List<string>();
+
+    /// <summary>Indica si el usuario es administrador.</summary>
+    public bool EsAdmin { get; set; }
 }
