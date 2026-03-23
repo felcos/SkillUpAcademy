@@ -131,3 +131,8 @@ finally
 {
     Log.CloseAndFlush();
 }
+
+/// <summary>
+/// Clase parcial necesaria para que WebApplicationFactory pueda descubrir el punto de entrada.
+/// </summary>
+public partial class Program { }
