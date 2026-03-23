@@ -7,14 +7,15 @@ SkillUpAcademy.Infrastructure → Core
 SkillUpAcademy.Core → (ninguna)
 SkillUpAcademy.UnitTests → Core, Infrastructure
 SkillUpAcademy.IntegrationTests → Api
+client/ → React + TypeScript + Vite + Tailwind
 ```
 
 ## Entidades (19)
-| Entidad | Tabla PostgreSQL | Descripción |
+| Entidad | Tabla PostgreSQL | Descripcion |
 |---------|-----------------|-------------|
 | UsuarioApp | usuarios | Usuario extendido de Identity |
-| AreaHabilidad | areas_habilidad | 6 áreas de soft skills |
-| Nivel | niveles | 3 niveles por área |
+| AreaHabilidad | areas_habilidad | 6 areas de soft skills |
+| Nivel | niveles | 3 niveles por area |
 | Leccion | lecciones | Lecciones individuales |
 | PreguntaQuiz | preguntas_quiz | Preguntas de quiz |
 | OpcionQuiz | opciones_quiz | Opciones de respuesta |
@@ -28,42 +29,99 @@ SkillUpAcademy.IntegrationTests → Api
 | Logro | logros | Achievements |
 | LogroUsuario | logros_usuario | Logros desbloqueados |
 | RegistroAbuso | registros_abuso | Logs de seguridad IA |
-| **EscenaLeccion** | escenas_leccion | **Motor de escenas del avatar** |
-| **RecursoVisual** | recursos_visuales | **Banco de imágenes/assets** |
-| **ConfiguracionAvatar** | configuraciones_avatar | **Personalidad de Aria** |
+| EscenaLeccion | escenas_leccion | Motor de escenas del avatar |
+| RecursoVisual | recursos_visuales | Banco de imagenes/assets |
+| ConfiguracionAvatar | configuraciones_avatar | Personalidad de Aria |
+
+## Servicios registrados en DI
+| Interfaz | Implementacion | Lifetime |
+|----------|---------------|----------|
+| IServicioAutenticacion | ServicioAutenticacion | Scoped |
+| IServicioHabilidades | ServicioHabilidades | Scoped |
+| IServicioLecciones | ServicioLecciones | Scoped |
+| IServicioQuiz | ServicioQuiz | Scoped |
+| IServicioEscenario | ServicioEscenario | Scoped |
+| IServicioProgreso | ServicioProgreso | Scoped |
+| IServicioEscenas | ServicioEscenas | Scoped |
+| IServicioSeguridadIA | ServicioSeguridadIA | Scoped |
+| IServicioChatIA | ServicioChatIA | Scoped (HttpClient) |
+| IServicioTts | ServicioTts | Scoped (HttpClient) |
+
+## Repositorios
+| Interfaz | Implementacion |
+|----------|---------------|
+| IRepositorioAreasHabilidad | RepositorioAreasHabilidad |
+| IRepositorioLecciones | RepositorioLecciones |
+| IRepositorioProgreso | RepositorioProgreso |
+| IRepositorioChatIA | RepositorioChatIA |
+| IRepositorioLogros | RepositorioLogros |
+
+## Controladores API (8)
+| Controlador | Ruta base | Endpoints | Auth |
+|-------------|-----------|-----------|------|
+| HealthController | api/v1/health | GET /, GET /ready | No |
+| AuthController | api/v1/auth | register, login, refresh, logout, me, me/password | Mixta |
+| SkillsController | api/v1/skills | /, /{slug}, /{slug}/levels, /{slug}/levels/{n} | Mixta |
+| LessonsController | api/v1/lessons | /{id}, /{id}/scenes, /{id}/start, /{id}/complete | Si |
+| QuizController | api/v1/lessons/{id}/quiz | /, /answer, /submit | Si |
+| ScenarioController | api/v1/lessons/{id}/scenario | /, /choose | Si |
+| ProgressController | api/v1/progress | /dashboard, /skill/{slug}, /achievements | Si |
+| AiChatController | api/v1/ai | session/start, session/{id}/message, history, end | Si |
 
 ## Frontend — client/src/
 ```
 client/src/
-├── main.tsx                    — Entry point, providers (QueryClient, Router, Auth)
-├── App.tsx                     — React Router con rutas protegidas
+├── main.tsx                         — Entry point, providers
+├── App.tsx                          — React Router (13 rutas)
 ├── pages/
-│   ├── AreasPage.tsx           — Listado de 6 áreas de habilidades
-│   ├── AreaDetailPage.tsx      — Detalle de área con niveles y lecciones
-│   ├── LessonPage.tsx          — Motor de escenas del avatar + TTS
-│   ├── QuizPage.tsx            — Preguntas con opciones y retroalimentación
-│   ├── ScenarioPage.tsx        — Escenarios interactivos con decisiones
-│   ├── DashboardPage.tsx       — Panel de progreso del usuario
-│   ├── AchievementsPage.tsx    — Logros desbloqueados y pendientes
-│   └── ChatPage.tsx            — Chat con IA (Aria)
-├── components/                 — Componentes reutilizables (Layout, Avatar, etc.)
-├── contexts/                   — React Context (AuthContext, etc.)
-└── lib/                        — Utilidades, API client, tipos compartidos
+│   ├── HomePage.tsx                 — Landing con hero, areas, features
+│   ├── LoginPage.tsx                — Login con JWT
+│   ├── RegisterPage.tsx             — Registro completo
+│   ├── AreasPage.tsx                — Grid de 6 areas con progreso
+│   ├── AreaDetailPage.tsx           — Niveles y lecciones por area
+│   ├── LessonPage.tsx               — Motor de escenas + TTS
+│   ├── QuizPage.tsx                 — Preguntas MCQ interactivas
+│   ├── ScenarioPage.tsx             — Escenarios con decisiones
+│   ├── DashboardPage.tsx            — Panel de progreso
+│   ├── AchievementsPage.tsx         — Logros
+│   ├── ChatPage.tsx                 — Chat con Aria (IA)
+│   ├── ProfilePage.tsx              — Perfil de usuario
+│   └── NotFoundPage.tsx             — 404
+├── components/
+│   ├── layout/ (Navbar, Layout, ProtectedRoute)
+│   ├── ui/ (LoadingSpinner, ErrorMessage)
+│   └── avatar/ (AvatarAria)
+├── hooks/ (useSkills, useLessons, useProgress, useChat)
+├── contexts/ (AuthContext)
+├── lib/ (api.ts — 29 endpoints tipados)
+└── test/ (setup.ts, utils.tsx)
 ```
 
-**Stack frontend:** React + TypeScript + Vite + Tailwind CSS + React Router + TanStack Query
+## Tests
+| Proyecto | Archivos | Tests | Framework |
+|----------|----------|-------|-----------|
+| UnitTests | 4 archivos | 43 | xUnit + FluentAssertions + Moq |
+| IntegrationTests | 6 archivos | 23 | xUnit + WebApplicationFactory + InMemory |
+| Frontend | 3 archivos | 21 | Vitest + Testing Library + jsdom |
+| **Total** | **13** | **87** | |
 
 ## Features
-- ✅ Estructura de solución Clean Architecture
-- ✅ Modelo de datos completo (19 entidades, 10 enums)
-- ✅ Configuración PostgreSQL con snake_case
-- ✅ Logging con Serilog
-- 🔨 Autenticación (Identity + JWT)
-- 📋 API REST completa
-- 📋 Integración IA (Claude)
-- 📋 Motor de escenas del avatar
-- 📋 TTS (Text-to-Speech)
-- 📋 Frontend React
-- 📋 Seeders con contenido real
-- 📋 Tests
-- 📋 Docker
+- ✅ Estructura Clean Architecture
+- ✅ Modelo de datos (19 entidades, 10 enums)
+- ✅ PostgreSQL con snake_case + jsonb
+- ✅ Autenticacion (Identity + JWT HS256)
+- ✅ API REST completa (8 controladores, 29 endpoints)
+- ✅ Integracion IA (Anthropic Claude API)
+- ✅ Seguridad IA (5 capas anti-abuso + strikes)
+- ✅ Motor de escenas del avatar
+- ✅ TTS (Web Speech API)
+- ✅ Frontend React (13 paginas, 6 componentes, 4 hooks)
+- ✅ Contenido educativo (90 lecciones, 18 quizzes, 18 escenarios)
+- ✅ Testing (87 tests: 43 unit + 23 integration + 21 frontend)
+- ✅ CI/CD (GitHub Actions)
+- ✅ Docker (multi-stage + docker-compose)
+- ✅ SPA serving desde .NET
+- ✅ Logging (Serilog)
+- 📋 SSE streaming en chat
+- 📋 Configuracion produccion (HTTPS, secrets)
+- 📋 Admin dashboard

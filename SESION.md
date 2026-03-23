@@ -40,7 +40,7 @@
 - File lock de DLL durante builds paralelos (resuelto reintentando)
 
 ### Siguiente paso sugerido
-Tests de integración backend con WebApplicationFactory, o implementar SSE streaming en el chat.
+Implementar SSE streaming en ServicioChatIA para mejorar la UX del chat con Aria. Alternativamente, configurar secrets y HTTPS para producción.
 
 ---
 
