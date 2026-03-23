@@ -1,5 +1,31 @@
 # Changelog
 
+## [2026-03-23] — Sesión 3
+
+### feat: crear frontend React completo con 10 páginas
+- Aplicación React con Vite, TypeScript, Tailwind CSS, React Router, TanStack Query
+- 10 páginas: Home, Login, Register, Areas, AreaDetail, Lesson (motor de escenas + TTS), Quiz, Scenario, Dashboard, Achievements, Chat con IA
+- Providers configurados en main.tsx (QueryClient, Router, AuthContext)
+- Enrutamiento completo en App.tsx con rutas protegidas
+
+### Archivos creados
+- `client/src/main.tsx` — Entry point con providers
+- `client/src/App.tsx` — Router con rutas protegidas
+- `client/src/pages/AreasPage.tsx`
+- `client/src/pages/AreaDetailPage.tsx`
+- `client/src/pages/LessonPage.tsx`
+- `client/src/pages/QuizPage.tsx`
+- `client/src/pages/ScenarioPage.tsx`
+- `client/src/pages/DashboardPage.tsx`
+- `client/src/pages/AchievementsPage.tsx`
+- `client/src/pages/ChatPage.tsx`
+
+### Archivos modificados
+- `client/src/main.tsx` — Configuración de providers (QueryClient, Router, Auth)
+- `client/src/App.tsx` — Definición de rutas con React Router
+
+---
+
 ## [2026-03-22] — Sesión 2
 
 ### feat: Servicios de IA y contenido educativo

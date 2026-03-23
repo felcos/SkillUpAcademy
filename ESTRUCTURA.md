@@ -32,6 +32,27 @@ SkillUpAcademy.IntegrationTests → Api
 | **RecursoVisual** | recursos_visuales | **Banco de imágenes/assets** |
 | **ConfiguracionAvatar** | configuraciones_avatar | **Personalidad de Aria** |
 
+## Frontend — client/src/
+```
+client/src/
+├── main.tsx                    — Entry point, providers (QueryClient, Router, Auth)
+├── App.tsx                     — React Router con rutas protegidas
+├── pages/
+│   ├── AreasPage.tsx           — Listado de 6 áreas de habilidades
+│   ├── AreaDetailPage.tsx      — Detalle de área con niveles y lecciones
+│   ├── LessonPage.tsx          — Motor de escenas del avatar + TTS
+│   ├── QuizPage.tsx            — Preguntas con opciones y retroalimentación
+│   ├── ScenarioPage.tsx        — Escenarios interactivos con decisiones
+│   ├── DashboardPage.tsx       — Panel de progreso del usuario
+│   ├── AchievementsPage.tsx    — Logros desbloqueados y pendientes
+│   └── ChatPage.tsx            — Chat con IA (Aria)
+├── components/                 — Componentes reutilizables (Layout, Avatar, etc.)
+├── contexts/                   — React Context (AuthContext, etc.)
+└── lib/                        — Utilidades, API client, tipos compartidos
+```
+
+**Stack frontend:** React + TypeScript + Vite + Tailwind CSS + React Router + TanStack Query
+
 ## Features
 - ✅ Estructura de solución Clean Architecture
 - ✅ Modelo de datos completo (19 entidades, 10 enums)

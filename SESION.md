@@ -1,5 +1,41 @@
 # Sesión — SkillUp Academy
 
+## Sesión 3 — 2026-03-23
+
+### Qué se hizo
+1. **Frontend React completo** — Aplicación creada con Vite + TypeScript + Tailwind CSS
+2. **10 páginas implementadas** con React Router y TanStack Query:
+   - **Home** — Landing page pública
+   - **Login / Register** — Autenticación con formularios
+   - **Areas** — Listado de las 6 áreas de habilidades
+   - **AreaDetail** — Detalle de área con niveles y lecciones
+   - **Lesson** — Motor de escenas del avatar con TTS integrado
+   - **Quiz** — Preguntas con opciones y retroalimentación
+   - **Scenario** — Escenarios interactivos con decisiones
+   - **Dashboard** — Panel de progreso del usuario
+   - **Achievements** — Logros desbloqueados y pendientes
+   - **Chat** — Conversación con IA (Aria)
+3. **Providers configurados** — QueryClient, React Router, AuthContext
+4. **Rutas protegidas** — Redirección a login para páginas autenticadas
+
+### Qué queda pendiente
+- Tests frontend (React Testing Library + Vitest)
+- CI/CD pipeline (GitHub Actions)
+- Contenido de niveles 2 y 3 (Práctica y Dominio)
+- Tests de integración backend (controladores API con WebApplicationFactory)
+- Implementar streaming en ServicioChatIA (SSE)
+- Integrar ServicioSeguridadIA en el flujo de ServicioChatIA
+- Tests unitarios para ServicioChatIA y ServicioEscenas
+- Configuración de producción (secrets, HTTPS, rate limiting real)
+
+### Problemas encontrados
+- (ninguno relevante en esta sesión)
+
+### Siguiente paso sugerido
+Añadir tests frontend con Vitest + React Testing Library, o bien implementar CI/CD con GitHub Actions.
+
+---
+
 ## Sesión 2 — 2026-03-22
 
 ### Qué se hizo

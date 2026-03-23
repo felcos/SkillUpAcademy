@@ -39,8 +39,13 @@ Para que profesionales mejoren habilidades clave (comunicación, liderazgo, trab
 - ✅ 19 configuraciones Fluent API (snake_case, jsonb, timestamptz)
 - ✅ Paquetes NuGet instalados (Npgsql, Identity, Serilog, JWT, RateLimit)
 - ✅ Compila sin errores ni warnings
-- 🔨 Program.cs configurado con Serilog, PostgreSQL, Identity, CORS, Swagger
-- 📋 Pendiente: Interfaces, DTOs, Repositorios, Servicios, Controladores
-- 📋 Pendiente: Seeders con contenido real
-- 📋 Pendiente: Frontend React
-- 📋 Pendiente: Docker
+- ✅ Program.cs configurado con Serilog, PostgreSQL, Identity, CORS, Swagger
+- ✅ Servicios de IA: ChatIA, SeguridadIA, TTS, Escenas — registrados en DI
+- ✅ SembradoDatos nivel 1 completo (6 áreas × 5 lecciones, quizzes, escenarios, logros)
+- ✅ 18 tests unitarios pasando (ServicioSeguridadIA + ServicioQuiz)
+- ✅ Docker (Dockerfile multi-stage + docker-compose)
+- ✅ **Frontend React completo** — 10 páginas con React Router, TanStack Query, Tailwind CSS
+  - Home, Login, Register, Areas, AreaDetail, Lesson (motor escenas + TTS), Quiz, Scenario, Dashboard, Achievements, Chat IA
+- 📋 Pendiente: Tests frontend (Vitest + React Testing Library)
+- 📋 Pendiente: CI/CD pipeline (GitHub Actions)
+- 📋 Pendiente: Contenido niveles 2 y 3
