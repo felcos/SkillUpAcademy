@@ -7,7 +7,7 @@ namespace SkillUpAcademy.Infrastructure.Datos;
 /// <summary>
 /// Sembrado de datos iniciales para desarrollo.
 /// </summary>
-public static class SembradoDatos
+public static partial class SembradoDatos
 {
     /// <summary>
     /// Siembra datos iniciales si la base de datos está vacía.
@@ -25,6 +25,13 @@ public static class SembradoDatos
         await SembrarLeccionesInteligenciaEmocionalAsync(contexto);
         await SembrarLeccionesNetworkingAsync(contexto);
         await SembrarLeccionesPersuasionAsync(contexto);
+
+        // Nivel 2 — Práctica
+        await SembrarLeccionesNivel2Async(contexto);
+
+        // Nivel 3 — Dominio
+        await SembrarLeccionesNivel3Async(contexto);
+
         await SembrarLogrosAsync(contexto);
     }
 
