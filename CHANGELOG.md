@@ -1,5 +1,34 @@
 # Changelog
 
+## [2026-03-23] — Sesión 4
+
+### feat: SSE streaming en chat IA
+- `IServicioChatIA.EnviarMensajeStreamAsync` con `IAsyncEnumerable<string>`
+- `ServicioChatIA.LlamarApiAnthropicStreamAsync` con parseo de eventos Anthropic (stream: true)
+- `ServicioChatIA.ProcesarEventoStream` extraído como método auxiliar (C# no permite yield en try-catch)
+- Nuevo endpoint `POST api/v1/ai/session/{id}/message/stream` con text/event-stream
+- Protocolo SSE: eventos texto (fragmentos), reemplazo (filtro seguridad), fin (metadata + sugerencias)
+- Archivos modificados: IServicioChatIA.cs, ServicioChatIA.cs, AiChatController.cs
+
+### feat: streaming SSE en frontend
+- `api.ts`: función `enviarMensajeStream` con `ReadableStream` y parseo SSE, interface `EventoStreamChat`
+- `ChatPage.tsx`: reescrito con renderizado progresivo (mensaje se llena caracter por caracter)
+- `useChat.ts`: nuevo hook `useEnviarMensajeStreamIA`
+- El endpoint no-streaming original se mantiene como fallback
+
+### feat: escenas visuales niveles 2-3
+- 12 llamadas a `SembrarEscenasTeoricasAsync` en SembradoDatos.Nivel2.cs (60 escenas)
+- 12 llamadas a `SembrarEscenasTeoricasAsync` en SembradoDatos.Nivel3.cs (60 escenas)
+- Total: 180 escenas (60 por nivel), 5 por lección teórica
+- Guiones personalizados: Nivel 2 enfocado en práctica, Nivel 3 en dominio/maestría
+
+### feat: tests SSE streaming
+- 5 tests unitarios para EnviarMensajeStreamAsync (sesión no existe, usuario bloqueado, mensaje inseguro, fallback, sesión cerrada)
+- 2 tests de integración nuevos (endpoint /message y /message/stream verifican 401 sin token)
+- Total: 94 tests pasando (48 unit + 25 integration + 21 frontend)
+
+---
+
 ## [2026-03-23] — Sesión 3
 
 ### feat: tests unitarios ServicioChatIA y ServicioEscenas

@@ -1,5 +1,47 @@
 # Sesión — SkillUp Academy
 
+## Sesión 4 — 2026-03-23
+
+### Qué se hizo
+1. **SSE streaming en chat IA** — Feature completa end-to-end
+   - Backend: `EnviarMensajeStreamAsync` con `IAsyncEnumerable<string>` en IServicioChatIA/ServicioChatIA
+   - Backend: `LlamarApiAnthropicStreamAsync` con parseo de eventos Anthropic (`content_block_delta`, `message_start`, `message_delta`)
+   - Backend: Nuevo endpoint `POST session/{id}/message/stream` en AiChatController con `text/event-stream`
+   - Backend: Método auxiliar `ProcesarEventoStream` (extraído para evitar yield en try-catch)
+   - Frontend: `enviarMensajeStream` en api.ts con `ReadableStream` y parseo SSE
+   - Frontend: ChatPage.tsx reescrito con renderizado progresivo (texto aparece caracter por caracter)
+   - Frontend: Soporte para eventos `texto`, `reemplazo` (filtro seguridad) y `fin` (sugerencias)
+   - Frontend: Hook `useEnviarMensajeStreamIA` en useChat.ts
+2. **Escenas visuales niveles 2-3** — 120 escenas nuevas
+   - 12 llamadas a `SembrarEscenasTeoricasAsync` en SembradoDatos.Nivel2.cs (60 escenas)
+   - 12 llamadas a `SembrarEscenasTeoricasAsync` en SembradoDatos.Nivel3.cs (60 escenas)
+   - Guiones personalizados: Nivel 2 enfocado en práctica, Nivel 3 en dominio/maestría
+3. **Tests unitarios SSE streaming** — 5 tests nuevos para EnviarMensajeStreamAsync
+   - SesionNoExiste, UsuarioBloqueado, MensajeInseguro, FallbackSinApiKey, SesionCerrada
+4. **Tests de integración SSE** — 2 InlineData nuevos en EndpointsProtegidosTests
+   - Endpoint `/message` y `/message/stream` verifican 401 sin token
+
+### Estadísticas
+- **94 tests totales pasando** (48 unit + 25 integration + 21 frontend)
+- **180 escenas totales** (60 nivel 1 + 60 nivel 2 + 60 nivel 3)
+- **30 endpoints** (29 existentes + 1 SSE streaming)
+- **0 errores, 0 warnings**
+
+### Qué queda pendiente
+- Configuración de producción (secrets reales, HTTPS, CORS dominio)
+- Animaciones de avatar SVG más elaboradas
+- Admin dashboard
+
+### Problemas encontrados
+- `yield return` dentro de `try-catch` no permitido en C# (CS1626) — resuelto extrayendo `ProcesarEventoStream` como método separado
+- Variable `errorStatus` no usada (warning) — eliminada
+- Tests frontend fallan si se ejecutan desde raíz del proyecto (deben ejecutarse desde `client/`)
+
+### Siguiente paso sugerido
+Configurar producción: secrets reales (Anthropic API key, JWT key), HTTPS, CORS con dominio, y desplegar.
+
+---
+
 ## Sesión 3 — 2026-03-23
 
 ### Qué se hizo

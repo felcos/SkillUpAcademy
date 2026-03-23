@@ -31,28 +31,36 @@ Para que profesionales mejoren habilidades clave (comunicación, liderazgo, trab
 | 2026-03-22 | Nombres en español para entidades, propiedades y servicios |
 | 2026-03-22 | Motor de escenas como pieza central nueva (EscenaLeccion, RecursoVisual, ConfiguracionAvatar) |
 
-## Estado actual (actualizado 2026-03-23)
+## Decisiones tomadas (cont.)
+| Fecha | Decisión |
+|-------|----------|
+| 2026-03-23 | SSE streaming con IAsyncEnumerable + text/event-stream (no SignalR, más simple y compatible) |
+| 2026-03-23 | Protocolo SSE propio con tipos texto/reemplazo/fin (permite filtrado de seguridad post-stream) |
+
+## Estado actual (actualizado 2026-03-23 — Sesión 4)
 ### Backend ✅
 - ✅ Solución .NET 8 con Clean Architecture (Api, Core, Infrastructure)
 - ✅ 19 entidades, 10 enums, 19 configuraciones Fluent API (snake_case, jsonb)
 - ✅ 10 servicios + 5 repositorios registrados en DI
-- ✅ 8 controladores con 29 endpoints (Auth, Skills, Lessons, Quiz, Scenario, Progress, AiChat, Health)
+- ✅ 8 controladores con 30 endpoints (29 REST + 1 SSE streaming)
 - ✅ Seguridad IA: 5 capas anti-abuso integradas en ServicioChatIA
-- ✅ SembradoDatos: 90 lecciones (3 niveles × 6 áreas × 5), 18 quizzes, 18 escenarios, 10 logros
+- ✅ SSE streaming en chat IA (IAsyncEnumerable + Anthropic streaming API)
+- ✅ SembradoDatos: 90 lecciones, 18 quizzes, 18 escenarios, 180 escenas, 10 logros
 - ✅ Middleware: cabeceras seguridad + manejo excepciones global
 
 ### Frontend ✅
 - ✅ 13 páginas React + TypeScript + Tailwind CSS + Vite
 - ✅ 6 componentes reutilizables, 4 custom hooks (wrapping TanStack Query)
-- ✅ Cliente API tipado con 29 endpoints
+- ✅ Cliente API tipado con 30 endpoints (29 REST + 1 streaming)
 - ✅ Motor de escenas con TTS (Web Speech API)
+- ✅ Chat con renderizado progresivo (streaming SSE)
 - ✅ Build: 97KB gzip
 
 ### Testing ✅
-- ✅ 43 tests unitarios backend (ServicioSeguridadIA, ServicioQuiz, ServicioChatIA, ServicioEscenas)
-- ✅ 23 tests de integración (WebApplicationFactory + InMemory DB)
+- ✅ 48 tests unitarios backend (ServicioSeguridadIA, ServicioQuiz, ServicioChatIA, ServicioEscenas)
+- ✅ 25 tests de integración (WebApplicationFactory + InMemory DB)
 - ✅ 21 tests frontend (Vitest + Testing Library)
-- ✅ **Total: 87 tests pasando, 0 fallando**
+- ✅ **Total: 94 tests pasando, 0 fallando**
 
 ### DevOps ✅
 - ✅ CI/CD GitHub Actions (backend + frontend en paralelo)
@@ -61,7 +69,6 @@ Para que profesionales mejoren habilidades clave (comunicación, liderazgo, trab
 - ✅ SPA serving (MapFallbackToFile)
 
 ### Pendiente 📋
-- 📋 SSE streaming en chat IA
 - 📋 Configuración producción (secrets reales, HTTPS, CORS dominio)
-- 📋 Escenas visuales para niveles 2-3
 - 📋 Admin dashboard
+- 📋 Animaciones avatar SVG más elaboradas

@@ -23,13 +23,31 @@ public class AiChatController(IServicioChatIA _servicioChatIA) : ControllerBase
         return CreatedAtAction(nameof(ObtenerHistorial), new { sesionId = sesion.Id }, sesion);
     }
 
-    /// <summary>Envía un mensaje al asistente IA.</summary>
+    /// <summary>Envía un mensaje al asistente IA (respuesta completa).</summary>
     [HttpPost("session/{sesionId:guid}/message")]
     public async Task<IActionResult> EnviarMensaje(Guid sesionId, [FromBody] PeticionMensajeIA peticion)
     {
         Guid usuarioId = ObtenerUsuarioId();
         RespuestaMensajeIADto respuesta = await _servicioChatIA.EnviarMensajeAsync(sesionId, peticion, usuarioId);
         return Ok(respuesta);
+    }
+
+    /// <summary>Envía un mensaje al asistente IA con respuesta en streaming SSE.</summary>
+    [HttpPost("session/{sesionId:guid}/message/stream")]
+    public async Task EnviarMensajeStream(Guid sesionId, [FromBody] PeticionMensajeIA peticion, CancellationToken cancellationToken)
+    {
+        Guid usuarioId = ObtenerUsuarioId();
+
+        Response.ContentType = "text/event-stream";
+        Response.Headers.Append("Cache-Control", "no-cache");
+        Response.Headers.Append("Connection", "keep-alive");
+        Response.Headers.Append("X-Accel-Buffering", "no");
+
+        await foreach (string evento in _servicioChatIA.EnviarMensajeStreamAsync(sesionId, peticion, usuarioId).WithCancellation(cancellationToken))
+        {
+            await Response.WriteAsync(evento, cancellationToken);
+            await Response.Body.FlushAsync(cancellationToken);
+        }
     }
 
     /// <summary>Obtiene el historial de mensajes.</summary>

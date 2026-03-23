@@ -311,6 +311,86 @@ public static partial class SembradoDatos
 
         await contexto.SaveChangesAsync();
 
+        // ===== ESCENAS TEÓRICAS NIVEL 3 =====
+
+        // Escenas Comunicación N3
+        await SembrarEscenasTeoricasAsync(contexto, comN3L1.Id, "comunicación ejecutiva",
+            "Presenta como un CEO",
+            "En el nivel de dominio, tu comunicación debe inspirar y mover organizaciones enteras. Hoy aprenderás a comunicar visión y estrategia como un directivo.",
+            "La pirámide de Minto: conclusión primero, argumentos después. Domina el executive summary, la comunicación con el board y el arte de simplificar lo complejo.",
+            "En tu próxima presentación, empieza por la conclusión y luego desarrolla los argumentos. Observa cómo cambia la atención de tu audiencia.");
+
+        await SembrarEscenasTeoricasAsync(contexto, comN3L2.Id, "comunicación de crisis",
+            "Cuando todo sale mal",
+            "Las crisis ponen a prueba tu comunicación al máximo. Hoy aprenderás protocolos para comunicar durante emergencias con claridad y calma.",
+            "Transparencia, velocidad y empatía son los pilares de la comunicación de crisis. Un protocolo claro evita el caos: quién comunica, qué dice y cuándo.",
+            "Prepara un protocolo de comunicación de crisis para tu equipo: define roles, mensajes clave y canales antes de que los necesites.");
+
+        // Escenas Liderazgo N3
+        await SembrarEscenasTeoricasAsync(contexto, lidN3L1.Id, "liderazgo transformacional",
+            "Inspira cambio profundo en tu organización",
+            "El liderazgo transformacional va más allá de gestionar tareas. Hoy aprenderás a transformar personas y culturas organizacionales desde la inspiración.",
+            "Estimulación intelectual, motivación inspiracional, consideración individualizada e influencia idealizada. Los líderes transformacionales crean otros líderes, no seguidores.",
+            "Identifica una creencia limitante en tu equipo y diseña una conversación que la desafíe con una visión inspiradora.");
+
+        await SembrarEscenasTeoricasAsync(contexto, lidN3L2.Id, "liderazgo en la incertidumbre",
+            "Decidir sin información completa",
+            "En el mundo real, rara vez tienes toda la información. Hoy dominarás frameworks para tomar decisiones de alto impacto en contextos ambiguos.",
+            "El framework Cynefin clasifica situaciones en simple, complicado, complejo y caótico. Cada contexto requiere un enfoque diferente para decidir y actuar.",
+            "Ante tu próxima decisión difícil, clasifícala con Cynefin: ¿es complicada o compleja? Eso cambiará completamente tu enfoque.");
+
+        // Escenas Trabajo en Equipo N3
+        await SembrarEscenasTeoricasAsync(contexto, teqN3L1.Id, "equipos cross-funcionales",
+            "Liderazgo sin autoridad formal",
+            "Coordinar equipos donde no eres el jefe requiere influencia, no poder. Hoy aprenderás a obtener resultados a través de la colaboración entre áreas.",
+            "Alinea objetivos compartidos, gestiona stakeholders y construye credibilidad técnica. El liderazgo lateral se basa en confianza y resultados, no en jerarquía.",
+            "En tu próximo proyecto cross-funcional, dedica la primera reunión a alinear expectativas y definir un objetivo compartido que beneficie a todas las áreas.");
+
+        await SembrarEscenasTeoricasAsync(contexto, teqN3L2.Id, "cultura de equipo",
+            "Diseña el ambiente donde la gente quiere estar",
+            "La cultura no se decreta, se construye con acciones diarias. Hoy dominarás el arte de crear un ambiente que atraiga talento y genere resultados excepcionales.",
+            "Valores vividos, rituales significativos, normas explícitas y celebración de logros. La cultura es lo que pasa cuando nadie está mirando.",
+            "Define tres comportamientos concretos que representen la cultura que quieres en tu equipo y empieza a modelarlos consistentemente.");
+
+        // Escenas Inteligencia Emocional N3
+        await SembrarEscenasTeoricasAsync(contexto, ieN3L1.Id, "inteligencia emocional del líder",
+            "Gestiona el clima emocional de tu equipo",
+            "Como líder, tu estado emocional se contagia al equipo entero. Hoy aprenderás a gestionar conscientemente el clima emocional que creas.",
+            "El contagio emocional del líder afecta la productividad, creatividad y retención. Domina la resonancia emocional: tu calma genera calma, tu entusiasmo genera energía.",
+            "Antes de cada reunión, haz un check-in emocional contigo mismo. Tu equipo amplificará la emoción que tú traigas.");
+
+        await SembrarEscenasTeoricasAsync(contexto, ieN3L2.Id, "conversaciones difíciles",
+            "Maestría emocional en momentos críticos",
+            "Despidos, bajo rendimiento, conflictos interpersonales: las conversaciones más difíciles definen tu liderazgo. Hoy las dominarás con maestría emocional.",
+            "Prepara el contexto, separa hechos de interpretaciones, mantén la dignidad del otro y cierra con compromisos claros. La empatía no debilita el mensaje, lo fortalece.",
+            "Practica mentalmente una conversación difícil pendiente: prepara tus hechos, anticipa emociones y define el resultado que buscas.");
+
+        // Escenas Networking N3
+        await SembrarEscenasTeoricasAsync(contexto, netN3L1.Id, "personal branding",
+            "Conviértete en referente de tu industria",
+            "En el nivel de dominio, tu red te busca a ti. Hoy aprenderás a construir una marca personal que atraiga oportunidades sin que las busques.",
+            "Contenido de valor, presencia consistente, thought leadership y generosidad estratégica. Tu marca personal es lo que dicen de ti cuando no estás en la sala.",
+            "Elige un tema donde tengas experiencia única y escribe tu primer artículo o publicación compartiéndolo con tu red.");
+
+        await SembrarEscenasTeoricasAsync(contexto, netN3L2.Id, "mentoría y sponsorship",
+            "Las relaciones que aceleran carreras",
+            "Un mentor te aconseja, pero un sponsor pone su reputación en juego por ti. Hoy entenderás la diferencia y cómo cultivar ambas relaciones.",
+            "El mentor guía con experiencia, el sponsor abre puertas con influencia. Busca ambos y prepárate para ser ambos para otros: así se construyen legados profesionales.",
+            "Identifica un potencial sponsor en tu organización y busca una oportunidad para demostrar resultados visibles que justifiquen su apoyo.");
+
+        // Escenas Persuasión N3
+        await SembrarEscenasTeoricasAsync(contexto, perN3L1.Id, "negociación avanzada",
+            "El framework de Harvard en acción",
+            "La negociación principista separa personas de problemas y negocia intereses, no posiciones. Hoy dominarás el método que usan los mejores negociadores del mundo.",
+            "Separa personas de problemas, enfócate en intereses no posiciones, genera opciones de beneficio mutuo y usa criterios objetivos. El BATNA es tu fuente de poder real.",
+            "Antes de tu próxima negociación, prepara tu BATNA: ¿cuál es tu mejor alternativa si no llegas a un acuerdo?");
+
+        await SembrarEscenasTeoricasAsync(contexto, perN3L2.Id, "influencia organizacional",
+            "Mueve ideas en sistemas complejos",
+            "En organizaciones grandes, la mejor idea pierde si no sabes navegar la política interna. Hoy aprenderás a mover iniciativas en sistemas complejos.",
+            "Mapea stakeholders, construye coaliciones, gestiona resistencia al cambio y comunica en el idioma de cada audiencia. La influencia organizacional es un juego de ajedrez estratégico.",
+            "Identifica los tres stakeholders clave para tu próxima iniciativa y prepara un mensaje personalizado para cada uno basado en sus intereses.");
+
         // ===== QUIZZES Y ESCENARIOS NIVEL 3 =====
         await SembrarQuizzesNivel3Async(contexto);
         await SembrarEscenariosNivel3Async(contexto);

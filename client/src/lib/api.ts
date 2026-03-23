@@ -282,6 +282,15 @@ export interface RespuestaMensajeIA {
   sugerencias: string[];
 }
 
+/** Callback para eventos SSE del chat streaming. */
+export interface EventoStreamChat {
+  tipo: 'texto' | 'reemplazo' | 'fin';
+  contenido?: string;
+  fueMarcado?: boolean;
+  tokensUsados?: number;
+  sugerencias?: string[];
+}
+
 export const aiApi = {
   iniciarSesion: (tipoSesion: string, leccionId?: number) =>
     request<SesionIA>('/ai/session/start', {
@@ -293,6 +302,77 @@ export const aiApi = {
       method: 'POST',
       body: { mensaje },
     }),
+  /** Envía un mensaje y recibe la respuesta como stream SSE. */
+  enviarMensajeStream: async (
+    sesionId: string,
+    mensaje: string,
+    onEvento: (evento: EventoStreamChat) => void,
+    signal?: AbortSignal,
+  ): Promise<void> => {
+    const token = getToken();
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${API_BASE}/ai/session/${sesionId}/message/stream`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ mensaje }),
+      signal,
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new ApiError(response.status, data.mensaje || data.message || 'Error del servidor');
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error('ReadableStream no disponible');
+    }
+
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lineas = buffer.split('\n\n');
+        buffer = lineas.pop() || '';
+
+        for (const linea of lineas) {
+          const limpia = linea.trim();
+          if (!limpia.startsWith('data: ')) continue;
+          const json = limpia.substring(6);
+          try {
+            const evento: EventoStreamChat = JSON.parse(json);
+            onEvento(evento);
+          } catch {
+            // Ignorar líneas que no sean JSON válido
+          }
+        }
+      }
+
+      // Procesar buffer restante
+      if (buffer.trim().startsWith('data: ')) {
+        const json = buffer.trim().substring(6);
+        try {
+          const evento: EventoStreamChat = JSON.parse(json);
+          onEvento(evento);
+        } catch {
+          // Ignorar
+        }
+      }
+    } finally {
+      reader.releaseLock();
+    }
+  },
   historial: (sesionId: string) =>
     request<MensajeIA[]>(`/ai/session/${sesionId}/history`),
   cerrar: (sesionId: string) =>

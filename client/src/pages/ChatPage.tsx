@@ -1,7 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
-import { aiApi, type RespuestaMensajeIA } from '../lib/api';
+import { aiApi, type EventoStreamChat } from '../lib/api';
 import { Send, Sparkles, Bot, User } from 'lucide-react';
 
 interface Mensaje {
@@ -19,7 +18,9 @@ export default function ChatPage() {
   const [input, setInput] = useState('');
   const [sugerencias, setSugerencias] = useState<string[]>([]);
   const [iniciando, setIniciando] = useState(false);
+  const [enviando, setEnviando] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   // Auto-scroll
   useEffect(() => {
@@ -40,26 +41,63 @@ export default function ChatPage() {
     }
   };
 
-  // Enviar mensaje
-  const enviarMut = useMutation({
-    mutationFn: (mensaje: string) => aiApi.enviarMensaje(sesionId!, mensaje),
-    onSuccess: (data: RespuestaMensajeIA) => {
-      setMensajes((prev) => [...prev, { rol: 'asistente', contenido: data.respuesta }]);
-      setSugerencias(data.sugerencias || []);
-    },
-    onError: () => {
-      setMensajes((prev) => [...prev, { rol: 'asistente', contenido: 'Error al procesar tu mensaje. Intenta de nuevo.' }]);
-    },
-  });
-
-  const handleEnviar = () => {
+  // Enviar mensaje con streaming
+  const handleEnviar = useCallback(() => {
     const msg = input.trim();
-    if (!msg || !sesionId || enviarMut.isPending) return;
+    if (!msg || !sesionId || enviando) return;
+
     setMensajes((prev) => [...prev, { rol: 'usuario', contenido: msg }]);
     setInput('');
     setSugerencias([]);
-    enviarMut.mutate(msg);
-  };
+    setEnviando(true);
+
+    // Añadir mensaje vacío del asistente que se irá llenando
+    setMensajes((prev) => [...prev, { rol: 'asistente', contenido: '' }]);
+
+    const abortController = new AbortController();
+    abortRef.current = abortController;
+
+    aiApi.enviarMensajeStream(
+      sesionId,
+      msg,
+      (evento: EventoStreamChat) => {
+        if (evento.tipo === 'texto' && evento.contenido) {
+          setMensajes((prev) => {
+            const copia = [...prev];
+            const ultimo = copia[copia.length - 1];
+            if (ultimo && ultimo.rol === 'asistente') {
+              copia[copia.length - 1] = { ...ultimo, contenido: ultimo.contenido + evento.contenido };
+            }
+            return copia;
+          });
+        } else if (evento.tipo === 'reemplazo' && evento.contenido) {
+          // La salida fue filtrada por seguridad, reemplazar todo el contenido
+          setMensajes((prev) => {
+            const copia = [...prev];
+            const ultimo = copia[copia.length - 1];
+            if (ultimo && ultimo.rol === 'asistente') {
+              copia[copia.length - 1] = { ...ultimo, contenido: evento.contenido! };
+            }
+            return copia;
+          });
+        } else if (evento.tipo === 'fin') {
+          setSugerencias(evento.sugerencias || []);
+          setEnviando(false);
+        }
+      },
+      abortController.signal,
+    ).catch(() => {
+      setMensajes((prev) => {
+        const copia = [...prev];
+        const ultimo = copia[copia.length - 1];
+        if (ultimo && ultimo.rol === 'asistente' && ultimo.contenido === '') {
+          copia[copia.length - 1] = { ...ultimo, contenido: 'Error al procesar tu mensaje. Intenta de nuevo.' };
+        }
+        return copia;
+      });
+      setEnviando(false);
+    });
+  }, [input, sesionId, enviando]);
 
   // Si no hay sesión, mostrar selector
   if (!sesionId) {
@@ -116,7 +154,7 @@ export default function ChatPage() {
           </div>
         ))}
 
-        {enviarMut.isPending && (
+        {enviando && (
           <div className="flex gap-3">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#3498DB] to-[#9B59B6] flex items-center justify-center flex-shrink-0">
               <Bot size={16} />
@@ -160,7 +198,7 @@ export default function ChatPage() {
         />
         <button
           onClick={handleEnviar}
-          disabled={!input.trim() || enviarMut.isPending}
+          disabled={!input.trim() || enviando}
           className="px-4 rounded-xl bg-[#3498DB] hover:bg-[#2980B9] text-white disabled:opacity-30 transition-colors"
         >
           <Send size={18} />

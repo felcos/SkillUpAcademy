@@ -13,6 +13,9 @@ public interface IServicioChatIA
     /// <summary>Envía un mensaje y recibe la respuesta de Aria.</summary>
     Task<RespuestaMensajeIADto> EnviarMensajeAsync(Guid sesionId, PeticionMensajeIA peticion, Guid usuarioId);
 
+    /// <summary>Envía un mensaje y recibe la respuesta como stream SSE (Server-Sent Events).</summary>
+    IAsyncEnumerable<string> EnviarMensajeStreamAsync(Guid sesionId, PeticionMensajeIA peticion, Guid usuarioId);
+
     /// <summary>Obtiene el historial de mensajes de una sesión.</summary>
     Task<IReadOnlyList<MensajeIADto>> ObtenerHistorialAsync(Guid sesionId, Guid usuarioId);
 

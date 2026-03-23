@@ -1,4 +1,5 @@
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
@@ -274,6 +275,260 @@ public class ServicioChatIA : IServicioChatIA
 
         _logger.LogInformation("Sesión de chat IA {SesionId} cerrada por usuario {UsuarioId}",
             sesionId, usuarioId);
+    }
+
+    /// <inheritdoc />
+    public async IAsyncEnumerable<string> EnviarMensajeStreamAsync(
+        Guid sesionId, PeticionMensajeIA peticion, Guid usuarioId)
+    {
+        CancellationToken cancellationToken = CancellationToken.None;
+        SesionChatIA? sesion = await _repositorio.ObtenerSesionConMensajesAsync(sesionId);
+        if (sesion == null)
+            throw new ExcepcionNoEncontrado("SesionChatIA", sesionId);
+
+        if (sesion.UsuarioId != usuarioId)
+            throw new ExcepcionNoAutorizado("No tienes acceso a esta sesión de chat.");
+
+        if (!sesion.Activa)
+            throw new ExcepcionValidacion("Esta sesión de chat ya fue cerrada.");
+
+        int totalMensajes = await _repositorio.ContarMensajesEnSesionAsync(sesionId);
+        if (totalMensajes >= MaxMensajesPorSesion)
+            throw new ExcepcionValidacion($"Se alcanzó el límite de {MaxMensajesPorSesion} mensajes por sesión. Inicia una nueva sesión.");
+
+        bool estaBloqueado = await _seguridadIA.UsuarioBloqueadoAsync(usuarioId);
+        if (estaBloqueado)
+            throw new ExcepcionValidacion("Tu cuenta ha sido temporalmente restringida por uso indebido del chat. Contacta soporte si crees que es un error.");
+
+        ResultadoValidacionIA validacionEntrada = await _seguridadIA.ValidarEntradaAsync(peticion.Mensaje, usuarioId, sesionId);
+        if (!validacionEntrada.EsSeguro)
+        {
+            _logger.LogWarning("Mensaje rechazado por seguridad IA: {Razon} - Usuario: {UsuarioId}",
+                validacionEntrada.Razon, usuarioId);
+
+            if (!string.IsNullOrWhiteSpace(validacionEntrada.CategoriaViolacion))
+            {
+                await _seguridadIA.RegistrarStrikeAsync(
+                    usuarioId, sesionId,
+                    validacionEntrada.CategoriaViolacion,
+                    peticion.Mensaje,
+                    "ValidarEntradaAsync");
+            }
+
+            string mensajeRechazo = validacionEntrada.MensajeAlternativo
+                ?? "Lo siento, no puedo procesar ese mensaje. ¿Podrías reformularlo?";
+            yield return $"data: {JsonSerializer.Serialize(new { tipo = "texto", contenido = mensajeRechazo })}\n\n";
+            yield return $"data: {JsonSerializer.Serialize(new { tipo = "fin", fueMarcado = true, tokensUsados = 0, sugerencias = GenerarSugerencias(sesion.TipoSesion, peticion.Mensaje) })}\n\n";
+            yield break;
+        }
+
+        // Guardar mensaje del usuario
+        MensajeChatIA mensajeUsuario = new MensajeChatIA
+        {
+            SesionId = sesionId,
+            Rol = "user",
+            Contenido = peticion.Mensaje,
+            FechaEnvio = DateTime.UtcNow
+        };
+        await _repositorio.AgregarMensajeAsync(mensajeUsuario);
+
+        IReadOnlyList<MensajeChatIA> historial = sesion.Mensajes.ToList();
+
+        // Streaming de la respuesta
+        StringBuilder respuestaCompleta = new StringBuilder();
+        int tokensUsados = 0;
+
+        await foreach (string fragmento in LlamarApiAnthropicStreamAsync(historial, peticion.Mensaje, cancellationToken))
+        {
+            if (fragmento.StartsWith("{\"tokens\":"))
+            {
+                // Evento especial de tokens al final
+                using JsonDocument doc = JsonDocument.Parse(fragmento);
+                tokensUsados = doc.RootElement.GetProperty("tokens").GetInt32();
+                continue;
+            }
+
+            respuestaCompleta.Append(fragmento);
+            yield return $"data: {JsonSerializer.Serialize(new { tipo = "texto", contenido = fragmento })}\n\n";
+        }
+
+        string respuestaTexto = respuestaCompleta.ToString();
+
+        // Validar salida
+        ResultadoValidacionIA validacionSalida = await _seguridadIA.ValidarSalidaAsync(respuestaTexto);
+        bool fueMarcado = !validacionSalida.EsSeguro;
+
+        if (fueMarcado && !string.IsNullOrWhiteSpace(validacionSalida.MensajeAlternativo))
+        {
+            _logger.LogWarning("Respuesta de IA filtrada por seguridad: {Razon}", validacionSalida.Razon);
+            respuestaTexto = validacionSalida.MensajeAlternativo;
+            // Enviar reemplazo completo
+            yield return $"data: {JsonSerializer.Serialize(new { tipo = "reemplazo", contenido = respuestaTexto })}\n\n";
+        }
+
+        // Guardar respuesta del asistente
+        MensajeChatIA mensajeAsistente = new MensajeChatIA
+        {
+            SesionId = sesionId,
+            Rol = "assistant",
+            Contenido = respuestaTexto,
+            TokensUsados = tokensUsados,
+            FechaEnvio = DateTime.UtcNow
+        };
+        await _repositorio.AgregarMensajeAsync(mensajeAsistente);
+
+        sesion.ContadorMensajes += 2;
+        await _repositorio.ActualizarSesionAsync(sesion);
+
+        List<string> sugerencias = GenerarSugerencias(sesion.TipoSesion, peticion.Mensaje);
+
+        yield return $"data: {JsonSerializer.Serialize(new { tipo = "fin", fueMarcado, tokensUsados, sugerencias })}\n\n";
+    }
+
+    private async IAsyncEnumerable<string> LlamarApiAnthropicStreamAsync(
+        IReadOnlyList<MensajeChatIA> historial, string mensajeNuevo,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        string? apiKey = _configuracion["Anthropic:ApiKey"];
+        if (string.IsNullOrWhiteSpace(apiKey))
+        {
+            _logger.LogWarning("API key de Anthropic no configurada. Usando respuesta de fallback (stream).");
+            string fallback = GenerarRespuestaFallback(mensajeNuevo);
+            yield return fallback;
+            yield return "{\"tokens\":0}";
+            yield break;
+        }
+
+        string modelo = _configuracion["Anthropic:ModeloChat"] ?? "claude-sonnet-4-20250514";
+        int maxTokens = int.TryParse(_configuracion["Anthropic:MaxTokens"], out int mt) ? mt : 1000;
+        double temperatura = double.TryParse(_configuracion["Anthropic:Temperatura"], out double t) ? t : 0.7;
+
+        string promptSistema = historial
+            .FirstOrDefault(m => m.Rol == "system")?.Contenido ?? PromptSistemaAria;
+
+        List<object> mensajesApi = new List<object>();
+        foreach (MensajeChatIA mensaje in historial.Where(m => m.Rol != "system"))
+        {
+            mensajesApi.Add(new { role = mensaje.Rol, content = mensaje.Contenido });
+        }
+        mensajesApi.Add(new { role = "user", content = mensajeNuevo });
+
+        object payload = new
+        {
+            model = modelo,
+            max_tokens = maxTokens,
+            temperature = temperatura,
+            system = promptSistema,
+            messages = mensajesApi,
+            stream = true
+        };
+
+        string jsonPayload = JsonSerializer.Serialize(payload);
+
+        HttpRequestMessage solicitud = new HttpRequestMessage(HttpMethod.Post, UrlApiAnthropic)
+        {
+            Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json")
+        };
+
+        HttpResponseMessage? respuesta = null;
+        bool errorConexion = false;
+
+        try
+        {
+            respuesta = await _httpClient.SendAsync(solicitud, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al conectar con la API de Anthropic (stream)");
+            errorConexion = true;
+        }
+
+        if (errorConexion)
+        {
+            yield return GenerarRespuestaFallback(mensajeNuevo);
+            yield return "{\"tokens\":0}";
+            yield break;
+        }
+
+        if (!respuesta!.IsSuccessStatusCode)
+        {
+            string cuerpoError = await respuesta.Content.ReadAsStringAsync(cancellationToken);
+            _logger.LogError("Error de la API de Anthropic (stream): {StatusCode} - {Body}",
+                respuesta.StatusCode, cuerpoError);
+            yield return GenerarRespuestaFallback(mensajeNuevo);
+            yield return "{\"tokens\":0}";
+            yield break;
+        }
+
+        using Stream stream = await respuesta.Content.ReadAsStreamAsync(cancellationToken);
+        using StreamReader lector = new StreamReader(stream);
+
+        int tokensTotal = 0;
+
+        while (!lector.EndOfStream)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            string? linea = await lector.ReadLineAsync(cancellationToken);
+            if (string.IsNullOrWhiteSpace(linea) || !linea.StartsWith("data: "))
+                continue;
+
+            string datos = linea.Substring(6);
+            if (datos == "[DONE]")
+                break;
+
+            string? textoExtraido = ProcesarEventoStream(datos, ref tokensTotal);
+            if (textoExtraido != null)
+            {
+                yield return textoExtraido;
+            }
+        }
+
+        yield return $"{{\"tokens\":{tokensTotal}}}";
+    }
+
+    /// <summary>
+    /// Procesa un evento SSE de la API de Anthropic y extrae texto si es un content_block_delta.
+    /// </summary>
+    private string? ProcesarEventoStream(string datosJson, ref int tokensTotal)
+    {
+        try
+        {
+            using JsonDocument doc = JsonDocument.Parse(datosJson);
+            JsonElement raiz = doc.RootElement;
+            string tipo = raiz.GetProperty("type").GetString() ?? "";
+
+            if (tipo == "content_block_delta")
+            {
+                JsonElement delta = raiz.GetProperty("delta");
+                string? texto = delta.GetProperty("text").GetString();
+                return string.IsNullOrEmpty(texto) ? null : texto;
+            }
+
+            if (tipo == "message_delta")
+            {
+                if (raiz.TryGetProperty("usage", out JsonElement usage))
+                {
+                    tokensTotal += usage.GetProperty("output_tokens").GetInt32();
+                }
+            }
+            else if (tipo == "message_start")
+            {
+                if (raiz.TryGetProperty("message", out JsonElement mensaje))
+                {
+                    if (mensaje.TryGetProperty("usage", out JsonElement usageInicio))
+                    {
+                        tokensTotal += usageInicio.GetProperty("input_tokens").GetInt32();
+                    }
+                }
+            }
+        }
+        catch (JsonException)
+        {
+            // Ignorar líneas que no sean JSON válido
+        }
+
+        return null;
     }
 
     private async Task<(string Respuesta, int TokensUsados)> LlamarApiAnthropicAsync(

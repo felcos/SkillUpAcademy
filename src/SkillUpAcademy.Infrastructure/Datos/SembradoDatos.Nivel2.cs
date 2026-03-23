@@ -311,6 +311,86 @@ public static partial class SembradoDatos
 
         await contexto.SaveChangesAsync();
 
+        // ===== ESCENAS TEÓRICAS NIVEL 2 =====
+
+        // Escenas Comunicación N2
+        await SembrarEscenasTeoricasAsync(contexto, comN2L1.Id, "comunicación no verbal",
+            "El lenguaje silencioso del cuerpo",
+            "Hoy llevaremos la comunicación al siguiente nivel: aprenderás a leer y controlar los mensajes que envías sin decir una palabra.",
+            "Postura de poder, microexpresiones, proxémica y contacto visual son las herramientas que dominarás para comunicar con todo tu cuerpo.",
+            "Esta semana, observa tu postura en las reuniones. Mantén las manos visibles y el contacto visual al 60-70%.");
+
+        await SembrarEscenasTeoricasAsync(contexto, comN2L2.Id, "feedback constructivo",
+            "El modelo SBI en acción",
+            "Dar feedback es un arte que transforma equipos. Hoy aprenderás una fórmula probada para que tu retroalimentación impulse el crecimiento.",
+            "Situación, Comportamiento e Impacto: el modelo SBI estructura tu feedback. Recuerda el ratio 5:1 de Losada para mantener relaciones productivas.",
+            "Practica el modelo SBI esta semana: describe la situación, señala el comportamiento y explica el impacto concreto.");
+
+        // Escenas Liderazgo N2
+        await SembrarEscenasTeoricasAsync(contexto, lidN2L1.Id, "liderazgo situacional",
+            "Adapta tu estilo de liderazgo",
+            "No existe un estilo de liderazgo perfecto. Hoy descubrirás por qué los mejores líderes cambian de enfoque según la persona y el contexto.",
+            "Hersey y Blanchard definieron 4 estilos: Dirigir, Entrenar, Apoyar y Delegar. La clave es diagnosticar la madurez del colaborador y adaptar tu estilo.",
+            "Identifica a alguien de tu equipo y piensa qué estilo necesita hoy. ¿Dirigir, entrenar, apoyar o delegar?");
+
+        await SembrarEscenasTeoricasAsync(contexto, lidN2L2.Id, "gestión de conflictos",
+            "El conflicto como motor de mejores decisiones",
+            "Los equipos que evitan el conflicto toman peores decisiones. Hoy aprenderás a transformar fricciones en resultados productivos.",
+            "Thomas-Kilmann identifica 5 estilos: Competir, Colaborar, Comprometer, Evitar y Acomodar. El framework DESC te da estructura para conversaciones difíciles.",
+            "La próxima vez que surja un desacuerdo, usa el framework DESC: Describe, Expresa, Sugiere y plantea Consecuencias positivas.");
+
+        // Escenas Trabajo en Equipo N2
+        await SembrarEscenasTeoricasAsync(contexto, teqN2L1.Id, "dinámicas de equipo de alto rendimiento",
+            "De grupo de trabajo a equipo imparable",
+            "¿Qué separa a un equipo promedio de uno extraordinario? Hoy exploraremos los modelos que explican por qué algunos equipos brillan.",
+            "El modelo de Tuckman describe 4 fases: Forming, Storming, Norming y Performing. La seguridad psicológica, según Google, es el factor número uno.",
+            "Evalúa en qué fase está tu equipo según Tuckman y piensa qué acción concreta lo llevaría a la siguiente fase.");
+
+        await SembrarEscenasTeoricasAsync(contexto, teqN2L2.Id, "colaboración remota",
+            "Equipos distribuidos que funcionan",
+            "El trabajo remoto no es solo estar en casa con una laptop. Hoy aprenderás prácticas deliberadas para mantener al equipo conectado y productivo.",
+            "Comunicación asíncrona primero, rituales de conexión y documentación como cultura. Las herramientas no arreglan mala comunicación: primero los hábitos.",
+            "Implementa un ritual de conexión semanal con tu equipo: un café virtual sin agenda de trabajo donde simplemente conversen.");
+
+        // Escenas Inteligencia Emocional N2
+        await SembrarEscenasTeoricasAsync(contexto, ieN2L1.Id, "regulación emocional bajo presión",
+            "Recupera el control en segundos",
+            "Cuando tu amígdala se activa, pierdes la capacidad de pensar con claridad. Hoy aprenderás técnicas para recuperar el control en situaciones de alta presión.",
+            "Respiración 4-7-8, etiquetado emocional, distanciamiento temporal y reevaluación cognitiva. Conoce tu ventana de tolerancia para funcionar en tu rango óptimo.",
+            "Practica la respiración 4-7-8 antes de tu próxima reunión difícil: inhala 4 segundos, retén 7 y exhala 8.");
+
+        await SembrarEscenasTeoricasAsync(contexto, ieN2L2.Id, "empatía avanzada",
+            "Desarrolla tu radar emocional",
+            "La empatía no es solo sentir lo que otros sienten, es percibir lo que no dicen. Hoy afinarás tu capacidad de leer emociones en los demás.",
+            "Empatía cognitiva y emocional, cambios de energía, el tono detrás del texto y las incongruencias. Valida antes de resolver: pregunta qué necesita el otro.",
+            "Esta semana, antes de ofrecer soluciones, pregunta: ¿quieres que hablemos o prefieres que busquemos una solución?");
+
+        // Escenas Networking N2
+        await SembrarEscenasTeoricasAsync(contexto, netN2L1.Id, "networking estratégico",
+            "Calidad sobre cantidad en tu red profesional",
+            "¿Cuántos de tus contactos te responderían en 24 horas? Hoy aprenderás a construir una red intencional que genere oportunidades reales.",
+            "Círculo interno, extendido y red latente. Los vínculos débiles de Granovetter generan más oportunidades. Aplica la regla 5-1: ofrece valor cinco veces antes de pedir.",
+            "Envía un mensaje de valor a alguien de tu red esta semana: comparte un artículo, haz una recomendación o conecta a dos personas.");
+
+        await SembrarEscenasTeoricasAsync(contexto, netN2L2.Id, "conversación profesional",
+            "Domina el arte de conectar en eventos",
+            "Iniciar una conversación con un desconocido puede ser intimidante, pero con las técnicas correctas se vuelve natural.",
+            "Técnicas de apertura contextual, el método FORD para mantener conversaciones y cierres elegantes que proponen un siguiente paso concreto.",
+            "En tu próximo evento profesional, usa una pregunta contextual para abrir conversación y cierra proponiendo conectar en LinkedIn.");
+
+        // Escenas Persuasión N2
+        await SembrarEscenasTeoricasAsync(contexto, perN2L1.Id, "principios de influencia de Cialdini",
+            "Los 6 botones psicológicos del sí",
+            "Robert Cialdini descubrió seis principios que activan respuestas automáticas de aceptación. Hoy los dominarás para usarlos con ética.",
+            "Reciprocidad, compromiso, prueba social, autoridad, simpatía y escasez. La clave es usarlos para beneficio mutuo, no para manipular.",
+            "Esta semana, aplica la reciprocidad: ofrece algo de valor a un colega antes de pedirle ayuda con tu proyecto.");
+
+        await SembrarEscenasTeoricasAsync(contexto, perN2L2.Id, "storytelling persuasivo",
+            "Vende ideas con el poder de las historias",
+            "Los datos convencen, pero las historias mueven. Hoy aprenderás a estructurar narrativas que conecten emocionalmente y muevan a la acción.",
+            "Contexto, desafío, momento de cambio, resolución y lección aplicable. Recuerda la regla de 1: una historia, un dato, un héroe, un mensaje.",
+            "Prepara una historia de tu experiencia profesional usando la estructura del héroe corporativo y úsala en tu próxima presentación.");
+
         // ===== QUIZZES NIVEL 2 =====
         await SembrarQuizzesNivel2Async(contexto);
 

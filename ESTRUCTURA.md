@@ -66,7 +66,7 @@ client/ → React + TypeScript + Vite + Tailwind
 | QuizController | api/v1/lessons/{id}/quiz | /, /answer, /submit | Si |
 | ScenarioController | api/v1/lessons/{id}/scenario | /, /choose | Si |
 | ProgressController | api/v1/progress | /dashboard, /skill/{slug}, /achievements | Si |
-| AiChatController | api/v1/ai | session/start, session/{id}/message, history, end | Si |
+| AiChatController | api/v1/ai | session/start, session/{id}/message, session/{id}/message/stream (SSE), history, end | Si |
 
 ## Frontend — client/src/
 ```
@@ -100,10 +100,10 @@ client/src/
 ## Tests
 | Proyecto | Archivos | Tests | Framework |
 |----------|----------|-------|-----------|
-| UnitTests | 4 archivos | 43 | xUnit + FluentAssertions + Moq |
-| IntegrationTests | 6 archivos | 23 | xUnit + WebApplicationFactory + InMemory |
+| UnitTests | 4 archivos | 48 | xUnit + FluentAssertions + Moq |
+| IntegrationTests | 6 archivos | 25 | xUnit + WebApplicationFactory + InMemory |
 | Frontend | 3 archivos | 21 | Vitest + Testing Library + jsdom |
-| **Total** | **13** | **87** | |
+| **Total** | **13** | **94** | |
 
 ## Features
 - ✅ Estructura Clean Architecture
@@ -117,11 +117,12 @@ client/src/
 - ✅ TTS (Web Speech API)
 - ✅ Frontend React (13 paginas, 6 componentes, 4 hooks)
 - ✅ Contenido educativo (90 lecciones, 18 quizzes, 18 escenarios)
-- ✅ Testing (87 tests: 43 unit + 23 integration + 21 frontend)
+- ✅ Testing (94 tests: 48 unit + 25 integration + 21 frontend)
 - ✅ CI/CD (GitHub Actions)
 - ✅ Docker (multi-stage + docker-compose)
 - ✅ SPA serving desde .NET
 - ✅ Logging (Serilog)
-- 📋 SSE streaming en chat
+- ✅ SSE streaming en chat (IAsyncEnumerable + text/event-stream)
+- ✅ Escenas visuales completas (180 escenas: 60 por nivel)
 - 📋 Configuracion produccion (HTTPS, secrets)
 - 📋 Admin dashboard
