@@ -1,9 +1,17 @@
 # ============================================================
-# Dockerfile para SkillUp Academy API
-# Multi-stage build: restaurar → compilar → publicar → runtime
+# Dockerfile para SkillUp Academy
+# Multi-stage: frontend (Node) → backend (dotnet) → runtime
 # ============================================================
 
-# Stage 1: Restaurar dependencias
+# Stage 0: Compilar frontend React
+FROM node:20-alpine AS frontend
+WORKDIR /app/client
+COPY client/package.json client/package-lock.json ./
+RUN npm ci
+COPY client/ .
+RUN npx vite build
+
+# Stage 1: Restaurar dependencias .NET
 FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS restore
 WORKDIR /src
 
@@ -38,6 +46,9 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Copiar la aplicación publicada
 COPY --from=build /app/publish .
+
+# Copiar el frontend compilado a wwwroot para servir como SPA
+COPY --from=frontend /app/client/dist ./wwwroot/
 
 # Variables de entorno por defecto
 ENV ASPNETCORE_URLS=http://+:8080

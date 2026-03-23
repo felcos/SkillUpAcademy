@@ -18,6 +18,7 @@ namespace SkillUpAcademy.Infrastructure.Servicios;
 public class ServicioChatIA : IServicioChatIA
 {
     private readonly IRepositorioChatIA _repositorio;
+    private readonly IServicioSeguridadIA _seguridadIA;
     private readonly IConfiguration _configuracion;
     private readonly ILogger<ServicioChatIA> _logger;
     private readonly HttpClient _httpClient;
@@ -46,11 +47,13 @@ public class ServicioChatIA : IServicioChatIA
     /// </summary>
     public ServicioChatIA(
         IRepositorioChatIA repositorio,
+        IServicioSeguridadIA seguridadIA,
         IConfiguration configuracion,
         ILogger<ServicioChatIA> logger,
         HttpClient httpClient)
     {
         _repositorio = repositorio;
+        _seguridadIA = seguridadIA;
         _configuracion = configuracion;
         _logger = logger;
         _httpClient = httpClient;
@@ -140,6 +143,39 @@ public class ServicioChatIA : IServicioChatIA
             throw new ExcepcionValidacion($"Se alcanzó el límite de {MaxMensajesPorSesion} mensajes por sesión. Inicia una nueva sesión.");
         }
 
+        // Verificar si el usuario está bloqueado por abuso
+        bool estaBloqueado = await _seguridadIA.UsuarioBloqueadoAsync(usuarioId);
+        if (estaBloqueado)
+        {
+            throw new ExcepcionValidacion("Tu cuenta ha sido temporalmente restringida por uso indebido del chat. Contacta soporte si crees que es un error.");
+        }
+
+        // Validar entrada del usuario (5 capas de seguridad)
+        ResultadoValidacionIA validacionEntrada = await _seguridadIA.ValidarEntradaAsync(peticion.Mensaje, usuarioId, sesionId);
+        if (!validacionEntrada.EsSeguro)
+        {
+            _logger.LogWarning("Mensaje rechazado por seguridad IA: {Razon} - Usuario: {UsuarioId}",
+                validacionEntrada.Razon, usuarioId);
+
+            if (!string.IsNullOrWhiteSpace(validacionEntrada.CategoriaViolacion))
+            {
+                await _seguridadIA.RegistrarStrikeAsync(
+                    usuarioId, sesionId,
+                    validacionEntrada.CategoriaViolacion,
+                    peticion.Mensaje,
+                    "ValidarEntradaAsync");
+            }
+
+            return new RespuestaMensajeIADto
+            {
+                Respuesta = validacionEntrada.MensajeAlternativo
+                    ?? "Lo siento, no puedo procesar ese mensaje. ¿Podrías reformularlo?",
+                FueMarcado = true,
+                TokensUsados = 0,
+                Sugerencias = GenerarSugerencias(sesion.TipoSesion, peticion.Mensaje)
+            };
+        }
+
         // Guardar mensaje del usuario
         MensajeChatIA mensajeUsuario = new MensajeChatIA
         {
@@ -155,6 +191,14 @@ public class ServicioChatIA : IServicioChatIA
 
         // Llamar a la API de Anthropic
         (string respuestaTexto, int tokensUsados) = await LlamarApiAnthropicAsync(historial, peticion.Mensaje);
+
+        // Validar salida de la IA (filtro de datos personales, truncado)
+        ResultadoValidacionIA validacionSalida = await _seguridadIA.ValidarSalidaAsync(respuestaTexto);
+        if (!validacionSalida.EsSeguro && !string.IsNullOrWhiteSpace(validacionSalida.MensajeAlternativo))
+        {
+            _logger.LogWarning("Respuesta de IA filtrada por seguridad: {Razon}", validacionSalida.Razon);
+            respuestaTexto = validacionSalida.MensajeAlternativo;
+        }
 
         // Guardar respuesta del asistente
         MensajeChatIA mensajeAsistente = new MensajeChatIA
@@ -177,6 +221,7 @@ public class ServicioChatIA : IServicioChatIA
         return new RespuestaMensajeIADto
         {
             Respuesta = respuestaTexto,
+            FueMarcado = !validacionSalida.EsSeguro,
             TokensUsados = tokensUsados,
             Sugerencias = sugerencias
         };

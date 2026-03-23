@@ -107,7 +107,18 @@ try
     app.UseCors("PermitirFrontend");
     app.UseAuthentication();
     app.UseAuthorization();
+
+    // Servir archivos estáticos del SPA (wwwroot)
+    app.UseStaticFiles();
+
     app.MapControllers();
+
+    // Fallback: en producción, cualquier ruta que no sea /api/* devuelve index.html
+    // para que el router del SPA (React Router) maneje la navegación client-side
+    if (!app.Environment.IsDevelopment())
+    {
+        app.MapFallbackToFile("index.html");
+    }
 
     Log.Information("SkillUp Academy iniciado correctamente");
     app.Run();
