@@ -35,6 +35,9 @@ function crearUsuarioMock(overrides = {}) {
     idiomaPreferido: 'es',
     roles: [] as string[],
     esAdmin: false,
+    vozPreferida: null,
+    velocidadVoz: 1.0,
+    proveedorTtsPreferido: 'WebSpeechApi',
     ...overrides,
   };
 }
