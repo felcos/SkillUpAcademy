@@ -148,12 +148,16 @@ try
 
     WebApplication app = builder.Build();
 
-    // Aplicar migraciones y sembrar datos en desarrollo
-    if (app.Environment.IsDevelopment())
+    // Sembrar datos (en todos los entornos; migraciones solo en desarrollo)
     {
         using IServiceScope scope = app.Services.CreateScope();
         AppDbContext contexto = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        await contexto.Database.MigrateAsync();
+
+        if (app.Environment.IsDevelopment())
+        {
+            await contexto.Database.MigrateAsync();
+        }
+
         await SembradoDatos.SembrarAsync(contexto);
         await SembradoProveedoresTts.SembrarAsync(contexto);
 
