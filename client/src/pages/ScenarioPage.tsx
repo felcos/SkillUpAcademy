@@ -80,7 +80,7 @@ export default function ScenarioPage() {
             {escenario.opciones.map((opcion) => (
               <button
                 key={opcion.id}
-                onClick={() => elegirMut.mutate(opcion.id, { onSuccess: (data) => setResultado(data) })}
+                onClick={() => elegirMut.mutate({ escenarioId: escenario.id, opcionId: opcion.id }, { onSuccess: (data) => setResultado(data) })}
                 disabled={elegirMut.isPending}
                 className="w-full text-left p-5 rounded-xl bg-[#25254A] border border-white/5 hover:border-[#3498DB]/40 hover:bg-[#3498DB]/5 transition-all disabled:opacity-50"
               >

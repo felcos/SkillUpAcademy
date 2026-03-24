@@ -64,16 +64,12 @@ public static partial class SembradoDatos
         await contexto.SaveChangesAsync();
 
         // Escenas teóricas Nivel 1
-        await SembrarEscenasTeoricasAsync(contexto, l1.Id, "negociación por principios",
-            "El Método Harvard en acción",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l1,
             "Hoy aprenderás el framework de negociación más importante del mundo. Después de esta lección, nunca volverás a negociar igual.",
-            "Cuatro principios: separa persona del problema, enfócate en intereses, genera opciones de beneficio mutuo y usa criterios objetivos. Tu BATNA es tu mayor fuente de poder.",
             "Antes de tu próxima negociación, identifica tu BATNA y calcula la ZOPA. Con esos dos datos, entrarás con una ventaja enorme.");
 
-        await SembrarEscenasTeoricasAsync(contexto, l2.Id, "tipos de negociación",
-            "Posicional vs. Integrativa",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l2,
             "¿Negociar es un juego de suma cero o se puede expandir la tarta? Hoy descubrirás que la respuesta depende del contexto y que elegir mal tu estrategia tiene consecuencias graves.",
-            "La negociación posicional reparte lo que hay; la integrativa crea más valor. Usa posicional en transacciones únicas e integrativa cuando la relación importa.",
             "La próxima vez que negocies, pregúntate: ¿quiero ganar esta batalla o construir una relación? La respuesta te dirá qué estrategia usar.");
 
         // Quiz y escenario Nivel 1
@@ -133,16 +129,12 @@ public static partial class SembradoDatos
         await contexto.SaveChangesAsync();
 
         // Escenas teóricas Nivel 2
-        await SembrarEscenasTeoricasAsync(contexto, n2l1.Id, "anclaje y contraanclaje",
-            "El primer número define el juego",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n2l1,
             "Hoy dominarás la técnica más estudiada de la negociación: el anclaje. Tversky y Kahneman demostraron que el primer número influye en todo lo que viene después.",
-            "Ancla precisa con justificación, contraancla con datos, descompón cifras infladas y usa la pausa estratégica de 5-7 segundos como tu arma secreta.",
             "En tu próxima negociación, prepara un ancla precisa con una justificación sólida antes de sentarte a la mesa.");
 
-        await SembrarEscenasTeoricasAsync(contexto, n2l2.Id, "negociación salarial",
-            "Tu carrera vale medio millón más",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n2l2,
             "No negociar tu salario te puede costar más de 500.000 euros a lo largo de tu carrera. Hoy aprenderás un framework de 5 pasos para no dejar dinero sobre la mesa.",
-            "Investiga en 3 fuentes, define tu paquete completo, deja que revelen su rango, presenta datos y gestiona el silencio. El espejo y el etiquetado de Chris Voss son técnicas avanzadas para abrir puertas.",
             "Antes de tu próxima revisión salarial, investiga tu valor de mercado en Glassdoor, LinkedIn Salary y al menos un informe sectorial.");
 
         // ===== NIVEL 3 — Dominio (NivelId=30) =====
@@ -198,16 +190,12 @@ public static partial class SembradoDatos
         await contexto.SaveChangesAsync();
 
         // Escenas teóricas Nivel 3
-        await SembrarEscenasTeoricasAsync(contexto, n3l1.Id, "negociación multicultural",
-            "El mapa cultural de Erin Meyer",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n3l1,
             "Lo que funciona en Madrid puede fracasar en Tokio. Hoy exploraremos las dimensiones culturales que determinan el éxito en negociaciones internacionales.",
-            "Comunicación de alto o bajo contexto, confianza por tareas o por relaciones, confrontación directa o indirecta, y decisiones top-down o por consenso. Cada cultura tiene sus reglas.",
             "Antes de tu próxima negociación internacional, consulta The Culture Map de Erin Meyer y adapta tu estilo a las dimensiones clave de esa cultura.");
 
-        await SembrarEscenasTeoricasAsync(contexto, n3l2.Id, "negociación de alto stake",
-            "Cuando hay millones sobre la mesa",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n3l2,
             "En operaciones de M&A y contratos millonarios, la preparación es el 80% del éxito. Hoy aprenderás las herramientas que usan los negociadores de élite.",
-            "Preparación exhaustiva, negociación por paquetes, MESOs para revelar prioridades, la regla del balcón para gestionar presión y cláusulas de protección como earn-out y MAC.",
             "En tu próxima negociación compleja, prepara 3 paquetes de oferta equivalentes en valor pero distintos en estructura. Las prioridades del otro se revelarán solas.");
     }
 

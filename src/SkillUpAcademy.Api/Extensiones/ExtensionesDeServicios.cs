@@ -35,6 +35,7 @@ public static class ExtensionesDeServicios
 
         // Servicios admin especializados
         servicios.AddScoped<IServicioAdminTts, ServicioAdminTts>();
+        servicios.AddScoped<IServicioAdminIA, ServicioAdminIA>();
 
         // Servicios con HttpClient
         servicios.AddHttpClient<IServicioChatIA, ServicioChatIA>();

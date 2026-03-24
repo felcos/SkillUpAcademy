@@ -63,16 +63,12 @@ public static partial class SembradoDatos
         contexto.Set<Leccion>().AddRange(l1, l2, l3, l4, l5);
         await contexto.SaveChangesAsync();
 
-        await SembrarEscenasTeoricasAsync(contexto, l1.Id, "estructura de presentaciones",
-            "Apertura, cuerpo y cierre",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l1,
             "Hoy aprenderás la estructura de tres actos que usan los mejores presentadores. No importa el tema: esta fórmula funciona siempre.",
-            "La regla de 3 puntos, el gancho de 30 segundos y el cierre planificado. Estos son los pilares de una presentación que la audiencia recordará.",
             "Para tu próxima presentación, empieza por el gancho. Escribe las primeras 3 frases palabra por palabra y practícalas en voz alta.");
 
-        await SembrarEscenasTeoricasAsync(contexto, l2.Id, "superar el miedo escénico",
-            "Técnicas basadas en ciencia",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l2,
             "El miedo a hablar en público es biológico, no un defecto de carácter. Hoy vas a aprender a reprogramar esa respuesta con ciencia.",
-            "Power Posing, respiración 4-7-8, reencuadre de ansiedad, visualización y la regla de los 3 primeros minutos. Cinco herramientas probadas.",
             "Antes de tu próxima presentación, haz la pose de superhéroe durante 2 minutos y di en voz alta: estoy emocionado. Notarás la diferencia.");
 
         await SembrarQuizPresentacionesPublicoAsync(contexto, l3.Id);
@@ -130,16 +126,12 @@ public static partial class SembradoDatos
         contexto.Set<Leccion>().AddRange(l2n1, l2n2, l2n3, l2n4, l2n5);
         await contexto.SaveChangesAsync();
 
-        await SembrarEscenasTeoricasAsync(contexto, l2n1.Id, "storytelling profesional",
-            "Framework STAR y Viaje del Héroe",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l2n1,
             "Los datos informan pero las historias transforman. Hoy dominarás dos frameworks narrativos que usan los mejores presentadores del mundo.",
-            "STAR para resultados concretos: Situación, Tarea, Acción, Resultado. Viaje del Héroe para visión e inspiración: mundo ordinario, llamada, mentor, pruebas y regreso transformado.",
             "En tu próxima presentación, elige un resultado importante y cuéntalo con STAR. Verás cómo la audiencia conecta mucho más que con una tabla de números.");
 
-        await SembrarEscenasTeoricasAsync(contexto, l2n2.Id, "uso efectivo de visuales",
-            "El principio de Mayer",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l2n2,
             "El 79% de los profesionales considera ineficaces las presentaciones con demasiado texto. Hoy aprenderás la ciencia detrás del diseño visual efectivo.",
-            "Los 5 principios de Mayer: coherencia, señalización, redundancia, contigüidad espacial y temporal. Más la regla 10-20-30 de Kawasaki y el test del estacionamiento.",
             "Revisa tu última presentación y aplica el test del estacionamiento: si una diapositiva no se entiende en 3 segundos desde lejos, simplifica.");
 
         // ===== NIVEL 3 — Dominio (NivelId=33) =====
@@ -194,16 +186,12 @@ public static partial class SembradoDatos
         contexto.Set<Leccion>().AddRange(l3n1, l3n2, l3n3, l3n4, l3n5);
         await contexto.SaveChangesAsync();
 
-        await SembrarEscenasTeoricasAsync(contexto, l3n1.Id, "presentaciones TED-style",
-            "La regla de 18 minutos y la regla de 3",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l3n1,
             "Las charlas TED más vistas siguen patrones muy específicos. Hoy vas a conocer las reglas que usan los mejores speakers del mundo y cómo aplicarlas a tu realidad profesional.",
-            "18 minutos es el límite de atención del cerebro. 3 mensajes principales es lo que la audiencia puede retener. Emoción, novedad y memorabilidad son los tres pilares de Carmine Gallo.",
             "Define tu próxima presentación en una frase de 15 palabras. Si no puedes, simplifica hasta que puedas. Esa es tu idea que merece ser compartida.");
 
-        await SembrarEscenasTeoricasAsync(contexto, l3n2.Id, "improvisación y Q&A",
-            "Manejar lo inesperado con profesionalidad",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l3n2,
             "Las preguntas difíciles son donde realmente se mide un presentador. Hoy aprenderás frameworks para improvisar con estructura y mantener tu credibilidad bajo presión.",
-            "Framework PREP: Punto, Razón, Ejemplo, Punto. Técnica del puente, del embudo, de la honestidad y del espejo. Prepara las 10 preguntas más probables y las 5 más incómodas.",
             "Antes de tu próxima presentación, escribe las 5 preguntas más difíciles que podrían hacerte y prepara respuestas PREP para cada una. El 80% de las preguntas son predecibles.");
     }
 

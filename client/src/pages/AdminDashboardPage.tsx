@@ -39,6 +39,9 @@ export default function AdminDashboardPage() {
           <Link to="/admin/tts" className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-sm text-gray-300 transition-colors">
             <Volume2 size={16} /> Configurar Voz
           </Link>
+          <Link to="/admin/ia" className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-sm text-gray-300 transition-colors">
+            <Brain size={16} /> Proveedores IA
+          </Link>
         </div>
       </div>
 

@@ -238,18 +238,14 @@ public static partial class SembradoDatos
         contexto.Set<Leccion>().AddRange(l1, l2, l3, l4, l5);
         await contexto.SaveChangesAsync();
 
-        // Escenas para lección 1
-        await SembrarEscenasTeoricasAsync(contexto, l1.Id, "comunicación efectiva",
-            "Los pilares de la comunicación efectiva",
+        // Escenas para lección 1 — contenido rico desde Leccion.Contenido
+        await SembrarEscenasDesdeLeccionAsync(contexto, l1,
             "Hoy vamos a descubrir los 4 pilares que hacen que un mensaje sea claro, persuasivo y memorable. Esto cambiará la forma en que te comunicas en el trabajo.",
-            "Claridad, empatía, escucha activa y asertividad. Estos 4 pilares son la base de toda comunicación profesional exitosa.",
             "Usa palabras simples, ponte en los zapatos del otro, escucha de verdad y expresa tus ideas con firmeza pero con respeto.");
 
-        // Escenas para lección 2
-        await SembrarEscenasTeoricasAsync(contexto, l2.Id, "escucha activa",
-            "La habilidad olvidada",
+        // Escenas para lección 2 — contenido rico desde Leccion.Contenido
+        await SembrarEscenasDesdeLeccionAsync(contexto, l2,
             "Solo retenemos un 25% de lo que escuchamos. Hoy vamos a aprender técnicas concretas para ser mejores oyentes.",
-            "Parafraseo, preguntas abiertas, lenguaje corporal y silencio estratégico son las 4 técnicas clave.",
             "Practica el parafraseo esta semana: repite con tus palabras lo que tu interlocutor acaba de decir. Verás cómo cambian las conversaciones.");
 
         // Quiz comunicación
@@ -314,14 +310,12 @@ public static partial class SembradoDatos
         contexto.Set<Leccion>().AddRange(l1, l2, l3, l4, l5);
         await contexto.SaveChangesAsync();
 
-        await SembrarEscenasTeoricasAsync(contexto, l1.Id, "liderazgo", "Jefe vs. Líder",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l1,
             "Hoy vamos a explorar una distinción fundamental: la diferencia entre ser jefe y ser líder.",
-            "Visión, servicio, coherencia y vulnerabilidad. Estas son las 4 características del líder auténtico.",
             "Reflexiona: ¿eres más jefe o más líder? La buena noticia es que el liderazgo se aprende.");
 
-        await SembrarEscenasTeoricasAsync(contexto, l2.Id, "estilos de liderazgo", "Liderazgo situacional",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l2,
             "No existe un único estilo de liderazgo. Los mejores líderes adaptan su enfoque según la persona y la situación.",
-            "Directivo, coaching, participativo y delegativo. Cada estilo tiene su momento ideal.",
             "Esta semana, identifica qué estilo necesita cada persona de tu equipo. Adaptar tu liderazgo es un superpoder.");
 
         await SembrarQuizLiderazgoAsync(contexto, l3.Id);
@@ -383,14 +377,12 @@ public static partial class SembradoDatos
         contexto.Set<Leccion>().AddRange(l1, l2, l3, l4, l5);
         await contexto.SaveChangesAsync();
 
-        await SembrarEscenasTeoricasAsync(contexto, l1.Id, "trabajo en equipo", "Las 5 disfunciones",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l1,
             "Patrick Lencioni identificó 5 disfunciones que destruyen equipos. Vamos a conocerlas para poder superarlas.",
-            "Ausencia de confianza, temor al conflicto, falta de compromiso, evasión de responsabilidad y desatención a resultados.",
             "La confianza es la base. Sin ella, el resto se derrumba. ¿Tu equipo se atreve a ser vulnerable?");
 
-        await SembrarEscenasTeoricasAsync(contexto, l2.Id, "roles de equipo", "El modelo Belbin",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l2,
             "Meredith Belbin descubrió que los equipos exitosos necesitan diversidad de roles. Vamos a identificar el tuyo.",
-            "Hay 9 roles: impulsor, implementador, finalizador, coordinador, cohesionador, investigador, cerebro, monitor y especialista.",
             "No hay roles buenos o malos. Conocer tu rol natural te ayuda a aportar más valor al equipo.");
 
         await SembrarQuizTrabajoEquipoAsync(contexto, l3.Id);
@@ -452,14 +444,12 @@ public static partial class SembradoDatos
         contexto.Set<Leccion>().AddRange(l1, l2, l3, l4, l5);
         await contexto.SaveChangesAsync();
 
-        await SembrarEscenasTeoricasAsync(contexto, l1.Id, "inteligencia emocional", "Las 5 dimensiones de Goleman",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l1,
             "Daniel Goleman demostró que la inteligencia emocional predice más el éxito laboral que el coeficiente intelectual.",
-            "Autoconciencia, autorregulación, motivación, empatía y habilidades sociales son las 5 dimensiones.",
             "Empieza por la autoconciencia. Hoy, cada vez que sientas una emoción fuerte, ponle nombre.");
 
-        await SembrarEscenasTeoricasAsync(contexto, l2.Id, "gestión emocional", "Técnicas prácticas",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l2,
             "Cuando una emoción intensa nos desborda, la amígdala toma el control. Vamos a aprender a recuperarlo.",
-            "Pausa de 6 segundos, etiquetado emocional, reencuadre cognitivo y respiración 4-7-8 son tus herramientas.",
             "Practica la pausa de 6 segundos esta semana. Antes de responder a algo que te enfade, cuenta hasta 6.");
 
         await SembrarQuizInteligenciaEmocionalAsync(contexto, l3.Id);
@@ -521,14 +511,12 @@ public static partial class SembradoDatos
         contexto.Set<Leccion>().AddRange(l1, l2, l3, l4, l5);
         await contexto.SaveChangesAsync();
 
-        await SembrarEscenasTeoricasAsync(contexto, l1.Id, "networking", "Networking estratégico",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l1,
             "Olvídate de repartir tarjetas. El networking real se basa en construir relaciones genuinas dando valor.",
-            "Generosidad primero, calidad sobre cantidad, seguimiento consistente y autenticidad.",
             "Esta semana, ayuda a alguien de tu red profesional sin esperar nada a cambio. Así empieza el networking real.");
 
-        await SembrarEscenasTeoricasAsync(contexto, l2.Id, "elevator pitch", "Preséntate en 30 segundos",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l2,
             "Imagina que compartes ascensor con la persona que puede cambiar tu carrera. ¿Qué le dirías?",
-            "La fórmula PVR: Problema que resuelves, Valor que aportas, Resultado que has logrado.",
             "Escribe tu elevator pitch esta semana usando la fórmula PVR. Practícalo frente al espejo hasta que suene natural.");
 
         await SembrarQuizNetworkingAsync(contexto, l3.Id);
@@ -590,14 +578,12 @@ public static partial class SembradoDatos
         contexto.Set<Leccion>().AddRange(l1, l2, l3, l4, l5);
         await contexto.SaveChangesAsync();
 
-        await SembrarEscenasTeoricasAsync(contexto, l1.Id, "persuasión", "Los 6 principios de Cialdini",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l1,
             "Robert Cialdini identificó los 6 principios universales de persuasión. Estos principios funcionan porque están arraigados en la psicología humana.",
-            "Reciprocidad, compromiso, prueba social, autoridad, simpatía y escasez. Los 6 resortes de la influencia.",
             "Esta semana, usa la reciprocidad: haz un favor a un compañero sin pedir nada a cambio. Observa qué pasa.");
 
-        await SembrarEscenasTeoricasAsync(contexto, l2.Id, "persuasión ética", "Persuadir sin manipular",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l2,
             "Hay una línea clara entre persuadir y manipular. Hoy vamos a aprender a estar siempre del lado correcto.",
-            "Storytelling, preguntas socráticas, escucha activa y presentar alternativas son herramientas éticas de persuasión.",
             "Practica el storytelling: la próxima vez que presentes una idea, acompáñala de una historia real.");
 
         await SembrarQuizPersuasionAsync(contexto, l3.Id);
@@ -608,72 +594,181 @@ public static partial class SembradoDatos
     // MÉTODOS AUXILIARES: ESCENAS, QUIZZES, ESCENARIOS
     // ============================================================
 
-    private static async Task SembrarEscenasTeoricasAsync(AppDbContext contexto, int leccionId,
-        string tema, string titulo, string guionIntro, string guionContenido, string guionCierre)
+    /// <summary>
+    /// Siembra escenas detalladas para una lección de teoría.
+    /// Cada escena tiene contenido educativo sustancial.
+    /// </summary>
+    private static async Task SembrarEscenasDetalladasAsync(
+        AppDbContext contexto,
+        int leccionId,
+        List<(string titulo, string guionAria, string contenidoVisual, TipoContenidoVisual tipo, TipoLayout layout)> definiciones)
     {
-        List<EscenaLeccion> escenas = new List<EscenaLeccion>
+        TipoTransicion[] transiciones = { TipoTransicion.Fade, TipoTransicion.SlideLeft, TipoTransicion.ZoomIn, TipoTransicion.SlideUp, TipoTransicion.SlideRight, TipoTransicion.Fade, TipoTransicion.SlideLeft, TipoTransicion.ZoomIn, TipoTransicion.SlideUp, TipoTransicion.Fade };
+
+        List<EscenaLeccion> escenas = new List<EscenaLeccion>();
+        for (int i = 0; i < definiciones.Count; i++)
         {
-            new EscenaLeccion
+            (string titulo, string guionAria, string contenidoVisual, TipoContenidoVisual tipo, TipoLayout layout) = definiciones[i];
+            bool esPausa = i == definiciones.Count - 2; // penúltima escena = pausa reflexiva
+            escenas.Add(new EscenaLeccion
             {
-                LeccionId = leccionId, Orden = 1,
-                TipoContenidoVisual = TipoContenidoVisual.Texto,
-                TituloEscena = "Introducción",
-                GuionAria = $"¡Hola! Hoy vamos a hablar sobre {tema}. {guionIntro}",
-                ContenidoVisual = titulo,
-                TransicionEntrada = TipoTransicion.Fade,
-                Layout = TipoLayout.SoloAvatar,
-                DuracionSegundos = 20
-            },
-            new EscenaLeccion
-            {
-                LeccionId = leccionId, Orden = 2,
-                TipoContenidoVisual = TipoContenidoVisual.Texto,
-                TituloEscena = "Concepto principal",
-                GuionAria = guionContenido,
-                ContenidoVisual = guionContenido,
-                TransicionEntrada = TipoTransicion.SlideLeft,
-                Layout = TipoLayout.AvatarYContenido,
-                DuracionSegundos = 30
-            },
-            new EscenaLeccion
-            {
-                LeccionId = leccionId, Orden = 3,
-                TipoContenidoVisual = TipoContenidoVisual.Diagrama,
-                TituloEscena = "En profundidad",
-                GuionAria = "Veamos esto con más detalle para que puedas aplicarlo desde hoy.",
-                ContenidoVisual = $"Profundización sobre {tema}",
-                TransicionEntrada = TipoTransicion.ZoomIn,
-                Layout = TipoLayout.AvatarYContenido,
-                DuracionSegundos = 25
-            },
-            new EscenaLeccion
-            {
-                LeccionId = leccionId, Orden = 4,
-                TipoContenidoVisual = TipoContenidoVisual.ListaDePuntos,
-                TituloEscena = "Puntos clave",
-                GuionAria = "Repasemos los puntos más importantes que debes recordar.",
-                ContenidoVisual = guionContenido,
-                TransicionEntrada = TipoTransicion.SlideUp,
-                Layout = TipoLayout.SoloContenido,
-                DuracionSegundos = 20,
-                EsPausaReflexiva = true,
-                SegundosPausa = 5
-            },
-            new EscenaLeccion
-            {
-                LeccionId = leccionId, Orden = 5,
-                TipoContenidoVisual = TipoContenidoVisual.Texto,
-                TituloEscena = "Cierre",
-                GuionAria = $"¡Excelente! {guionCierre} ¡Nos vemos en la siguiente lección!",
-                ContenidoVisual = "¡Bien hecho!",
-                TransicionEntrada = TipoTransicion.Fade,
-                Layout = TipoLayout.SoloAvatar,
-                DuracionSegundos = 15
-            }
-        };
+                LeccionId = leccionId,
+                Orden = i + 1,
+                TipoContenidoVisual = tipo,
+                TituloEscena = titulo,
+                GuionAria = guionAria,
+                ContenidoVisual = contenidoVisual,
+                TransicionEntrada = transiciones[i % transiciones.Length],
+                Layout = layout,
+                DuracionSegundos = Math.Max(20, guionAria.Length / 8),
+                EsPausaReflexiva = esPausa,
+                SegundosPausa = esPausa ? 10 : 0
+            });
+        }
 
         contexto.Set<EscenaLeccion>().AddRange(escenas);
         await contexto.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// Genera escenas a partir del contenido markdown de la lección.
+    /// Divide las secciones ## y ### en escenas individuales con contenido sustancial.
+    /// </summary>
+    private static async Task SembrarEscenasDesdeLeccionAsync(AppDbContext contexto, Leccion leccion, string guionIntro, string guionCierre)
+    {
+        List<(string titulo, string guionAria, string contenidoVisual, TipoContenidoVisual tipo, TipoLayout layout)> definiciones = new();
+
+        // Escena 1: Introducción con el avatar
+        definiciones.Add(("Introducción", $"¡Hola! {guionIntro}", leccion.Titulo, TipoContenidoVisual.Texto, TipoLayout.SoloAvatar));
+
+        // Escena 2: Contexto — por qué importa
+        string descripcion = leccion.Descripcion ?? leccion.Titulo;
+        definiciones.Add(("¿Por qué importa?",
+            $"Antes de entrar en materia, déjame explicarte por qué {leccion.Titulo.ToLower()} es fundamental en tu desarrollo profesional. {descripcion}",
+            descripcion,
+            TipoContenidoVisual.Texto,
+            TipoLayout.AvatarYContenido));
+
+        // Dividir el contenido markdown en secciones por ## o ###
+        if (!string.IsNullOrWhiteSpace(leccion.Contenido))
+        {
+            string[] lineas = leccion.Contenido.Split('\n');
+            string seccionActual = "";
+            string tituloSeccion = "Desarrollo";
+            int contadorSecciones = 0;
+
+            foreach (string linea in lineas)
+            {
+                string lineaTrimmed = linea.Trim();
+                if (lineaTrimmed.StartsWith("## ") || lineaTrimmed.StartsWith("### "))
+                {
+                    // Guardar sección anterior si tiene contenido
+                    if (!string.IsNullOrWhiteSpace(seccionActual) && contadorSecciones > 0)
+                    {
+                        string textoSeccion = seccionActual.Trim();
+                        TipoContenidoVisual tipoVisual = textoSeccion.Contains("\n- ") || textoSeccion.Contains("\n• ")
+                            ? TipoContenidoVisual.ListaDePuntos
+                            : TipoContenidoVisual.Texto;
+
+                        definiciones.Add((tituloSeccion, textoSeccion, textoSeccion, tipoVisual, TipoLayout.AvatarYContenido));
+                    }
+
+                    tituloSeccion = lineaTrimmed.TrimStart('#').Trim();
+                    seccionActual = "";
+                    contadorSecciones++;
+                }
+                else if (!string.IsNullOrWhiteSpace(lineaTrimmed))
+                {
+                    seccionActual += (string.IsNullOrEmpty(seccionActual) ? "" : "\n") + lineaTrimmed;
+                }
+            }
+
+            // Última sección pendiente
+            if (!string.IsNullOrWhiteSpace(seccionActual))
+            {
+                string textoFinal = seccionActual.Trim();
+                TipoContenidoVisual tipoFinal = textoFinal.Contains("\n- ") || textoFinal.Contains("\n• ")
+                    ? TipoContenidoVisual.ListaDePuntos
+                    : TipoContenidoVisual.Texto;
+                definiciones.Add((tituloSeccion, textoFinal, textoFinal, tipoFinal, TipoLayout.AvatarYContenido));
+            }
+        }
+
+        // Escena de puntos clave (del JSON PuntosClave)
+        if (!string.IsNullOrWhiteSpace(leccion.PuntosClave))
+        {
+            string puntosTexto = leccion.PuntosClave
+                .Replace("[", "").Replace("]", "")
+                .Replace("\"", "").Replace(",", "\n");
+            definiciones.Add(("Puntos clave para recordar",
+                "Repasemos los puntos más importantes de esta lección. Tómate un momento para interiorizarlos.",
+                puntosTexto,
+                TipoContenidoVisual.ListaDePuntos,
+                TipoLayout.SoloContenido));
+        }
+
+        // Escena de cierre
+        definiciones.Add(("Cierre y próximos pasos",
+            $"¡Excelente trabajo! {guionCierre} Recuerda que la práctica constante es la clave para dominar estas habilidades. ¡Nos vemos en la siguiente lección!",
+            "¡Lección completada!",
+            TipoContenidoVisual.Texto,
+            TipoLayout.SoloAvatar));
+
+        await SembrarEscenasDetalladasAsync(contexto, leccion.Id, definiciones);
+    }
+
+    /// <summary>
+    /// Método legacy — genera escenas a partir de parámetros simples.
+    /// Para lecciones con Contenido markdown, prefiere SembrarEscenasDesdeLeccionAsync.
+    /// </summary>
+    private static async Task SembrarEscenasTeoricasAsync(AppDbContext contexto, int leccionId,
+        string tema, string titulo, string guionIntro, string guionContenido, string guionCierre)
+    {
+        List<(string, string, string, TipoContenidoVisual, TipoLayout)> definiciones = new()
+        {
+            ("Introducción",
+                $"¡Hola! Hoy vamos a hablar sobre {tema}. {guionIntro}",
+                titulo,
+                TipoContenidoVisual.Texto,
+                TipoLayout.SoloAvatar),
+            ("¿Por qué es importante?",
+                $"Antes de profundizar, entendamos por qué {tema} es una habilidad clave en el mundo profesional. Las personas que dominan {tema} tienen más éxito en sus relaciones laborales, obtienen mejores resultados y generan mayor confianza en sus equipos.",
+                $"La importancia de {tema} en el trabajo",
+                TipoContenidoVisual.Texto,
+                TipoLayout.AvatarYContenido),
+            ("Concepto principal",
+                guionContenido,
+                guionContenido,
+                TipoContenidoVisual.Texto,
+                TipoLayout.AvatarYContenido),
+            ("Veamos un ejemplo",
+                $"Imaginemos una situación real en el trabajo. Estás en una reunión y necesitas aplicar lo que acabamos de ver sobre {tema}. ¿Cómo lo harías? La clave está en ser consciente del momento y aplicar los conceptos de forma natural, no forzada.",
+                $"Ejemplo práctico de {tema}",
+                TipoContenidoVisual.Diagrama,
+                TipoLayout.AvatarYContenido),
+            ("Errores comunes",
+                $"Hay errores frecuentes que la gente comete con {tema}. El más habitual es confundir cantidad con calidad: no se trata de hacer más, sino de hacer mejor. Otro error típico es no adaptar el enfoque al contexto o a la persona con la que interactúas.",
+                $"Errores frecuentes:\n- Confundir cantidad con calidad\n- No adaptar al contexto\n- Ignorar las señales del otro\n- Actuar en piloto automático",
+                TipoContenidoVisual.ListaDePuntos,
+                TipoLayout.AvatarYContenido),
+            ("Cómo aplicarlo mañana",
+                $"Vamos a lo práctico. Mañana, en tu trabajo, elige una situación donde puedas aplicar lo aprendido sobre {tema}. No intentes cambiar todo a la vez. Enfócate en un solo aspecto y practícalo conscientemente durante una semana.",
+                $"Plan de acción:\n- Elige UNA situación para practicar\n- Aplica UN concepto de la lección\n- Observa los resultados\n- Ajusta y repite",
+                TipoContenidoVisual.ListaDePuntos,
+                TipoLayout.AvatarYContenido),
+            ("Puntos clave",
+                "Repasemos los puntos más importantes que debes recordar de esta lección. Tómate un momento para reflexionar sobre cada uno.",
+                guionContenido,
+                TipoContenidoVisual.ListaDePuntos,
+                TipoLayout.SoloContenido),
+            ("Cierre",
+                $"¡Excelente trabajo! {guionCierre} Recuerda: la práctica constante es lo que convierte el conocimiento en habilidad real. ¡Nos vemos en la siguiente lección!",
+                "¡Lección completada!",
+                TipoContenidoVisual.Texto,
+                TipoLayout.SoloAvatar)
+        };
+
+        await SembrarEscenasDetalladasAsync(contexto, leccionId, definiciones);
     }
 
     // --- QUIZZES ---

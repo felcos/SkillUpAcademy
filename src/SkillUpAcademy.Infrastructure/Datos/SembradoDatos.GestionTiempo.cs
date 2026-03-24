@@ -64,17 +64,13 @@ public static partial class SembradoDatos
         await contexto.SaveChangesAsync();
 
         // Escenas para lección 1
-        await SembrarEscenasTeoricasAsync(contexto, l1.Id, "gestión del tiempo",
-            "La Matriz de Eisenhower",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l1,
             "Hoy aprenderás a distinguir lo urgente de lo importante. Esta confusión es la causa número uno de estrés laboral y baja productividad.",
-            "La Matriz tiene 4 cuadrantes: Hacer (urgente e importante), Planificar (importante no urgente), Delegar (urgente no importante) y Eliminar. Las personas productivas pasan el 60-70% en el Cuadrante 2.",
             "Esta semana, antes de empezar cualquier tarea, pregúntate: ¿es urgente, importante, ambas o ninguna? Clasificar antes de actuar te cambiará la vida profesional.");
 
         // Escenas para lección 2
-        await SembrarEscenasTeoricasAsync(contexto, l2.Id, "técnicas de concentración",
-            "Pomodoro y Timeboxing",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l2,
             "Tu cerebro solo se concentra de verdad entre 20 y 45 minutos. Vamos a trabajar con tu biología, no contra ella.",
-            "La técnica Pomodoro usa ciclos de 25 minutos de trabajo más 5 de descanso. El timeboxing asigna bloques fijos a cada tarea en el calendario. Harvard Business Review lo posiciona como la técnica número 1 de productividad.",
             "Mañana prueba esto: pon un temporizador de 25 minutos, trabaja en una sola tarea y no toques el móvil. Después de 4 ciclos verás cuánto más has avanzado.");
 
         // Quiz gestión del tiempo
@@ -136,17 +132,13 @@ public static partial class SembradoDatos
         await contexto.SaveChangesAsync();
 
         // Escenas para lección 1 nivel 2
-        await SembrarEscenasTeoricasAsync(contexto, n2l1.Id, "la Ley de Parkinson",
-            "El trabajo se expande al tiempo disponible",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n2l1,
             "En 1955, Parkinson descubrió algo que cambia la forma de gestionar el tiempo: si tienes una semana para un email, tardarás una semana. Hoy vas a aprender a usar esto a tu favor.",
-            "Los plazos ajustados aumentan la productividad un 30%. La clave es asignar un 60-70% del tiempo que crees necesitar y definir qué es suficientemente bueno antes de empezar.",
             "Prueba esto hoy: elige una tarea que creas que lleva 2 horas, asígnale 1 hora 15 y define el resultado mínimo aceptable antes de empezar. Te sorprenderá el resultado.");
 
         // Escenas para lección 2 nivel 2
-        await SembrarEscenasTeoricasAsync(contexto, n2l2.Id, "concentración profunda",
-            "Deep Work y Batching",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n2l2,
             "Cada cambio de tarea te cuesta 23 minutos de concentración. El multitasking es un mito: tu cerebro no puede procesar dos tareas cognitivas a la vez.",
-            "Cal Newport demostró que 4 horas de Deep Work producen más que 8 horas fragmentadas. El batching agrupa tareas similares para minimizar el coste de cambio de contexto.",
             "Esta semana, bloquea 3 horas en tu calendario para Deep Work. Silencia el móvil, cierra el email y trabaja en tu tarea más importante. Mide cuánto produces comparado con un día normal.");
 
         // ===== NIVEL 3 — Dominio (NivelId=27) =====
@@ -202,17 +194,13 @@ public static partial class SembradoDatos
         await contexto.SaveChangesAsync();
 
         // Escenas para lección 1 nivel 3
-        await SembrarEscenasTeoricasAsync(contexto, n3l1.Id, "planificación estratégica con OKRs",
-            "Planificación trimestral con OKRs",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n3l1,
             "Hoy vamos a subir de nivel. De gestionar el día a día pasamos a la planificación estratégica trimestral. Sin dirección, la eficiencia no sirve de nada.",
-            "Los OKRs conectan tu tiempo diario con objetivos transformadores. Un Objective es inspirador, los Key Results son medibles. Google recomienda máximo 5 objetivos por trimestre. La planificación semanal de 30 minutos es el puente entre estrategia y ejecución.",
             "Define tu primer OKR personal esta semana: un objetivo ambicioso con 3 resultados clave medibles. Luego pregúntate cada lunes: ¿qué haré esta semana para avanzar en mis Key Results?");
 
         // Escenas para lección 2 nivel 3
-        await SembrarEscenasTeoricasAsync(contexto, n3l2.Id, "delegación y automatización",
-            "Multiplicar tu tiempo",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n3l2,
             "Hay un techo para tu productividad individual: 24 horas. Hoy vamos a romper ese techo con delegación efectiva y automatización inteligente.",
-            "Michael Hyatt define 5 niveles de delegación. La clave es usar el framework SMART para cada tarea delegada. Si haces algo 3 veces manualmente, automatízalo. La combinación de delegación nivel 4-5 más automatización puede multiplicar tu productividad hasta 5 veces.",
             "Identifica 3 tareas que haces cada semana y que podrías delegar o automatizar. Empieza por la más frecuente. En un mes habrás recuperado horas de tu semana para trabajo estratégico.");
     }
 

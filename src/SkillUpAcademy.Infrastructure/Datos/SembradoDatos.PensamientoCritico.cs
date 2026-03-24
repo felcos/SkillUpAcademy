@@ -65,17 +65,13 @@ public static partial class SembradoDatos
         await contexto.SaveChangesAsync();
 
         // Escenas para lección 1
-        await SembrarEscenasTeoricasAsync(contexto, l1.Id, "falacias lógicas",
-            "Los errores que todos cometemos",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l1,
             "Hoy vamos a aprender a detectar los trucos que nuestro cerebro usa para hacernos creer que un argumento es válido cuando no lo es. Esto cambiará tu forma de evaluar propuestas y decisiones.",
-            "Ad hominem, strawman, falsa dicotomía, apelación a la autoridad, pendiente resbaladiza y correlación sin causalidad. Estas 6 falacias aparecen cada día en reuniones y correos.",
             "Esta semana, presta atención a las reuniones y anota cada falacia que detectes. Te sorprenderá lo frecuentes que son.");
 
         // Escenas para lección 2
-        await SembrarEscenasTeoricasAsync(contexto, l2.Id, "taxonomía de Bloom",
-            "Los 6 niveles del pensamiento",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l2,
             "Benjamin Bloom clasificó el pensamiento en seis niveles de complejidad. Saber en qué nivel estás te permite subir conscientemente al siguiente.",
-            "Recordar, comprender, aplicar, analizar, evaluar y crear. Los tres primeros son básicos. El pensamiento crítico real empieza en el nivel cuatro: analizar.",
             "La próxima vez que tomes una decisión, pregúntate en qué nivel de Bloom estás operando. Si solo estás recordando o aplicando, intenta subir a analizar o evaluar.");
 
         // Quiz pensamiento crítico
@@ -138,17 +134,13 @@ public static partial class SembradoDatos
         await contexto.SaveChangesAsync();
 
         // Escenas para lección 1 N2
-        await SembrarEscenasTeoricasAsync(contexto, n2l1.Id, "sesgos cognitivos",
-            "Tu cerebro te engaña (y no lo sabes)",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n2l1,
             "Daniel Kahneman demostró que nuestro cerebro opera con dos sistemas y que el rápido nos lleva a errores predecibles. Hoy aprenderás a detectar los cinco sesgos más peligrosos en el trabajo.",
-            "Sesgo de confirmación, efecto ancla, sesgo de disponibilidad, Dunning-Kruger y coste hundido. La técnica pre-mortem es tu mejor defensa contra todos ellos.",
             "Antes de tu próxima decisión importante, haz un pre-mortem: imagina que salió mal y pregúntate qué falló. Activarás tu Sistema 2 y neutralizarás tus sesgos.");
 
         // Escenas para lección 2 N2
-        await SembrarEscenasTeoricasAsync(contexto, n2l2.Id, "pensamiento de primer principio",
-            "Razona desde cero como Aristóteles y Musk",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n2l2,
             "La mayoría razonamos por analogía: así se ha hecho siempre. Hoy aprenderás a descomponer problemas hasta sus verdades fundamentales y reconstruir soluciones desde cero.",
-            "Tres pasos: identifica suposiciones, descompón con los 5 porqués hasta verdades verificables y reconstruye sin cargar con el pasado. Así Tesla redujo el coste de baterías un 85 por ciento.",
             "Elige un proceso de tu trabajo que lleve años sin cambiar y aplica los 3 pasos del primer principio. Te sorprenderá lo que descubras.");
 
         // ===== NIVEL 3 — Dominio (NivelId=24) =====
@@ -205,17 +197,13 @@ public static partial class SembradoDatos
         await contexto.SaveChangesAsync();
 
         // Escenas para lección 1 N3
-        await SembrarEscenasTeoricasAsync(contexto, n3l1.Id, "pensamiento sistémico",
-            "Ver el bosque completo",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n3l1,
             "Peter Senge demostró que los problemas complejos no se resuelven atacando síntomas. Hoy aprenderás a ver sistemas completos con sus bucles de retroalimentación y puntos de apalancamiento.",
-            "Bucles de refuerzo y equilibrio, retrasos temporales, efectos de segundo orden y los puntos de apalancamiento de Donella Meadows. Un pequeño cambio en el lugar correcto transforma todo el sistema.",
             "Elige un problema recurrente en tu trabajo y dibuja un diagrama de bucles causales. Busca dónde se retroalimenta el problema y ahí estará tu punto de apalancamiento.");
 
         // Escenas para lección 2 N3
-        await SembrarEscenasTeoricasAsync(contexto, n3l2.Id, "metacognición",
-            "Pensar sobre cómo piensas",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n3l2,
             "El nivel más alto del pensamiento crítico es observar tu propio proceso mental. Hoy aprenderás metacognición y el pensamiento de segundo orden que distingue a los mejores decisores.",
-            "Conocimiento metacognitivo, regulación metacognitiva y pensamiento de segundo orden. Invierte la pregunta como Charlie Munger, busca evidencia contraria y piensa en probabilidades.",
             "Antes de tu próxima decisión importante, escribe tus razones en un papel. Después del resultado, compara. Es la única forma de calibrar tu juicio a largo plazo.");
     }
 

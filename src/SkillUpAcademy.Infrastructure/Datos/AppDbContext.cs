@@ -47,6 +47,9 @@ public class AppDbContext : IdentityDbContext<UsuarioApp, IdentityRole<Guid>, Gu
     // TTS (proveedores de voz)
     public DbSet<ProveedorTts> ProveedoresTts => Set<ProveedorTts>();
 
+    // IA (proveedores de inteligencia artificial)
+    public DbSet<ProveedorIA> ProveedoresIA => Set<ProveedorIA>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

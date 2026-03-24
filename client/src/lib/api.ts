@@ -262,10 +262,10 @@ export interface ResultadoEscenario {
 export const scenarioApi = {
   obtener: (leccionId: number) =>
     request<EscenarioDto>(`/lessons/${leccionId}/scenario`),
-  elegir: (leccionId: number, opcionId: number) =>
+  elegir: (leccionId: number, escenarioId: number, opcionId: number) =>
     request<ResultadoEscenario>(`/lessons/${leccionId}/scenario/choose`, {
       method: 'POST',
-      body: { opcionEscenarioId: opcionId },
+      body: { escenarioId, opcionId },
     }),
 };
 
@@ -595,6 +595,40 @@ export const adminTtsApi = {
   }) => request<ConfiguracionProveedorTts>(`/admin/tts/proveedores/${tipo}`, { method: 'PUT', body: datos }),
   alternarProveedor: (tipo: string) =>
     request<{ habilitado: boolean }>(`/admin/tts/proveedores/${tipo}/alternar`, { method: 'POST' }),
+};
+
+// ============ ADMIN IA ============
+export interface ConfiguracionProveedorIA {
+  id: number;
+  tipo: string;
+  nombreVisible: string;
+  descripcion: string | null;
+  habilitado: boolean;
+  esActivo: boolean;
+  tieneApiKey: boolean;
+  urlBase: string;
+  modeloChat: string;
+  maxTokens: number;
+  temperatura: number;
+}
+
+export const adminIaApi = {
+  obtenerProveedores: () => request<ConfiguracionProveedorIA[]>('/admin/ia/proveedores'),
+  obtenerProveedor: (tipo: string) => request<ConfiguracionProveedorIA>(`/admin/ia/proveedores/${tipo}`),
+  actualizarProveedor: (tipo: string, datos: {
+    nombreVisible?: string;
+    descripcion?: string;
+    habilitado?: boolean;
+    apiKey?: string;
+    urlBase?: string;
+    modeloChat?: string;
+    maxTokens?: number;
+    temperatura?: number;
+  }) => request<ConfiguracionProveedorIA>(`/admin/ia/proveedores/${tipo}`, { method: 'PUT', body: datos }),
+  alternarProveedor: (tipo: string) =>
+    request<{ habilitado: boolean }>(`/admin/ia/proveedores/${tipo}/alternar`, { method: 'POST' }),
+  activarProveedor: (tipo: string) =>
+    request<ConfiguracionProveedorIA>(`/admin/ia/proveedores/${tipo}/activar`, { method: 'POST' }),
 };
 
 export { ApiError };

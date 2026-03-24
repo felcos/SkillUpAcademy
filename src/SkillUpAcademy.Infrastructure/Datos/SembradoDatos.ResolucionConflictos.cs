@@ -64,17 +64,13 @@ public static partial class SembradoDatos
         await contexto.SaveChangesAsync();
 
         // Escenas para lección 1
-        await SembrarEscenasTeoricasAsync(contexto, l1.Id, "tipos de conflictos laborales",
-            "Tipos de conflictos y la escalada de Glasl",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l1,
             "Hoy vamos a clasificar los conflictos laborales. Entender qué tipo de conflicto enfrentas es el primer paso para resolverlo con éxito.",
-            "Hay 4 tipos de conflictos laborales: tarea, relación, proceso y estatus. La escalada de Glasl nos muestra que intervenir temprano es clave para que ambas partes ganen.",
             "La próxima vez que detectes tensión en tu equipo, pregúntate: ¿es un conflicto de tarea, relación, proceso o estatus? La respuesta cambia completamente el enfoque.");
 
         // Escenas para lección 2
-        await SembrarEscenasTeoricasAsync(contexto, l2.Id, "modelo Thomas-Kilmann",
-            "Los 5 estilos de gestión de conflictos",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l2,
             "Thomas y Kilmann demostraron que no existe un único estilo correcto para gestionar conflictos. Los profesionales más efectivos dominan los cinco estilos.",
-            "Competir, colaborar, comprometer, evitar y acomodar. Cada estilo tiene su momento ideal según la asertividad y cooperación que requiera la situación.",
             "Identifica tu estilo dominante y practícalo esta semana. Cuando surja un desacuerdo, antes de reaccionar pregúntate: ¿qué estilo es el más adecuado aquí?");
 
         // Quiz resolución de conflictos
@@ -136,17 +132,13 @@ public static partial class SembradoDatos
         await contexto.SaveChangesAsync();
 
         // Escenas para lección N2-1
-        await SembrarEscenasTeoricasAsync(contexto, n2l1.Id, "comunicación no violenta",
-            "El método de 4 pasos de Rosenberg",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n2l1,
             "Marshall Rosenberg nos enseñó que detrás de cada conflicto hay necesidades insatisfechas. Hoy aprenderás a identificarlas y expresarlas sin agresión.",
-            "Observación sin juicio, sentimiento sin culpa, necesidad universal y petición negociable. Estos 4 pasos transforman conversaciones destructivas en diálogos constructivos.",
             "Practica esta semana: cuando sientas frustración con un colega, formula tu mensaje con los 4 pasos de CNV antes de hablar.");
 
         // Escenas para lección N2-2
-        await SembrarEscenasTeoricasAsync(contexto, n2l2.Id, "negociación integrativa Harvard",
-            "De posiciones a intereses",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n2l2,
             "El método Harvard revolucionó la negociación al demostrar que las mejores soluciones surgen cuando exploras intereses profundos en lugar de defender posiciones rígidas.",
-            "Separa personas del problema, enfócate en intereses, genera opciones creativas y usa criterios objetivos. Conoce tu BATNA para negociar con poder real.",
             "Antes de tu próxima negociación, identifica tu BATNA y los posibles intereses de la otra parte. Eso te dará ventaja estratégica.");
 
         // ===== NIVEL 3 — Dominio (NivelId=21) =====
@@ -202,17 +194,13 @@ public static partial class SembradoDatos
         await contexto.SaveChangesAsync();
 
         // Escenas para lección N3-1
-        await SembrarEscenasTeoricasAsync(contexto, n3l1.Id, "conflictos culturales",
-            "El mapa cultural de Erin Meyer",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n3l1,
             "El 70% de los conflictos en equipos internacionales tienen raíz cultural. Hoy aprenderás a descifrar las diferencias que generan malentendidos invisibles.",
-            "Comunicación de alto vs bajo contexto, confrontación directa vs indirecta, y confianza basada en tarea vs relación. El framework ADAPT te ayuda a navegar cualquier diferencia cultural.",
             "Antes de tu próxima reunión con un colega de otra cultura, investiga dónde se ubica en las escalas de Meyer. Adapta tu estilo antes de interpretar su comportamiento.");
 
         // Escenas para lección N3-2
-        await SembrarEscenasTeoricasAsync(contexto, n3l2.Id, "gestión sistémica de conflictos",
-            "Del síntoma individual al sistema organizacional",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n3l2,
             "Los conflictos repetitivos no son casualidad. Son síntomas de un sistema que necesita rediseño. Hoy aprenderás a construir una organización que gestione conflictos de forma proactiva.",
-            "El SIGC tiene 4 niveles: prevención con claridad de roles, detección temprana con pulsos y one-on-ones, resolución estructurada con mediación, y aprendizaje organizacional con post-mortems.",
             "Audita tu equipo: ¿hay roles ambiguos? ¿hay feedback regular? ¿los conflictos se detectan temprano o escalan hasta ser crisis? Identifica el nivel más débil de tu SIGC.");
     }
 

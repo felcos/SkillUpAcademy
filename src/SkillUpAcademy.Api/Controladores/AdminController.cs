@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using SkillUpAcademy.Core.DTOs.Admin;
+using SkillUpAcademy.Core.DTOs.IA;
 using SkillUpAcademy.Core.DTOs.Tts;
 using SkillUpAcademy.Core.Enums;
 using SkillUpAcademy.Core.Interfaces.Servicios;
@@ -17,7 +18,8 @@ namespace SkillUpAcademy.Api.Controladores;
 [EnableRateLimiting("general")]
 public class AdminController(
     IServicioAdmin _servicioAdmin,
-    IServicioAdminTts _servicioAdminTts) : ControllerBase
+    IServicioAdminTts _servicioAdminTts,
+    IServicioAdminIA _servicioAdminIA) : ControllerBase
 {
     /// <summary>Obtiene el resumen general del panel de administración.</summary>
     [HttpGet("resumen")]
@@ -93,5 +95,59 @@ public class AdminController(
 
         bool habilitado = await _servicioAdminTts.AlternarProveedorAsync(tipoEnum);
         return Ok(new { habilitado });
+    }
+
+    // ============ IA ADMIN ============
+
+    /// <summary>Obtiene todos los proveedores de IA configurados.</summary>
+    [HttpGet("ia/proveedores")]
+    public async Task<IActionResult> ObtenerProveedoresIA()
+    {
+        IReadOnlyList<ConfiguracionProveedorIADto> proveedores = await _servicioAdminIA.ObtenerProveedoresAsync();
+        return Ok(proveedores);
+    }
+
+    /// <summary>Obtiene un proveedor de IA por tipo.</summary>
+    [HttpGet("ia/proveedores/{tipo}")]
+    public async Task<IActionResult> ObtenerProveedorIA(string tipo)
+    {
+        if (!Enum.TryParse<TipoProveedorIA>(tipo, ignoreCase: true, out TipoProveedorIA tipoEnum))
+            return BadRequest(new { error = new { message = $"Tipo de proveedor IA no válido: {tipo}" } });
+
+        ConfiguracionProveedorIADto proveedor = await _servicioAdminIA.ObtenerProveedorAsync(tipoEnum);
+        return Ok(proveedor);
+    }
+
+    /// <summary>Actualiza la configuración de un proveedor de IA.</summary>
+    [HttpPut("ia/proveedores/{tipo}")]
+    public async Task<IActionResult> ActualizarProveedorIA(string tipo, [FromBody] PeticionGuardarProveedorIA peticion)
+    {
+        if (!Enum.TryParse<TipoProveedorIA>(tipo, ignoreCase: true, out TipoProveedorIA tipoEnum))
+            return BadRequest(new { error = new { message = $"Tipo de proveedor IA no válido: {tipo}" } });
+
+        ConfiguracionProveedorIADto resultado = await _servicioAdminIA.ActualizarProveedorAsync(tipoEnum, peticion);
+        return Ok(resultado);
+    }
+
+    /// <summary>Alterna el estado habilitado/deshabilitado de un proveedor de IA.</summary>
+    [HttpPost("ia/proveedores/{tipo}/alternar")]
+    public async Task<IActionResult> AlternarProveedorIA(string tipo)
+    {
+        if (!Enum.TryParse<TipoProveedorIA>(tipo, ignoreCase: true, out TipoProveedorIA tipoEnum))
+            return BadRequest(new { error = new { message = $"Tipo de proveedor IA no válido: {tipo}" } });
+
+        bool habilitado = await _servicioAdminIA.AlternarProveedorAsync(tipoEnum);
+        return Ok(new { habilitado });
+    }
+
+    /// <summary>Establece un proveedor de IA como el activo para conversaciones.</summary>
+    [HttpPost("ia/proveedores/{tipo}/activar")]
+    public async Task<IActionResult> ActivarProveedorIA(string tipo)
+    {
+        if (!Enum.TryParse<TipoProveedorIA>(tipo, ignoreCase: true, out TipoProveedorIA tipoEnum))
+            return BadRequest(new { error = new { message = $"Tipo de proveedor IA no válido: {tipo}" } });
+
+        ConfiguracionProveedorIADto resultado = await _servicioAdminIA.EstablecerActivoAsync(tipoEnum);
+        return Ok(resultado);
     }
 }

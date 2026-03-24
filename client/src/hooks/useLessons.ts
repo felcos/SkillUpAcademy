@@ -28,6 +28,7 @@ export function useCompletarLeccion() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });
       queryClient.invalidateQueries({ queryKey: ['areas'] });
+      queryClient.invalidateQueries({ queryKey: ['nivel'] });
     },
   });
 }
@@ -47,6 +48,8 @@ export function useEnviarQuiz(leccionId: number) {
       quizApi.enviar(leccionId, respuestas),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['areas'] });
+      queryClient.invalidateQueries({ queryKey: ['nivel'] });
     },
   });
 }
@@ -60,7 +63,15 @@ export function useEscenario(leccionId: number) {
 }
 
 export function useElegirEscenario(leccionId: number) {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (opcionId: number) => scenarioApi.elegir(leccionId, opcionId),
+    mutationFn: ({ escenarioId, opcionId }: { escenarioId: number; opcionId: number }) =>
+      scenarioApi.elegir(leccionId, escenarioId, opcionId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['areas'] });
+      queryClient.invalidateQueries({ queryKey: ['nivel'] });
+      queryClient.invalidateQueries({ queryKey: ['escenario', leccionId] });
+    },
   });
 }

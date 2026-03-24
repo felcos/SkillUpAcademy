@@ -10,9 +10,9 @@ const iconosTipo: Record<string, typeof Play> = {
 };
 
 const colorEstado: Record<string, string> = {
-  Completada: 'text-green-400',
+  Completado: 'text-green-400',
   EnProgreso: 'text-yellow-400',
-  Pendiente: 'text-gray-500',
+  NoIniciado: 'text-gray-500',
 };
 
 export default function AreaDetailPage() {
@@ -103,7 +103,7 @@ export default function AreaDetailPage() {
                 className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
                 style={{ backgroundColor: `${area.colorPrimario}15` }}
               >
-                {leccion.estado === 'Completada' ? (
+                {leccion.estado === 'Completado' ? (
                   <CheckCircle2 size={20} className="text-green-400" />
                 ) : (
                   <Icono size={20} style={{ color: area.colorPrimario }} />
@@ -128,7 +128,7 @@ export default function AreaDetailPage() {
 
               <div className="flex-shrink-0">
                 <span className={`text-xs font-medium ${colorEstado[leccion.estado] || 'text-gray-500'}`}>
-                  {leccion.estado === 'Completada' && leccion.puntuacion != null
+                  {leccion.estado === 'Completado' && leccion.puntuacion != null
                     ? `${leccion.puntuacion}%`
                     : leccion.estado === 'EnProgreso'
                     ? 'En progreso'

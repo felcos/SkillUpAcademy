@@ -64,17 +64,13 @@ public static partial class SembradoDatos
         await contexto.SaveChangesAsync();
 
         // Escenas para lección 1
-        await SembrarEscenasTeoricasAsync(contexto, l1.Id, "mentalidad de crecimiento",
-            "El poder de creer que puedes mejorar",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l1,
             "Carol Dweck descubrió que lo que crees sobre tu talento determina hasta dónde llegas. Vamos a entender la diferencia entre mentalidad fija y de crecimiento.",
-            "Mentalidad fija cree que el talento es innato. Mentalidad de crecimiento cree que se desarrolla con esfuerzo. La neuroplasticidad demuestra que tu cerebro es plástico, no estático.",
             "Esta semana, cuando te encuentres con un desafío, añade la palabra 'todavía': 'No sé hacerlo... todavía'. Ese simple cambio activa tu motivación.");
 
         // Escenas para lección 2
-        await SembrarEscenasTeoricasAsync(contexto, l2.Id, "el ciclo del cambio",
-            "De la resistencia a la adaptación",
+        await SembrarEscenasDesdeLeccionAsync(contexto, l2,
             "El 70% de las transformaciones organizacionales fracasan porque las personas no logran adaptarse emocionalmente. Hoy aprenderás a navegar cada fase.",
-            "Negación, ira, negociación, tristeza y aceptación. Estas son las fases naturales del cambio. La técnica SARA te ayuda a acelerar el proceso.",
             "La próxima vez que enfrentes un cambio en el trabajo, identifica en qué fase estás. Solo reconocerlo ya te ayuda a avanzar más rápido.");
 
         // Quiz
@@ -136,16 +132,12 @@ public static partial class SembradoDatos
         await contexto.SaveChangesAsync();
 
         // Escenas Nivel 2
-        await SembrarEscenasTeoricasAsync(contexto, n2l1.Id, "el modelo PERMA de Seligman",
-            "Los 5 pilares de la resiliencia",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n2l1,
             "Martin Seligman dejó de estudiar lo que va mal y empezó a investigar lo que hace que las personas prosperen. Su modelo PERMA es tu mapa de ruta.",
-            "Emociones positivas, compromiso, relaciones, significado y logro. El ejercicio de las 3 cosas buenas, mantenido una semana, reduce síntomas depresivos durante 6 meses.",
             "Esta noche, empieza el ejercicio de las 3 cosas buenas: escribe tres cosas positivas del día y por qué ocurrieron. Hazlo durante una semana y nota la diferencia.");
 
-        await SembrarEscenasTeoricasAsync(contexto, n2l2.Id, "agilidad de aprendizaje",
-            "Aprende a aprender más rápido",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n2l2,
             "Korn Ferry identificó la learning agility como el predictor número uno de potencial de liderazgo. No es cuánto sabes, sino cuán rápido aprendes.",
-            "Cinco dimensiones: mental, personas, cambio, resultados y autoconocimiento. El after-action review del ejército estadounidense sistematiza el aprendizaje de cada experiencia.",
             "Después de tu próximo proyecto o reunión importante, aplica el after-action review: qué esperabas, qué pasó, por qué la diferencia y qué harás diferente.");
 
         // ===== NIVEL 3 — Dominio (NivelId=36) =====
@@ -201,16 +193,12 @@ public static partial class SembradoDatos
         await contexto.SaveChangesAsync();
 
         // Escenas Nivel 3
-        await SembrarEscenasTeoricasAsync(contexto, n3l1.Id, "liderazgo en entornos VUCA y BANI",
-            "Liderar cuando el mundo es caótico",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n3l1,
             "VUCA ya no alcanza. Jamais Cascio propuso BANI: frágil, ansioso, no lineal e incomprensible. Este es el marco para entender la realidad actual.",
-            "Cynefin diferencia cuatro dominios: simple, complicado, complejo y caótico. La regla de Bezos dice que el 70% de certeza es suficiente para decidir. No esperes al 100%.",
             "Esta semana, clasifica tus decisiones pendientes con Cynefin. Las simples, resuélvelas ya. Las complejas, experimenta. Las caóticas, actúa primero y ajusta después.");
 
-        await SembrarEscenasTeoricasAsync(contexto, n3l2.Id, "antifragilidad de Nassim Taleb",
-            "Más allá de la resiliencia",
+        await SembrarEscenasDesdeLeccionAsync(contexto, n3l2,
             "Nassim Taleb propone una categoría revolucionaria: no solo resistas los golpes, hazte más fuerte con ellos. Frágil, resiliente o antifrágil: tú eliges.",
-            "La estrategia barbell: 90% seguro, 10% apuestas arriesgadas. Via negativa: a veces crecer es eliminar. Los 5 principios: opcionalidad, redundancia, experimentación, hormesis y piel en el juego.",
             "Revisa tu carrera con la tríada de Taleb. ¿Eres frágil, resiliente o antifrágil? Aplica la estrategia barbell: dedica un 10% de tu tiempo a algo radicalmente nuevo.");
     }
 

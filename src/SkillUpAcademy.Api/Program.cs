@@ -160,6 +160,7 @@ try
 
         await SembradoDatos.SembrarAsync(contexto);
         await SembradoProveedoresTts.SembrarAsync(contexto);
+        await SembradoProveedoresIA.SembrarAsync(contexto);
 
         // Sembrar rol Admin y usuario administrador
         RoleManagerType roleManager = scope.ServiceProvider.GetRequiredService<RoleManagerType>();
