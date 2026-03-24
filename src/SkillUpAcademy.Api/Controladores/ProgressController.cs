@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using SkillUpAcademy.Core.DTOs.Progreso;
 using SkillUpAcademy.Core.Interfaces.Servicios;
 using System.Security.Claims;
@@ -12,6 +13,7 @@ namespace SkillUpAcademy.Api.Controladores;
 [ApiController]
 [Route("api/v1/progress")]
 [Authorize]
+[EnableRateLimiting("general")]
 public class ProgressController(IServicioProgreso _servicioProgreso) : ControllerBase
 {
     /// <summary>Dashboard del usuario.</summary>

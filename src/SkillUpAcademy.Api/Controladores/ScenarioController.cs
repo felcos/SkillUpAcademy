@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using SkillUpAcademy.Core.DTOs.Escenario;
 using SkillUpAcademy.Core.Interfaces.Servicios;
 using System.Security.Claims;
@@ -12,6 +13,7 @@ namespace SkillUpAcademy.Api.Controladores;
 [ApiController]
 [Route("api/v1/lessons/{leccionId:int}/scenario")]
 [Authorize]
+[EnableRateLimiting("general")]
 public class ScenarioController(IServicioEscenario _servicioEscenario) : ControllerBase
 {
     /// <summary>Obtiene un escenario con sus opciones.</summary>

@@ -9,12 +9,28 @@
   - AlternarBloqueoIAUsuarioAsync (éxito + usuario inexistente)
 - 4 tests de integración: endpoints admin añadidos a EndpointsProtegidosTests (401 sin token)
 - Paquete Microsoft.EntityFrameworkCore.Sqlite añadido a UnitTests.csproj
-- Total: 104 tests (103 pass + 1 skip)
+
+### feat: rate limiting nativo .NET 8
+- Eliminado paquete terceros `AspNetCoreRateLimit` (no usado, .NET 8 tiene middleware nativo)
+- 3 políticas de rate limiting en Program.cs:
+  - `general`: 100 req/min por IP (fixed window) — aplicada a Auth, Skills, Lessons, Quiz, Scenario, Progress, Admin
+  - `ia`: 20 req/min por usuario autenticado — aplicada a AiChatController
+  - `tts`: 30 req/min por usuario autenticado — preparada para TtsController
+- Configuración lee de `LimitesDeUso` en appsettings.json (antes hardcodeado)
+- ServicioSeguridadIA: `MaxMensajesPorMinuto` ahora lee de `LimitesDeUso:PeticionesIAPorMinuto`
+- `[EnableRateLimiting]` en 8 controladores (Health excluido para monitoring)
+- 2 tests de integración para rate limiting
+- Total: 106 tests (104 pass + 1 skip + 21 frontend)
 
 ### Archivos creados
 - `tests/SkillUpAcademy.UnitTests/Servicios/ServicioAdminTests.cs`
+- `tests/SkillUpAcademy.IntegrationTests/Controladores/RateLimitingTests.cs`
 
 ### Archivos modificados
+- `src/SkillUpAcademy.Api/Program.cs` — rate limiting middleware + pipeline
+- `src/SkillUpAcademy.Api/SkillUpAcademy.Api.csproj` — eliminado AspNetCoreRateLimit
+- `src/SkillUpAcademy.Infrastructure/Servicios/ServicioSeguridadIA.cs` — límite configurable
+- 8 controladores — añadido `[EnableRateLimiting]`
 - `tests/SkillUpAcademy.UnitTests/SkillUpAcademy.UnitTests.csproj` — paquete SQLite
 - `tests/SkillUpAcademy.IntegrationTests/Controladores/EndpointsProtegidosTests.cs` — 4 endpoints admin
 

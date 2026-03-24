@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using SkillUpAcademy.Core.DTOs.Habilidades;
 using SkillUpAcademy.Core.DTOs.Escenas;
 using SkillUpAcademy.Core.Interfaces.Servicios;
@@ -13,6 +14,7 @@ namespace SkillUpAcademy.Api.Controladores;
 [ApiController]
 [Route("api/v1/lessons")]
 [Authorize]
+[EnableRateLimiting("general")]
 public class LessonsController(IServicioLecciones _servicioLecciones) : ControllerBase
 {
     /// <summary>Obtiene el contenido completo de una lección.</summary>

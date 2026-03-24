@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using SkillUpAcademy.Core.DTOs.IA;
 using SkillUpAcademy.Core.Interfaces.Servicios;
 using System.Security.Claims;
@@ -12,6 +13,7 @@ namespace SkillUpAcademy.Api.Controladores;
 [ApiController]
 [Route("api/v1/ai")]
 [Authorize]
+[EnableRateLimiting("ia")]
 public class AiChatController(IServicioChatIA _servicioChatIA) : ControllerBase
 {
     /// <summary>Inicia una nueva sesión de chat.</summary>

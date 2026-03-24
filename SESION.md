@@ -6,14 +6,15 @@
 1. **Tests unitarios para ServicioAdmin** — 6 tests con SQLite in-memory (ObtenerResumen, ObtenerUsuarios paginado, ObtenerTotalUsuarios, EstadisticasContenido [skip por incompatibilidad LINQ/SQLite], AlternarBloqueoIA éxito, AlternarBloqueoIA usuario inexistente)
 2. **Tests de integración para AdminController** — 4 endpoints admin añadidos a EndpointsProtegidosTests (resumen, usuarios, estadisticas-contenido, alternar-bloqueo-ia verifican 401 sin token)
 3. **Paquete SQLite añadido** a UnitTests.csproj para tests de ServicioAdmin con Identity real
+4. **Rate limiting nativo .NET 8** — Reemplazado paquete terceros `AspNetCoreRateLimit` por middleware nativo `Microsoft.AspNetCore.RateLimiting`. 3 políticas: general (100/min por IP), ia (20/min por usuario), tts (30/min por usuario). Configuración desde `LimitesDeUso` en appsettings.json. `[EnableRateLimiting]` aplicado a los 8 controladores (excepto Health). ServicioSeguridadIA ahora lee `MaxMensajesPorMinuto` desde config.
+5. **Tests rate limiting** — 2 tests de integración verificando que endpoints con y sin rate limiting funcionan correctamente
 
 ### Estadísticas
-- **104 tests totales** (53 unit + 1 skip + 29 integration + 21 frontend)
+- **106 tests totales** (53 unit + 1 skip + 31 integration + 21 frontend)
 - **34 endpoints** — **15 páginas React**
 - **0 errores, 0 warnings**
 
 ### Qué queda pendiente
-- Rate limiting real (Redis en vez de IMemoryCache)
 - Despliegue a producción con secrets reales
 - Video AI generado para avatar V2
 - Notificaciones en tiempo real
@@ -21,9 +22,10 @@
 ### Problemas encontrados
 - Query LINQ compleja con record constructor en Select + SelectMany no compatible con SQLite ni InMemory (bug EF Core 8) — test marcado con Skip, requiere PostgreSQL real
 - Sesión anterior interrumpida por reinicio del ordenador — trabajo recuperado sin pérdida
+- WebApplicationFactory con minimal hosting no permite override de `builder.Configuration.GetValue()` desde tests — rate limiting testeado verificando comportamiento dentro del límite
 
 ### Siguiente paso sugerido
-Desplegar a producción con secrets reales y dominio configurado. Alternativamente, implementar rate limiting real con Redis.
+Desplegar a producción con secrets reales y dominio configurado.
 
 ---
 

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using SkillUpAcademy.Core.DTOs.Autenticacion;
 using SkillUpAcademy.Core.Interfaces.Servicios;
 using System.Security.Claims;
@@ -11,6 +12,7 @@ namespace SkillUpAcademy.Api.Controladores;
 /// </summary>
 [ApiController]
 [Route("api/v1/auth")]
+[EnableRateLimiting("general")]
 public class AuthController(IServicioAutenticacion _servicioAuth) : ControllerBase
 {
     /// <summary>Registra un nuevo usuario.</summary>

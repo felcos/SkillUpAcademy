@@ -105,9 +105,9 @@ client/src/
 | Proyecto | Archivos | Tests | Framework |
 |----------|----------|-------|-----------|
 | UnitTests | 5 archivos | 54 (53+1 skip) | xUnit + FluentAssertions + Moq + SQLite |
-| IntegrationTests | 6 archivos | 29 | xUnit + WebApplicationFactory + InMemory |
+| IntegrationTests | 7 archivos | 31 | xUnit + WebApplicationFactory + InMemory |
 | Frontend | 3 archivos | 21 | Vitest + Testing Library + jsdom |
-| **Total** | **14** | **104** | |
+| **Total** | **15** | **106** | |
 
 ## Features
 - ✅ Estructura Clean Architecture
@@ -133,6 +133,6 @@ client/src/
 - ✅ Avatar SVG animado (4 estados: idle, hablando, pensando, saludando)
 - ✅ Roles y autorización por rol en JWT
 - ✅ Tests para módulo admin (6 unitarios + 4 integración)
+- ✅ Rate limiting nativo .NET 8 (3 políticas: general, ia, tts)
 - 📋 Despliegue producción con secrets reales
-- 📋 Rate limiting real (Redis)
 - 📋 Notificaciones en tiempo real

@@ -1,12 +1,15 @@
+using System.Security.Claims;
+using System.Text;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using SkillUpAcademy.Api.Extensiones;
 using SkillUpAcademy.Core.Entidades;
 using SkillUpAcademy.Infrastructure.Datos;
-using System.Text;
 
 // Alias para RoleManager usado en el sembrado de admin
 using RoleManagerType = Microsoft.AspNetCore.Identity.RoleManager<Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>>;
@@ -97,6 +100,52 @@ try
                     .AllowCredentials());
     });
 
+    // Rate Limiting nativo .NET 8 — 3 políticas desde LimitesDeUso en appsettings
+    int peticionesGenerales = builder.Configuration.GetValue("LimitesDeUso:PeticionesGeneralesPorMinuto", 100);
+    int peticionesIA = builder.Configuration.GetValue("LimitesDeUso:PeticionesIAPorMinuto", 20);
+    int peticionesTts = builder.Configuration.GetValue("LimitesDeUso:PeticionesTtsPorMinuto", 30);
+
+    builder.Services.AddRateLimiter(opciones =>
+    {
+        opciones.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+        // Política global: ventana fija por IP
+        opciones.AddFixedWindowLimiter("general", configuracion =>
+        {
+            configuracion.PermitLimit = peticionesGenerales;
+            configuracion.Window = TimeSpan.FromMinutes(1);
+            configuracion.QueueLimit = 0;
+        });
+
+        // Política IA: ventana fija por usuario autenticado
+        opciones.AddPolicy("ia", contextoHttp =>
+        {
+            string? usuarioId = contextoHttp.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return RateLimitPartition.GetFixedWindowLimiter(
+                partitionKey: usuarioId ?? contextoHttp.Connection.RemoteIpAddress?.ToString() ?? "anonimo",
+                factory: _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = peticionesIA,
+                    Window = TimeSpan.FromMinutes(1),
+                    QueueLimit = 0
+                });
+        });
+
+        // Política TTS: ventana fija por usuario autenticado
+        opciones.AddPolicy("tts", contextoHttp =>
+        {
+            string? usuarioId = contextoHttp.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return RateLimitPartition.GetFixedWindowLimiter(
+                partitionKey: usuarioId ?? contextoHttp.Connection.RemoteIpAddress?.ToString() ?? "anonimo",
+                factory: _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = peticionesTts,
+                    Window = TimeSpan.FromMinutes(1),
+                    QueueLimit = 0
+                });
+        });
+    });
+
     WebApplication app = builder.Build();
 
     // Aplicar migraciones y sembrar datos en desarrollo
@@ -132,6 +181,7 @@ try
     app.UseCors("PermitirFrontend");
     app.UseAuthentication();
     app.UseAuthorization();
+    app.UseRateLimiter();
 
     // Servir archivos estáticos del SPA (wwwroot)
     app.UseStaticFiles();

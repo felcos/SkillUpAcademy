@@ -20,7 +20,7 @@ public class ServicioSeguridadIA : IServicioSeguridadIA
     private readonly IConfiguration _configuracion;
     private readonly ILogger<ServicioSeguridadIA> _logger;
 
-    private const int MaxMensajesPorMinuto = 20;
+    private readonly int _maxMensajesPorMinuto;
     private const int MaxLongitudMensaje = 1000;
     private const int MaxLongitudRespuesta = 2000;
 
@@ -73,6 +73,7 @@ public class ServicioSeguridadIA : IServicioSeguridadIA
         _cache = cache;
         _configuracion = configuracion;
         _logger = logger;
+        _maxMensajesPorMinuto = int.TryParse(_configuracion["LimitesDeUso:PeticionesIAPorMinuto"], out int limite) ? limite : 20;
     }
 
     /// <inheritdoc />
@@ -221,7 +222,7 @@ public class ServicioSeguridadIA : IServicioSeguridadIA
 
         if (_cache.TryGetValue(cacheKey, out int contadorMensajes))
         {
-            if (contadorMensajes >= MaxMensajesPorMinuto)
+            if (contadorMensajes >= _maxMensajesPorMinuto)
             {
                 return new ResultadoValidacionIA
                 {

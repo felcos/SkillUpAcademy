@@ -39,6 +39,7 @@ Para que profesionales mejoren habilidades clave (comunicación, liderazgo, trab
 | 2026-03-24 | Roles en JWT claims para autorización admin (no políticas separadas, suficiente con roles nativos de Identity) |
 | 2026-03-24 | Validación JWT en producción: rechazar clave por defecto, forzar secrets reales via variables de entorno |
 | 2026-03-24 | Avatar SVG con 4 estados animados (no Lottie/canvas — SVG nativo es más ligero y accesible) |
+| 2026-03-24 | Rate limiting nativo .NET 8 (no AspNetCoreRateLimit — paquete nativo es más simple y no requiere dependencia externa) |
 
 ## Estado actual (actualizado 2026-03-24 — Sesión 5)
 ### Backend ✅
@@ -64,9 +65,9 @@ Para que profesionales mejoren habilidades clave (comunicación, liderazgo, trab
 
 ### Testing ✅
 - ✅ 54 tests unitarios backend (ServicioSeguridadIA, ServicioQuiz, ServicioChatIA, ServicioEscenas, ServicioAdmin)
-- ✅ 29 tests de integración (WebApplicationFactory + InMemory DB)
+- ✅ 31 tests de integración (WebApplicationFactory + InMemory DB)
 - ✅ 21 tests frontend (Vitest + Testing Library)
-- ✅ **Total: 104 tests (103 pasando + 1 skip), 0 fallando**
+- ✅ **Total: 106 tests (104 pasando + 1 skip), 0 fallando**
 
 ### DevOps ✅
 - ✅ CI/CD GitHub Actions (backend + frontend en paralelo)
@@ -78,6 +79,6 @@ Para que profesionales mejoren habilidades clave (comunicación, liderazgo, trab
 ### Pendiente 📋
 - ✅ Tests para módulo admin (6 unitarios + 4 integración)
 - 📋 Despliegue a producción con secrets reales y dominio
-- 📋 Rate limiting real (Redis en vez de IMemoryCache)
+- ✅ Rate limiting nativo .NET 8 con 3 políticas (general, ia, tts) desde appsettings
 - 📋 Notificaciones en tiempo real
 - 📋 Video AI generado para avatar V2

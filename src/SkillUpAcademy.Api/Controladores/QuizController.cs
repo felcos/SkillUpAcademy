@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using SkillUpAcademy.Core.DTOs.Quiz;
 using SkillUpAcademy.Core.Interfaces.Servicios;
 using System.Security.Claims;
@@ -12,6 +13,7 @@ namespace SkillUpAcademy.Api.Controladores;
 [ApiController]
 [Route("api/v1/lessons/{leccionId:int}/quiz")]
 [Authorize]
+[EnableRateLimiting("general")]
 public class QuizController(IServicioQuiz _servicioQuiz) : ControllerBase
 {
     /// <summary>Obtiene las preguntas del quiz.</summary>

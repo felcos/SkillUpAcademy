@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using SkillUpAcademy.Core.DTOs.Admin;
 using SkillUpAcademy.Core.Interfaces.Servicios;
 
@@ -11,6 +12,7 @@ namespace SkillUpAcademy.Api.Controladores;
 [ApiController]
 [Route("api/v1/admin")]
 [Authorize(Roles = "Admin")]
+[EnableRateLimiting("general")]
 public class AdminController(IServicioAdmin _servicioAdmin) : ControllerBase
 {
     /// <summary>Obtiene el resumen general del panel de administración.</summary>
