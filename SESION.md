@@ -1,5 +1,38 @@
 # Sesión — SkillUp Academy
 
+## Sesión 8 — 2026-03-24
+
+### Qué se hizo
+1. **6 nuevas áreas de habilidades** — Resolución de Conflictos, Pensamiento Crítico, Gestión del Tiempo, Negociación, Presentaciones en Público, Adaptabilidad y Resiliencia. Total: 12 áreas.
+2. **180 lecciones nuevas** — 6 áreas × 3 niveles × 5 lecciones = 90 lecciones nuevas (más las 90 existentes = 180 totales). Cada una con contenido educativo profesional basado en frameworks reales.
+3. **6 archivos de seeding** — SembradoDatos.ResolucionConflictos.cs, .PensamientoCritico.cs, .GestionTiempo.cs, .Negociacion.cs, .PresentacionesPublico.cs, .AdaptabilidadResiliencia.cs (partial class pattern).
+4. **Quizzes y escenarios completos** — 6 quizzes (30 preguntas), 6 escenarios interactivos (18 opciones con retroalimentación).
+5. **60 escenas visuales** — 5 escenas por lección teórica de Nivel 1 para las 6 nuevas áreas.
+6. **HomePage actualizada** — Grid de 12 áreas con 4 columnas en XL.
+7. **Tests actualizados** — HomePage test para 12 áreas. Todos los tests pasan (109 backend + 21 frontend = 130 total).
+8. **Despliegue TTS verificado** — skillupacademy.felcos.es respondiendo correctamente con la feature TTS multi-proveedor.
+
+### Estadísticas
+- **130 tests totales** (71 unit + 1 skip + 37 integration + 21 frontend)
+- **44 endpoints** — **16 páginas React**
+- **0 errores, 0 warnings nuevos**
+- **12 áreas** — **36 niveles** — **180 lecciones** — **20 entidades** — **12 servicios** — **5 repositorios**
+
+### Qué queda pendiente
+- Desplegar las 6 nuevas áreas a producción (requiere resetear BD para re-seed)
+- Configurar API keys reales (Azure Speech y/o ElevenLabs) desde admin en producción
+- Video AI generado para avatar V2
+- Notificaciones en tiempo real
+- Mejoras admin (CRUD completo, gestión roles, estadísticas avanzadas)
+
+### Problemas encontrados
+- Ninguno — implementación limpia con 6 agentes en paralelo
+
+### Siguiente paso sugerido
+Desplegar las nuevas áreas a producción. Como el seeder solo corre si la BD está vacía, se puede resetear la BD y dejar que re-siembre todo, o crear un script de migración SQL manual para insertar las nuevas áreas.
+
+---
+
 ## Sesión 7 — 2026-03-24
 
 ### Qué se hizo

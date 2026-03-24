@@ -14,7 +14,7 @@ client/ → React + TypeScript + Vite + Tailwind
 | Entidad | Tabla PostgreSQL | Descripcion |
 |---------|-----------------|-------------|
 | UsuarioApp | usuarios | Usuario extendido de Identity (+VozPreferida, VelocidadVoz, ProveedorTtsPreferido) |
-| AreaHabilidad | areas_habilidad | 6 areas de soft skills |
+| AreaHabilidad | areas_habilidad | 12 areas de soft skills |
 | Nivel | niveles | 3 niveles por area |
 | Leccion | lecciones | Lecciones individuales |
 | PreguntaQuiz | preguntas_quiz | Preguntas de quiz |
@@ -124,14 +124,14 @@ client/src/
 - ✅ Motor de escenas del avatar
 - ✅ TTS (Web Speech API)
 - ✅ Frontend React (13 paginas, 6 componentes, 4 hooks)
-- ✅ Contenido educativo (90 lecciones, 18 quizzes, 18 escenarios)
-- ✅ Testing (94 tests: 48 unit + 25 integration + 21 frontend)
+- ✅ Contenido educativo (180 lecciones, 24 quizzes, 24 escenarios, 12 áreas)
+- ✅ Testing (130 tests: 72 unit + 37 integration + 21 frontend)
 - ✅ CI/CD (GitHub Actions)
 - ✅ Docker (multi-stage + docker-compose)
 - ✅ SPA serving desde .NET
 - ✅ Logging (Serilog)
 - ✅ SSE streaming en chat (IAsyncEnumerable + text/event-stream)
-- ✅ Escenas visuales completas (180 escenas: 60 por nivel)
+- ✅ Escenas visuales completas (240 escenas: 180 originales + 60 nuevas áreas N1)
 - ✅ Configuracion produccion (HTTPS, secrets, CORS, HSTS)
 - ✅ Admin dashboard (backend + frontend, 4 endpoints, 2 páginas)
 - ✅ Avatar SVG animado (4 estados: idle, hablando, pensando, saludando)

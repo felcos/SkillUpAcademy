@@ -9,6 +9,12 @@ const areas = [
   { icono: '🧠', titulo: 'Inteligencia Emocional', color: '#E74C3C', desc: 'Gestiona emociones con maestría' },
   { icono: '🌐', titulo: 'Networking', color: '#F39C12', desc: 'Construye relaciones estratégicas' },
   { icono: '🎯', titulo: 'Persuasión', color: '#16A085', desc: 'Influye con ética y argumentos' },
+  { icono: '⚖️', titulo: 'Resolución de Conflictos', color: '#2C3E50', desc: 'Transforma desacuerdos en oportunidades' },
+  { icono: '🔍', titulo: 'Pensamiento Crítico', color: '#8E44AD', desc: 'Analiza, evalúa y decide con rigor' },
+  { icono: '⏱️', titulo: 'Gestión del Tiempo', color: '#D35400', desc: 'Prioriza y multiplica tu productividad' },
+  { icono: '🤝', titulo: 'Negociación', color: '#1A5276', desc: 'Acuerdos win-win con estrategia' },
+  { icono: '🎤', titulo: 'Presentaciones en Público', color: '#C0392B', desc: 'Cautiva audiencias con confianza' },
+  { icono: '🌱', titulo: 'Adaptabilidad y Resiliencia', color: '#196F3D', desc: 'Crece ante el cambio y la adversidad' },
 ];
 
 export default function HomePage() {
@@ -55,8 +61,8 @@ export default function HomePage() {
 
       {/* Áreas */}
       <section className="max-w-6xl mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center mb-12">6 áreas de habilidades profesionales</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <h2 className="text-3xl font-bold text-center mb-12">12 áreas de habilidades profesionales</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {areas.map((area) => (
             <div key={area.titulo} className="bg-[#25254A] rounded-2xl p-6 border border-white/5 hover:border-white/10 transition-all hover:transform hover:-translate-y-1">
               <div className="text-4xl mb-4">{area.icono}</div>

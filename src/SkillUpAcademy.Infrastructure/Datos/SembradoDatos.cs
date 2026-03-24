@@ -26,6 +26,14 @@ public static partial class SembradoDatos
         await SembrarLeccionesNetworkingAsync(contexto);
         await SembrarLeccionesPersuasionAsync(contexto);
 
+        // Nuevas áreas (7-12)
+        await SembrarLeccionesResolucionConflictosAsync(contexto);
+        await SembrarLeccionesPensamientoCriticoAsync(contexto);
+        await SembrarLeccionesGestionTiempoAsync(contexto);
+        await SembrarLeccionesNegociacionAsync(contexto);
+        await SembrarLeccionesPresentacionesPublicoAsync(contexto);
+        await SembrarLeccionesAdaptabilidadResilienciaAsync(contexto);
+
         // Nivel 2 — Práctica
         await SembrarLeccionesNivel2Async(contexto);
 
@@ -103,6 +111,48 @@ public static partial class SembradoDatos
                 Subtitulo = "Influye con ética y convence con argumentos sólidos",
                 Descripcion = "Domina las técnicas de persuasión ética para presentar ideas, negociar y generar compromiso.",
                 Icono = "🎯", ColorPrimario = "#16A085", ColorAcento = "#1ABC9C", Orden = 6
+            },
+            new AreaHabilidad
+            {
+                Id = 7, Slug = "resolucion-conflictos", Titulo = "Resolución de Conflictos",
+                Subtitulo = "Transforma desacuerdos en oportunidades de crecimiento",
+                Descripcion = "Aprende a mediar, negociar y resolver conflictos laborales de forma constructiva y profesional.",
+                Icono = "⚖️", ColorPrimario = "#2C3E50", ColorAcento = "#34495E", Orden = 7
+            },
+            new AreaHabilidad
+            {
+                Id = 8, Slug = "pensamiento-critico", Titulo = "Pensamiento Crítico",
+                Subtitulo = "Analiza, evalúa y decide con rigor intelectual",
+                Descripcion = "Desarrolla tu capacidad de evaluar argumentos, detectar sesgos y tomar decisiones fundamentadas.",
+                Icono = "🔍", ColorPrimario = "#8E44AD", ColorAcento = "#BB8FCE", Orden = 8
+            },
+            new AreaHabilidad
+            {
+                Id = 9, Slug = "gestion-del-tiempo", Titulo = "Gestión del Tiempo",
+                Subtitulo = "Prioriza, enfoca y multiplica tu productividad",
+                Descripcion = "Domina técnicas de priorización, planificación y productividad para lograr más con menos estrés.",
+                Icono = "⏱️", ColorPrimario = "#D35400", ColorAcento = "#E67E22", Orden = 9
+            },
+            new AreaHabilidad
+            {
+                Id = 10, Slug = "negociacion", Titulo = "Negociación",
+                Subtitulo = "Acuerdos win-win con estrategia y empatía",
+                Descripcion = "Aprende frameworks de negociación profesional para salarios, contratos, clientes y acuerdos internos.",
+                Icono = "🤝", ColorPrimario = "#1A5276", ColorAcento = "#2980B9", Orden = 10
+            },
+            new AreaHabilidad
+            {
+                Id = 11, Slug = "presentaciones-en-publico", Titulo = "Presentaciones en Público",
+                Subtitulo = "Cautiva audiencias con confianza y claridad",
+                Descripcion = "Supera el miedo escénico y domina el arte de presentar ideas ante cualquier audiencia.",
+                Icono = "🎤", ColorPrimario = "#C0392B", ColorAcento = "#E74C3C", Orden = 11
+            },
+            new AreaHabilidad
+            {
+                Id = 12, Slug = "adaptabilidad-resiliencia", Titulo = "Adaptabilidad y Resiliencia",
+                Subtitulo = "Crece ante el cambio y la adversidad",
+                Descripcion = "Desarrolla mentalidad de crecimiento, gestiona la incertidumbre y convierte los obstáculos en impulso.",
+                Icono = "🌱", ColorPrimario = "#196F3D", ColorAcento = "#27AE60", Orden = 12
             }
         };
 
@@ -1043,7 +1093,7 @@ public static partial class SembradoDatos
             new Logro { Slug = "racha-3-dias", Titulo = "Constancia inicial", Descripcion = "Mantener una racha de 3 días", Icono = "🔥", PuntosRequeridos = 0, Condicion = "racha_dias >= 3" },
             new Logro { Slug = "racha-7-dias", Titulo = "Semana de fuego", Descripcion = "Mantener una racha de 7 días consecutivos", Icono = "🔥", PuntosRequeridos = 0, Condicion = "racha_dias >= 7" },
             new Logro { Slug = "explorador", Titulo = "Explorador curioso", Descripcion = "Iniciar lecciones en 3 áreas diferentes", Icono = "🧭", PuntosRequeridos = 0, Condicion = "areas_iniciadas >= 3" },
-            new Logro { Slug = "todas-las-areas", Titulo = "Renacimiento profesional", Descripcion = "Completar al menos una lección en cada área", Icono = "🌟", PuntosRequeridos = 0, Condicion = "areas_con_leccion >= 6" },
+            new Logro { Slug = "todas-las-areas", Titulo = "Renacimiento profesional", Descripcion = "Completar al menos una lección en cada área", Icono = "🌟", PuntosRequeridos = 0, Condicion = "areas_con_leccion >= 12" },
             new Logro { Slug = "maestro-comunicacion", Titulo = "Maestro comunicador", Descripcion = "Completar el nivel 1 de Comunicación Efectiva", Icono = "💬", PuntosRequeridos = 0, Condicion = "nivel_completado_comunicacion >= 1" },
             new Logro { Slug = "primer-roleplay", Titulo = "Actor natural", Descripcion = "Completar tu primer roleplay con la IA", Icono = "🎭", PuntosRequeridos = 0, Condicion = "roleplays_completados >= 1" },
             new Logro { Slug = "coleccionista-50", Titulo = "Coleccionista", Descripcion = "Acumular 50 puntos", Icono = "⭐", PuntosRequeridos = 50, Condicion = "puntos_totales >= 50" },

@@ -41,19 +41,21 @@ Para que profesionales mejoren habilidades clave (comunicación, liderazgo, trab
 | 2026-03-24 | Avatar SVG con 4 estados animados (no Lottie/canvas — SVG nativo es más ligero y accesible) |
 | 2026-03-24 | Rate limiting nativo .NET 8 (no AspNetCoreRateLimit — paquete nativo es más simple y no requiere dependencia externa) |
 | 2026-03-24 | TTS multi-proveedor (Azure + ElevenLabs + WebSpeech) configurable desde admin, preferencias por usuario en BD |
+| 2026-03-24 | 12 áreas de habilidades (6 nuevas con partial class pattern para seeding modular) |
 
-## Estado actual (actualizado 2026-03-24 — Sesión 5)
+## Estado actual (actualizado 2026-03-24 — Sesión 8)
 ### Backend ✅
 - ✅ Solución .NET 8 con Clean Architecture (Api, Core, Infrastructure)
-- ✅ 19 entidades, 10 enums, 19 configuraciones Fluent API (snake_case, jsonb)
+- ✅ 20 entidades, 10 enums, 20 configuraciones Fluent API (snake_case, jsonb)
 - ✅ 12 servicios + 5 repositorios registrados en DI
 - ✅ 10 controladores con 44 endpoints (29 REST + 1 SSE streaming + 4 admin + 4 TTS usuario + 4 TTS admin + 2 extras)
 - ✅ Seguridad IA: 5 capas anti-abuso integradas en ServicioChatIA
 - ✅ SSE streaming en chat IA (IAsyncEnumerable + Anthropic streaming API)
-- ✅ SembradoDatos: 90 lecciones, 18 quizzes, 18 escenarios, 180 escenas, 10 logros
+- ✅ SembradoDatos: 180 lecciones (12 áreas × 3 niveles × 5), 24 quizzes, 24 escenarios, 240 escenas, 10 logros
 - ✅ Middleware: cabeceras seguridad + manejo excepciones global
 - ✅ Admin dashboard: ServicioAdmin, AdminController, SembradoAdmin (rol + usuario)
 - ✅ Roles en JWT claims + autorización por rol
+- ✅ TTS multi-proveedor (Azure + ElevenLabs + WebSpeech) configurable desde admin
 
 ### Frontend ✅
 - ✅ 16 páginas React + TypeScript + Tailwind CSS + Vite
@@ -79,8 +81,11 @@ Para que profesionales mejoren habilidades clave (comunicación, liderazgo, trab
 
 ### Pendiente 📋
 - ✅ Tests para módulo admin (6 unitarios + 4 integración)
-- 📋 Despliegue a producción con secrets reales y dominio
+- ✅ Despliegue a producción en skillupacademy.felcos.es
 - ✅ Rate limiting nativo .NET 8 con 3 políticas (general, ia, tts) desde appsettings
 - ✅ TTS multi-proveedor (Azure + ElevenLabs + WebSpeech) configurable desde admin
+- ✅ 12 áreas de habilidades (6 nuevas: Resolución de Conflictos, Pensamiento Crítico, Gestión del Tiempo, Negociación, Presentaciones en Público, Adaptabilidad y Resiliencia)
+- 📋 Desplegar nuevas áreas a producción (re-seed BD)
+- 📋 Mejoras admin (CRUD completo, gestión roles, estadísticas avanzadas)
 - 📋 Notificaciones en tiempo real
 - 📋 Video AI generado para avatar V2

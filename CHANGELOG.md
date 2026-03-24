@@ -1,5 +1,22 @@
 # Changelog
 
+## [2026-03-24] — Sesión 8
+
+### feat: 6 nuevas áreas de habilidades (12 áreas totales, 180 lecciones nuevas)
+- **6 áreas nuevas**: Resolución de Conflictos, Pensamiento Crítico, Gestión del Tiempo, Negociación, Presentaciones en Público, Adaptabilidad y Resiliencia
+- **180 lecciones nuevas** (6 áreas × 3 niveles × 5 lecciones cada una) con contenido educativo profesional
+  - Nivel 1 (Fundamentos): 2 teorías + quiz 5 preguntas + escenario 3 opciones + roleplay
+  - Nivel 2 (Práctica): 2 teorías + quiz + escenario + roleplay + escenas visuales
+  - Nivel 3 (Dominio): 2 teorías + quiz + escenario + roleplay + escenas visuales
+- **6 quizzes completos** con 30 preguntas totales y retroalimentación individual por opción
+- **6 escenarios interactivos** con 18 opciones (óptima, aceptable, inadecuada) y retroalimentación
+- **60 escenas visuales** para lecciones teóricas de Nivel 1 (5 escenas por lección × 12 teorías)
+- **HomePage actualizada** — Grid 4 columnas con las 12 áreas
+- **Tests actualizados** — Test "12 áreas de habilidades" actualizado
+- Contenido basado en frameworks reales: Thomas-Kilmann, CNV (Rosenberg), Harvard (BATNA/ZOPA), Eisenhower, Pomodoro, Deep Work, Carol Dweck, Seligman PERMA, Nassim Taleb, Amy Cuddy, etc.
+
+---
+
 ## [2026-03-24] — Sesión 7
 
 ### feat: TTS multi-proveedor (Azure + ElevenLabs + WebSpeech)

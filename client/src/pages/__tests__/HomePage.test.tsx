@@ -98,7 +98,7 @@ describe('HomePage', () => {
     expect(screen.queryByRole('link', { name: /iniciar sesión/i })).not.toBeInTheDocument();
   });
 
-  it('debe mostrar las 6 áreas de habilidades', () => {
+  it('debe mostrar las 12 áreas de habilidades', () => {
     mockedUseAuth.mockReturnValue({
       usuario: null,
       token: null,
@@ -118,6 +118,12 @@ describe('HomePage', () => {
     expect(screen.getByText('Inteligencia Emocional')).toBeInTheDocument();
     expect(screen.getByText('Networking')).toBeInTheDocument();
     expect(screen.getByText('Persuasión')).toBeInTheDocument();
+    expect(screen.getByText('Resolución de Conflictos')).toBeInTheDocument();
+    expect(screen.getByText('Pensamiento Crítico')).toBeInTheDocument();
+    expect(screen.getByText('Gestión del Tiempo')).toBeInTheDocument();
+    expect(screen.getByText('Negociación')).toBeInTheDocument();
+    expect(screen.getByText('Presentaciones en Público')).toBeInTheDocument();
+    expect(screen.getByText('Adaptabilidad y Resiliencia')).toBeInTheDocument();
   });
 
   it('debe mostrar las secciones de features', () => {
