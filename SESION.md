@@ -1,5 +1,63 @@
 # Sesión — SkillUp Academy
 
+## Sesión 6 — 2026-03-24
+
+### Qué se hizo
+1. **Tests unitarios para ServicioAdmin** — 6 tests con SQLite in-memory (ObtenerResumen, ObtenerUsuarios paginado, ObtenerTotalUsuarios, EstadisticasContenido [skip por incompatibilidad LINQ/SQLite], AlternarBloqueoIA éxito, AlternarBloqueoIA usuario inexistente)
+2. **Tests de integración para AdminController** — 4 endpoints admin añadidos a EndpointsProtegidosTests (resumen, usuarios, estadisticas-contenido, alternar-bloqueo-ia verifican 401 sin token)
+3. **Paquete SQLite añadido** a UnitTests.csproj para tests de ServicioAdmin con Identity real
+
+### Estadísticas
+- **104 tests totales** (53 unit + 1 skip + 29 integration + 21 frontend)
+- **34 endpoints** — **15 páginas React**
+- **0 errores, 0 warnings**
+
+### Qué queda pendiente
+- Rate limiting real (Redis en vez de IMemoryCache)
+- Despliegue a producción con secrets reales
+- Video AI generado para avatar V2
+- Notificaciones en tiempo real
+
+### Problemas encontrados
+- Query LINQ compleja con record constructor en Select + SelectMany no compatible con SQLite ni InMemory (bug EF Core 8) — test marcado con Skip, requiere PostgreSQL real
+- Sesión anterior interrumpida por reinicio del ordenador — trabajo recuperado sin pérdida
+
+### Siguiente paso sugerido
+Desplegar a producción con secrets reales y dominio configurado. Alternativamente, implementar rate limiting real con Redis.
+
+---
+
+## Sesión 5 — 2026-03-24
+
+### Qué se hizo
+1. **Admin Dashboard completo (backend)** — AdminController con 4 endpoints: GET /resumen, GET /usuarios, GET /estadisticas-contenido, POST /usuarios/{id}/alternar-bloqueo-ia. ServicioAdmin con IServicioAdmin. 3 DTOs en Core/DTOs/Admin/. SembradoAdmin con rol Admin y usuario admin@skillupacademy.com/Admin123!
+2. **Admin Dashboard completo (frontend)** — AdminDashboardPage (resumen + estadísticas), AdminUsersPage (gestión usuarios con bloqueo IA). ProtectedAdminRoute para rutas admin. Hook useAdmin. Enlace Admin en Navbar (solo visible para admins).
+3. **Avatar SVG animado** — AvatarAria.tsx reescrito con personaje femenino completo, 4 estados animados (idle, hablando, pensando, saludando). Integrado en ChatPage y LessonPage.
+4. **Configuración de producción** — appsettings.Production.json, docker-compose.production.yml, .env.example. Validación JWT en producción (rechaza clave por defecto). CORS configurable por entorno. HSTS y HTTPS habilitados.
+5. **Auth mejorada con roles** — Roles incluidos en JWT claims. Campo esAdmin en PerfilUsuarioDto. Campo EstaBloqueadoIA en UsuarioApp. Autorización por rol [Authorize(Roles = "Admin")] en AdminController.
+
+### Estadísticas
+- **94 tests totales pasando** (48 unit + 25 integration + 21 frontend)
+- **34 endpoints** (30 existentes + 4 admin)
+- **15 páginas React** (13 existentes + 2 admin)
+- **0 errores, 0 warnings**
+
+### Qué queda pendiente
+- Tests específicos para AdminController y ServicioAdmin
+- Rate limiting real (no IMemoryCache)
+- Despliegue a producción con secrets reales
+- Video AI generado para avatar V2
+- Notificaciones en tiempo real
+
+### Problemas encontrados
+- Validación JWT en entorno de testing: la clave por defecto se rechaza en producción, requiere configuración separada para tests
+- Worktrees con divergencia entre ramas al trabajar en paralelo
+
+### Siguiente paso sugerido
+Añadir tests para el módulo admin (unitarios para ServicioAdmin + integración para AdminController). Luego desplegar a producción con secrets reales y dominio configurado.
+
+---
+
 ## Sesión 4 — 2026-03-23
 
 ### Qué se hizo

@@ -1,5 +1,85 @@
 # Changelog
 
+## [2026-03-24] — Sesión 6
+
+### feat: tests para módulo admin
+- 6 tests unitarios para ServicioAdmin con SQLite in-memory + Identity real
+  - ObtenerResumenAsync, ObtenerUsuariosAsync (paginado), ObtenerTotalUsuariosAsync
+  - ObtenerEstadisticasContenidoAsync (skip: incompatibilidad LINQ/SQLite)
+  - AlternarBloqueoIAUsuarioAsync (éxito + usuario inexistente)
+- 4 tests de integración: endpoints admin añadidos a EndpointsProtegidosTests (401 sin token)
+- Paquete Microsoft.EntityFrameworkCore.Sqlite añadido a UnitTests.csproj
+- Total: 104 tests (103 pass + 1 skip)
+
+### Archivos creados
+- `tests/SkillUpAcademy.UnitTests/Servicios/ServicioAdminTests.cs`
+
+### Archivos modificados
+- `tests/SkillUpAcademy.UnitTests/SkillUpAcademy.UnitTests.csproj` — paquete SQLite
+- `tests/SkillUpAcademy.IntegrationTests/Controladores/EndpointsProtegidosTests.cs` — 4 endpoints admin
+
+---
+
+## [2026-03-24] — Sesión 5
+
+### feat: admin dashboard completo (backend + frontend)
+- `AdminController` con 4 endpoints: resumen, usuarios, estadísticas contenido, alternar bloqueo IA
+- `IServicioAdmin` / `ServicioAdmin` — lógica de administración
+- 3 DTOs: ResumenAdminDto, EstadisticasContenidoDto, UsuarioAdminDto (en Core/DTOs/Admin/)
+- `SembradoAdmin` — rol Admin + usuario admin@skillupacademy.com/Admin123!
+- `AdminDashboardPage` — panel con resumen y estadísticas de contenido
+- `AdminUsersPage` — gestión de usuarios con bloqueo IA
+- `ProtectedAdminRoute` — componente de ruta protegida para admins
+- `useAdmin` hook — wrapping de endpoints admin con TanStack Query
+- Enlace Admin en Navbar (visible solo para rol Admin)
+
+### feat: avatar SVG animado con 4 estados
+- `AvatarAria.tsx` reescrito con personaje femenino SVG completo
+- 4 estados animados: idle, hablando, pensando, saludando
+- Integrado en ChatPage y LessonPage
+
+### feat: configuración de producción (secrets, CORS, HTTPS)
+- `appsettings.Production.json` — configuración específica de producción
+- `docker-compose.production.yml` — compose para despliegue productivo
+- `.env.example` — plantilla de variables de entorno
+- Validación JWT en producción (rechaza clave por defecto)
+- CORS configurable por entorno
+- HSTS y redirección HTTPS habilitados
+
+### feat: roles y autorización por rol en JWT
+- Roles incluidos como claims en token JWT
+- `esAdmin` añadido a PerfilUsuarioDto
+- `EstaBloqueadoIA` añadido a UsuarioApp
+- `[Authorize(Roles = "Admin")]` en AdminController
+
+### Archivos creados
+- `src/SkillUpAcademy.Api/Controllers/AdminController.cs`
+- `src/SkillUpAcademy.Core/Interfaces/IServicioAdmin.cs`
+- `src/SkillUpAcademy.Infrastructure/Servicios/ServicioAdmin.cs`
+- `src/SkillUpAcademy.Core/DTOs/Admin/ResumenAdminDto.cs`
+- `src/SkillUpAcademy.Core/DTOs/Admin/EstadisticasContenidoDto.cs`
+- `src/SkillUpAcademy.Core/DTOs/Admin/UsuarioAdminDto.cs`
+- `src/SkillUpAcademy.Infrastructure/Datos/SembradoAdmin.cs`
+- `src/SkillUpAcademy.Api/appsettings.Production.json`
+- `docker-compose.production.yml`
+- `.env.example`
+- `client/src/pages/AdminDashboardPage.tsx`
+- `client/src/pages/AdminUsersPage.tsx`
+- `client/src/components/layout/ProtectedAdminRoute.tsx`
+- `client/src/hooks/useAdmin.ts`
+
+### Archivos modificados
+- `src/SkillUpAcademy.Api/Program.cs` — registro ServicioAdmin en DI, validación JWT prod
+- `src/SkillUpAcademy.Api/Controllers/AuthController.cs` — roles en JWT claims
+- `src/SkillUpAcademy.Core/DTOs/PerfilUsuarioDto.cs` — campo esAdmin
+- `src/SkillUpAcademy.Core/Entidades/UsuarioApp.cs` — campo EstaBloqueadoIA
+- `client/src/components/avatar/AvatarAria.tsx` — reescrito con SVG animado
+- `client/src/components/layout/Navbar.tsx` — enlace admin
+- `client/src/App.tsx` — rutas admin
+- `client/src/lib/api.ts` — endpoints admin
+
+---
+
 ## [2026-03-23] — Sesión 4
 
 ### feat: SSE streaming en chat IA

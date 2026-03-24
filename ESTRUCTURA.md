@@ -46,6 +46,7 @@ client/ → React + TypeScript + Vite + Tailwind
 | IServicioSeguridadIA | ServicioSeguridadIA | Scoped |
 | IServicioChatIA | ServicioChatIA | Scoped (HttpClient) |
 | IServicioTts | ServicioTts | Scoped (HttpClient) |
+| IServicioAdmin | ServicioAdmin | Scoped |
 
 ## Repositorios
 | Interfaz | Implementacion |
@@ -56,7 +57,7 @@ client/ → React + TypeScript + Vite + Tailwind
 | IRepositorioChatIA | RepositorioChatIA |
 | IRepositorioLogros | RepositorioLogros |
 
-## Controladores API (8)
+## Controladores API (9)
 | Controlador | Ruta base | Endpoints | Auth |
 |-------------|-----------|-----------|------|
 | HealthController | api/v1/health | GET /, GET /ready | No |
@@ -67,12 +68,13 @@ client/ → React + TypeScript + Vite + Tailwind
 | ScenarioController | api/v1/lessons/{id}/scenario | /, /choose | Si |
 | ProgressController | api/v1/progress | /dashboard, /skill/{slug}, /achievements | Si |
 | AiChatController | api/v1/ai | session/start, session/{id}/message, session/{id}/message/stream (SSE), history, end | Si |
+| AdminController | api/v1/admin | resumen, usuarios, estadisticas-contenido, usuarios/{id}/alternar-bloqueo-ia | Si (Admin) |
 
 ## Frontend — client/src/
 ```
 client/src/
 ├── main.tsx                         — Entry point, providers
-├── App.tsx                          — React Router (13 rutas)
+├── App.tsx                          — React Router (15 rutas)
 ├── pages/
 │   ├── HomePage.tsx                 — Landing con hero, areas, features
 │   ├── LoginPage.tsx                — Login con JWT
@@ -86,24 +88,26 @@ client/src/
 │   ├── AchievementsPage.tsx         — Logros
 │   ├── ChatPage.tsx                 — Chat con Aria (IA)
 │   ├── ProfilePage.tsx              — Perfil de usuario
+│   ├── AdminDashboardPage.tsx       — Panel admin (resumen + estadísticas)
+│   ├── AdminUsersPage.tsx           — Gestión usuarios (bloqueo IA)
 │   └── NotFoundPage.tsx             — 404
 ├── components/
-│   ├── layout/ (Navbar, Layout, ProtectedRoute)
+│   ├── layout/ (Navbar, Layout, ProtectedRoute, ProtectedAdminRoute)
 │   ├── ui/ (LoadingSpinner, ErrorMessage)
-│   └── avatar/ (AvatarAria)
-├── hooks/ (useSkills, useLessons, useProgress, useChat)
+│   └── avatar/ (AvatarAria — SVG animado con 4 estados)
+├── hooks/ (useSkills, useLessons, useProgress, useChat, useAdmin)
 ├── contexts/ (AuthContext)
-├── lib/ (api.ts — 29 endpoints tipados)
+├── lib/ (api.ts — 34 endpoints tipados)
 └── test/ (setup.ts, utils.tsx)
 ```
 
 ## Tests
 | Proyecto | Archivos | Tests | Framework |
 |----------|----------|-------|-----------|
-| UnitTests | 4 archivos | 48 | xUnit + FluentAssertions + Moq |
-| IntegrationTests | 6 archivos | 25 | xUnit + WebApplicationFactory + InMemory |
+| UnitTests | 5 archivos | 54 (53+1 skip) | xUnit + FluentAssertions + Moq + SQLite |
+| IntegrationTests | 6 archivos | 29 | xUnit + WebApplicationFactory + InMemory |
 | Frontend | 3 archivos | 21 | Vitest + Testing Library + jsdom |
-| **Total** | **13** | **94** | |
+| **Total** | **14** | **104** | |
 
 ## Features
 - ✅ Estructura Clean Architecture
@@ -124,5 +128,11 @@ client/src/
 - ✅ Logging (Serilog)
 - ✅ SSE streaming en chat (IAsyncEnumerable + text/event-stream)
 - ✅ Escenas visuales completas (180 escenas: 60 por nivel)
-- 📋 Configuracion produccion (HTTPS, secrets)
-- 📋 Admin dashboard
+- ✅ Configuracion produccion (HTTPS, secrets, CORS, HSTS)
+- ✅ Admin dashboard (backend + frontend, 4 endpoints, 2 páginas)
+- ✅ Avatar SVG animado (4 estados: idle, hablando, pensando, saludando)
+- ✅ Roles y autorización por rol en JWT
+- ✅ Tests para módulo admin (6 unitarios + 4 integración)
+- 📋 Despliegue producción con secrets reales
+- 📋 Rate limiting real (Redis)
+- 📋 Notificaciones en tiempo real

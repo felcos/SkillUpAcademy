@@ -29,6 +29,10 @@ public class EndpointsProtegidosTests
     [InlineData("GET", "/api/v1/auth/me")]
     [InlineData("POST", "/api/v1/ai/session/00000000-0000-0000-0000-000000000001/message")]
     [InlineData("POST", "/api/v1/ai/session/00000000-0000-0000-0000-000000000001/message/stream")]
+    [InlineData("GET", "/api/v1/admin/resumen")]
+    [InlineData("GET", "/api/v1/admin/usuarios")]
+    [InlineData("GET", "/api/v1/admin/estadisticas-contenido")]
+    [InlineData("POST", "/api/v1/admin/usuarios/00000000-0000-0000-0000-000000000001/alternar-bloqueo-ia")]
     public async Task EndpointsProtegidos_SinToken_DebenRetornar401(string metodo, string ruta)
     {
         // Arrange
