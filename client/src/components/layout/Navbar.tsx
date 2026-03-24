@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { BookOpen, LayoutDashboard, Trophy, LogOut, User, Shield } from 'lucide-react';
+import { BookOpen, LayoutDashboard, Trophy, LogOut, Shield } from 'lucide-react';
 
 export default function Navbar() {
   const { usuario, estaAutenticado, esAdmin, logout } = useAuth();

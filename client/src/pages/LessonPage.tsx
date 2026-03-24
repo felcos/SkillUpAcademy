@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { type Escena } from '../lib/api';
 import { useLeccion, useEscenas, useIniciarLeccion, useCompletarLeccion } from '../hooks/useLessons';
-import { ChevronLeft, ChevronRight, Volume2, VolumeX, Pause, Play } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Volume2, VolumeX } from 'lucide-react';
 import AvatarAria from '../components/avatar/AvatarAria';
 
 export default function LessonPage() {

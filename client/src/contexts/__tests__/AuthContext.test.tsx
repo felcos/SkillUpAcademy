@@ -69,6 +69,8 @@ describe('useAuth', () => {
         puntosTotales: 100,
         rachaDias: 5,
         fechaRegistro: '2024-01-01',
+        roles: [],
+        esAdmin: false,
       },
     };
 
@@ -105,6 +107,8 @@ describe('useAuth', () => {
         puntosTotales: 100,
         rachaDias: 5,
         fechaRegistro: '2024-01-01',
+        roles: [],
+        esAdmin: false,
       },
     };
 
@@ -148,6 +152,8 @@ describe('useAuth', () => {
       puntosTotales: 50,
       rachaDias: 3,
       fechaRegistro: '2024-01-01',
+      roles: [],
+      esAdmin: false,
     };
 
     mockedAuthApi.perfil.mockResolvedValue(perfilUsuario);

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { aiApi, type EventoStreamChat } from '../lib/api';
-import { Send, Sparkles, Bot, User } from 'lucide-react';
+import { Send, Sparkles, User } from 'lucide-react';
 import AvatarAria from '../components/avatar/AvatarAria';
 
 interface Mensaje {

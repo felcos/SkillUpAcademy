@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { BookOpen, Brain, Target, Users, Globe, Sparkles } from 'lucide-react';
+import { BookOpen, Brain, Target, Sparkles } from 'lucide-react';
 
 const areas = [
   { icono: '💬', titulo: 'Comunicación Efectiva', color: '#0F4C81', desc: 'Domina el arte de transmitir ideas' },

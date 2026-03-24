@@ -51,3 +51,7 @@ desktop.ini
 
 ## Docker
 docker-compose.override.yml
+publish/
+skillup-publish.tar.gz
+ssh-key-*.key
+user.txt

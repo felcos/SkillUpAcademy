@@ -26,6 +26,7 @@ describe('HomePage', () => {
       registrar: vi.fn(),
       logout: vi.fn(),
       estaAutenticado: false,
+      esAdmin: false,
     });
 
     renderWithProviders(<HomePage />);
@@ -44,6 +45,7 @@ describe('HomePage', () => {
       registrar: vi.fn(),
       logout: vi.fn(),
       estaAutenticado: false,
+      esAdmin: false,
     });
 
     renderWithProviders(<HomePage />);
@@ -69,6 +71,8 @@ describe('HomePage', () => {
         puntosTotales: 100,
         rachaDias: 5,
         fechaRegistro: '2024-01-01',
+        roles: [],
+        esAdmin: false,
       },
       token: 'jwt-token',
       cargando: false,
@@ -76,6 +80,7 @@ describe('HomePage', () => {
       registrar: vi.fn(),
       logout: vi.fn(),
       estaAutenticado: true,
+      esAdmin: false,
     });
 
     renderWithProviders(<HomePage />);
@@ -97,6 +102,7 @@ describe('HomePage', () => {
       registrar: vi.fn(),
       logout: vi.fn(),
       estaAutenticado: false,
+      esAdmin: false,
     });
 
     renderWithProviders(<HomePage />);
@@ -118,6 +124,7 @@ describe('HomePage', () => {
       registrar: vi.fn(),
       logout: vi.fn(),
       estaAutenticado: false,
+      esAdmin: false,
     });
 
     renderWithProviders(<HomePage />);
