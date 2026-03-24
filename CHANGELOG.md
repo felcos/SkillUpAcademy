@@ -1,5 +1,71 @@
 # Changelog
 
+## [2026-03-24] — Sesión 7
+
+### feat: TTS multi-proveedor (Azure + ElevenLabs + WebSpeech)
+- **Nueva entidad `ProveedorTts`** — tabla `proveedores_tts` con configuración por proveedor (API key, región, voz por defecto, habilitado)
+- **Nuevo enum `TipoProveedorTts`** — WebSpeechApi, AzureSpeech, ElevenLabs
+- **Refactor completo `ServicioTts`** — multi-proveedor con resolución automática, fallback a Web Speech API
+  - Azure Speech: SSML con velocidad configurable, voces neurales españolas
+  - ElevenLabs: API REST con eleven_multilingual_v2, voice_settings configurables
+  - Catálogo de 12 voces Azure + 6 voces ElevenLabs + 1 voz Web Speech por defecto
+- **`IServicioAdminTts` / `ServicioAdminTts`** — CRUD de proveedores TTS desde admin
+- **`TtsController`** — 5 endpoints: voces, configuración, preferencias, sintetizar, preview
+- **4 endpoints admin TTS** en AdminController: listar proveedores, obtener, actualizar, alternar
+- **Preferencias de voz por usuario** — 3 nuevas columnas en `UsuarioApp`: `VozPreferida`, `VelocidadVoz`, `ProveedorTtsPreferido`
+- **DTOs TTS** — VozDisponibleDto, ConfiguracionTtsUsuarioDto, ProveedorTtsPublicoDto, ConfiguracionProveedorTtsDto, PeticionActualizarVoz, PeticionSintetizar
+- **Migración EF Core** — `AgregarProveedoresTtsYPreferenciasVoz`
+- **Sembrado** — `SembradoProveedoresTts` siembra Azure y ElevenLabs deshabilitados por defecto
+
+### feat: frontend TTS configurable
+- **`ProfilePage` reescrito** — añadido selector de voz con 3 secciones: tipo de proveedor, voz específica con preview, slider de velocidad (0.5x-2.0x)
+- **`LessonPage` mejorado** — intenta sintetizar audio server-side primero, fallback automático a Web Speech API; velocidad y voz del usuario respetadas
+- **`AdminTtsPage`** nueva — panel para gestionar proveedores TTS: habilitar/deshabilitar toggle, configurar API key, región, voz por defecto
+- **`useTts.ts`** — 6 hooks: useConfiguracionTts, useVocesDisponibles, useActualizarPreferenciasTts, useProveedoresTtsAdmin, useActualizarProveedorTts, useAlternarProveedorTts
+- **`api.ts`** — ttsApi (5 endpoints) + adminTtsApi (4 endpoints) + interfaces TypeScript
+- **Enlace admin** en AdminDashboardPage a la configuración de voz
+
+### feat: tests TTS
+- **10 tests unitarios `ServicioTtsTests`** — disponibilidad, audio vacío sin proveedor, Web Speech fallback, voces disponibles, configuración usuario, actualización preferencias, clamp velocidad
+- **8 tests unitarios `ServicioAdminTtsTests`** — CRUD proveedores, alternar estado, ordenamiento, API key no sobrescrita si vacía
+- **6 tests de integración** — endpoints TTS y admin TTS verifican 401 sin token
+- **Total: 130 tests** (129 pass + 1 skip), 0 fallos
+
+### Archivos creados
+- `src/SkillUpAcademy.Core/Enums/TipoProveedorTts.cs`
+- `src/SkillUpAcademy.Core/Entidades/ProveedorTts.cs`
+- `src/SkillUpAcademy.Core/DTOs/Tts/VozDisponibleDto.cs`
+- `src/SkillUpAcademy.Core/DTOs/Tts/ConfiguracionProveedorTtsDto.cs`
+- `src/SkillUpAcademy.Core/Interfaces/Servicios/IServicioAdminTts.cs`
+- `src/SkillUpAcademy.Infrastructure/Servicios/ServicioAdminTts.cs`
+- `src/SkillUpAcademy.Infrastructure/Datos/Configuraciones/ConfiguracionProveedorTts.cs`
+- `src/SkillUpAcademy.Infrastructure/Datos/SembradoProveedoresTts.cs`
+- `src/SkillUpAcademy.Api/Controladores/TtsController.cs`
+- `client/src/pages/AdminTtsPage.tsx`
+- `client/src/hooks/useTts.ts`
+- `tests/SkillUpAcademy.UnitTests/Servicios/ServicioTtsTests.cs`
+- `tests/SkillUpAcademy.UnitTests/Servicios/ServicioAdminTtsTests.cs`
+
+### Archivos modificados
+- `src/SkillUpAcademy.Core/Entidades/UsuarioApp.cs` — 3 columnas TTS
+- `src/SkillUpAcademy.Core/Interfaces/Servicios/IServicioTts.cs` — interfaz ampliada
+- `src/SkillUpAcademy.Core/DTOs/Autenticacion/PerfilUsuarioDto.cs` — campos voz
+- `src/SkillUpAcademy.Core/DTOs/Autenticacion/PeticionActualizarPerfil.cs` — campos voz
+- `src/SkillUpAcademy.Infrastructure/Servicios/ServicioTts.cs` — reescrito multi-proveedor
+- `src/SkillUpAcademy.Infrastructure/Servicios/ServicioAutenticacion.cs` — mapeo campos voz
+- `src/SkillUpAcademy.Infrastructure/Datos/AppDbContext.cs` — DbSet ProveedoresTts
+- `src/SkillUpAcademy.Infrastructure/Datos/Configuraciones/ConfiguracionUsuarioApp.cs` — columnas TTS
+- `src/SkillUpAcademy.Api/Controladores/AdminController.cs` — 4 endpoints TTS admin
+- `src/SkillUpAcademy.Api/Extensiones/ExtensionesDeServicios.cs` — DI ServicioAdminTts
+- `src/SkillUpAcademy.Api/Program.cs` — sembrado proveedores TTS
+- `client/src/App.tsx` — ruta /admin/tts
+- `client/src/lib/api.ts` — ttsApi + adminTtsApi + interfaces
+- `client/src/pages/ProfilePage.tsx` — selector de voz
+- `client/src/pages/LessonPage.tsx` — TTS server-side con fallback
+- `client/src/pages/AdminDashboardPage.tsx` — enlace a config voz
+
+---
+
 ## [2026-03-24] — Sesión 6
 
 ### feat: tests para módulo admin
@@ -9,6 +75,31 @@
   - AlternarBloqueoIAUsuarioAsync (éxito + usuario inexistente)
 - 4 tests de integración: endpoints admin añadidos a EndpointsProtegidosTests (401 sin token)
 - Paquete Microsoft.EntityFrameworkCore.Sqlite añadido a UnitTests.csproj
+
+### feat: despliegue a producción
+- App desplegada en `skillupacademy.felcos.es` (Ubuntu ARM64)
+- Self-contained publish `linux-arm64`, servicio systemd `skillupacademy.service`
+- Nginx reverse proxy con soporte SSE (`proxy_buffering off`)
+- Let's Encrypt SSL via certbot (HTTPS válido)
+- PostgreSQL: BD `skillup_academy`, usuario `skillup_app` dedicado
+- Migración `AgregarEstaBloqueadoIA` aplicada en producción
+- Seeding completo (6 áreas, 90 lecciones, 180 escenas, usuario admin)
+- Cabeceras de seguridad: CSP, X-Frame-Options, X-Content-Type-Options, HSTS
+
+### fix: fuentes Inter locales (eliminar Google Fonts CDN)
+- Eliminadas 3 líneas de Google Fonts CDN de `client/index.html`
+- Descargada fuente Inter woff2 (pesos 300, 400, 500, 600, 700) a `client/public/fonts/`
+- 5 declaraciones `@font-face` añadidas en `client/src/index.css`
+- CSP `font-src 'self'` ahora coherente — 0 referencias a servicios externos
+- Resuelve: login no funcionaba por CSP blocking Google Fonts + aviso "sitio no seguro"
+
+### Archivos creados (despliegue)
+- `client/public/fonts/inter-latin-{300,400,500,600,700}-normal.woff2`
+- `src/SkillUpAcademy.Infrastructure/Datos/Migraciones/20260324093759_AgregarEstaBloqueadoIA.cs`
+
+### Archivos modificados (fuentes locales)
+- `client/index.html` — eliminadas referencias Google Fonts
+- `client/src/index.css` — añadidos @font-face para Inter local
 
 ### feat: rate limiting nativo .NET 8
 - Eliminado paquete terceros `AspNetCoreRateLimit` (no usado, .NET 8 tiene middleware nativo)

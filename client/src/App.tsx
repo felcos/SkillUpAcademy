@@ -16,6 +16,7 @@ import ChatPage from './pages/ChatPage';
 import ProfilePage from './pages/ProfilePage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminUsersPage from './pages/AdminUsersPage';
+import AdminTtsPage from './pages/AdminTtsPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 export default function App() {
@@ -42,6 +43,7 @@ export default function App() {
         {/* Admin */}
         <Route path="/admin" element={<ProtectedAdminRoute><AdminDashboardPage /></ProtectedAdminRoute>} />
         <Route path="/admin/usuarios" element={<ProtectedAdminRoute><AdminUsersPage /></ProtectedAdminRoute>} />
+        <Route path="/admin/tts" element={<ProtectedAdminRoute><AdminTtsPage /></ProtectedAdminRoute>} />
 
         {/* 404 */}
         <Route path="*" element={<NotFoundPage />} />

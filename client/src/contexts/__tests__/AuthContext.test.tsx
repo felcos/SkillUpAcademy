@@ -22,6 +22,23 @@ function wrapper({ children }: { children: ReactNode }) {
   return <AuthProvider>{children}</AuthProvider>;
 }
 
+function crearUsuarioMock(overrides = {}) {
+  return {
+    id: '1',
+    nombre: 'Felipe',
+    apellidos: 'Costales',
+    email: 'felipe@test.com',
+    urlAvatar: null,
+    puntosTotales: 100,
+    rachaDias: 5,
+    audioHabilitado: true,
+    idiomaPreferido: 'es',
+    roles: [] as string[],
+    esAdmin: false,
+    ...overrides,
+  };
+}
+
 describe('useAuth', () => {
   beforeEach(() => {
     localStorage.clear();
@@ -57,25 +74,16 @@ describe('useAuth', () => {
   });
 
   it('debe hacer login correctamente y guardar sesión', async () => {
+    const usuario = crearUsuarioMock();
     const respuestaLogin = {
-      token: 'jwt-token-test',
-      refreshToken: 'refresh-test',
-      expiracion: '2025-12-31',
-      usuario: {
-        id: '1',
-        nombre: 'Felipe',
-        apellidos: 'Costales',
-        email: 'felipe@test.com',
-        puntosTotales: 100,
-        rachaDias: 5,
-        fechaRegistro: '2024-01-01',
-        roles: [],
-        esAdmin: false,
-      },
+      tokenAcceso: 'jwt-token-test',
+      tokenRenovacion: 'refresh-test',
+      expiraEnSegundos: 3600,
+      usuario,
     };
 
     mockedAuthApi.login.mockResolvedValue(respuestaLogin);
-    mockedAuthApi.perfil.mockResolvedValue(respuestaLogin.usuario);
+    mockedAuthApi.perfil.mockResolvedValue(usuario);
 
     const { result } = renderHook(() => useAuth(), { wrapper });
 
@@ -87,7 +95,7 @@ describe('useAuth', () => {
       await result.current.login({ email: 'felipe@test.com', contrasena: '123456' });
     });
 
-    expect(result.current.usuario).toEqual(respuestaLogin.usuario);
+    expect(result.current.usuario).toEqual(usuario);
     expect(result.current.token).toBe('jwt-token-test');
     expect(result.current.estaAutenticado).toBe(true);
     expect(localStorage.getItem('token')).toBe('jwt-token-test');
@@ -95,25 +103,16 @@ describe('useAuth', () => {
   });
 
   it('debe hacer logout y limpiar el estado', async () => {
+    const usuario = crearUsuarioMock();
     const respuestaLogin = {
-      token: 'jwt-token-test',
-      refreshToken: 'refresh-test',
-      expiracion: '2025-12-31',
-      usuario: {
-        id: '1',
-        nombre: 'Felipe',
-        apellidos: 'Costales',
-        email: 'felipe@test.com',
-        puntosTotales: 100,
-        rachaDias: 5,
-        fechaRegistro: '2024-01-01',
-        roles: [],
-        esAdmin: false,
-      },
+      tokenAcceso: 'jwt-token-test',
+      tokenRenovacion: 'refresh-test',
+      expiraEnSegundos: 3600,
+      usuario,
     };
 
     mockedAuthApi.login.mockResolvedValue(respuestaLogin);
-    mockedAuthApi.perfil.mockResolvedValue(respuestaLogin.usuario);
+    mockedAuthApi.perfil.mockResolvedValue(usuario);
     mockedAuthApi.logout.mockResolvedValue(undefined as never);
 
     const { result } = renderHook(() => useAuth(), { wrapper });
@@ -144,17 +143,7 @@ describe('useAuth', () => {
   it('debe cargar perfil al iniciar si hay token en localStorage', async () => {
     localStorage.setItem('token', 'existing-token');
 
-    const perfilUsuario = {
-      id: '1',
-      nombre: 'Felipe',
-      apellidos: 'Costales',
-      email: 'felipe@test.com',
-      puntosTotales: 50,
-      rachaDias: 3,
-      fechaRegistro: '2024-01-01',
-      roles: [],
-      esAdmin: false,
-    };
+    const perfilUsuario = crearUsuarioMock({ puntosTotales: 50, rachaDias: 3 });
 
     mockedAuthApi.perfil.mockResolvedValue(perfilUsuario);
 

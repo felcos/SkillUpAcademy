@@ -19,5 +19,8 @@ public class ConfiguracionUsuarioApp : IEntityTypeConfiguration<UsuarioApp>
         builder.Property(u => u.AudioHabilitado).HasColumnName("audio_habilitado").HasDefaultValue(true);
         builder.Property(u => u.RachaDias).HasColumnName("racha_dias").HasDefaultValue(0);
         builder.Property(u => u.UltimaFechaActividad).HasColumnName("ultima_fecha_actividad").HasColumnType("timestamptz");
+        builder.Property(u => u.VozPreferida).HasColumnName("voz_preferida").HasMaxLength(100);
+        builder.Property(u => u.VelocidadVoz).HasColumnName("velocidad_voz").HasDefaultValue(1.0m);
+        builder.Property(u => u.ProveedorTtsPreferido).HasColumnName("proveedor_tts_preferido").HasMaxLength(30).HasDefaultValue("WebSpeechApi");
     }
 }

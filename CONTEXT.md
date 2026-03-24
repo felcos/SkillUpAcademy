@@ -40,13 +40,14 @@ Para que profesionales mejoren habilidades clave (comunicación, liderazgo, trab
 | 2026-03-24 | Validación JWT en producción: rechazar clave por defecto, forzar secrets reales via variables de entorno |
 | 2026-03-24 | Avatar SVG con 4 estados animados (no Lottie/canvas — SVG nativo es más ligero y accesible) |
 | 2026-03-24 | Rate limiting nativo .NET 8 (no AspNetCoreRateLimit — paquete nativo es más simple y no requiere dependencia externa) |
+| 2026-03-24 | TTS multi-proveedor (Azure + ElevenLabs + WebSpeech) configurable desde admin, preferencias por usuario en BD |
 
 ## Estado actual (actualizado 2026-03-24 — Sesión 5)
 ### Backend ✅
 - ✅ Solución .NET 8 con Clean Architecture (Api, Core, Infrastructure)
 - ✅ 19 entidades, 10 enums, 19 configuraciones Fluent API (snake_case, jsonb)
-- ✅ 11 servicios + 5 repositorios registrados en DI
-- ✅ 9 controladores con 34 endpoints (29 REST + 1 SSE streaming + 4 admin)
+- ✅ 12 servicios + 5 repositorios registrados en DI
+- ✅ 10 controladores con 44 endpoints (29 REST + 1 SSE streaming + 4 admin + 4 TTS usuario + 4 TTS admin + 2 extras)
 - ✅ Seguridad IA: 5 capas anti-abuso integradas en ServicioChatIA
 - ✅ SSE streaming en chat IA (IAsyncEnumerable + Anthropic streaming API)
 - ✅ SembradoDatos: 90 lecciones, 18 quizzes, 18 escenarios, 180 escenas, 10 logros
@@ -55,7 +56,7 @@ Para que profesionales mejoren habilidades clave (comunicación, liderazgo, trab
 - ✅ Roles en JWT claims + autorización por rol
 
 ### Frontend ✅
-- ✅ 15 páginas React + TypeScript + Tailwind CSS + Vite
+- ✅ 16 páginas React + TypeScript + Tailwind CSS + Vite
 - ✅ 7 componentes reutilizables, 5 custom hooks (wrapping TanStack Query)
 - ✅ Cliente API tipado con 34 endpoints (29 REST + 1 streaming + 4 admin)
 - ✅ Motor de escenas con TTS (Web Speech API)
@@ -67,7 +68,7 @@ Para que profesionales mejoren habilidades clave (comunicación, liderazgo, trab
 - ✅ 54 tests unitarios backend (ServicioSeguridadIA, ServicioQuiz, ServicioChatIA, ServicioEscenas, ServicioAdmin)
 - ✅ 31 tests de integración (WebApplicationFactory + InMemory DB)
 - ✅ 21 tests frontend (Vitest + Testing Library)
-- ✅ **Total: 106 tests (104 pasando + 1 skip), 0 fallando**
+- ✅ **Total: 130 tests (129 pasando + 1 skip), 0 fallando**
 
 ### DevOps ✅
 - ✅ CI/CD GitHub Actions (backend + frontend en paralelo)
@@ -80,5 +81,6 @@ Para que profesionales mejoren habilidades clave (comunicación, liderazgo, trab
 - ✅ Tests para módulo admin (6 unitarios + 4 integración)
 - 📋 Despliegue a producción con secrets reales y dominio
 - ✅ Rate limiting nativo .NET 8 con 3 políticas (general, ia, tts) desde appsettings
+- ✅ TTS multi-proveedor (Azure + ElevenLabs + WebSpeech) configurable desde admin
 - 📋 Notificaciones en tiempo real
 - 📋 Video AI generado para avatar V2

@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { type Escena } from '../lib/api';
+import { type Escena, ttsApi } from '../lib/api';
 import { useLeccion, useEscenas, useIniciarLeccion, useCompletarLeccion } from '../hooks/useLessons';
+import { useConfiguracionTts } from '../hooks/useTts';
 import { ChevronLeft, ChevronRight, Volume2, VolumeX } from 'lucide-react';
 import AvatarAria from '../components/avatar/AvatarAria';
 
@@ -13,13 +14,12 @@ export default function LessonPage() {
   const [ttsActivo, setTtsActivo] = useState(true);
   const [hablando, setHablando] = useState(false);
   const synthRef = useRef(window.speechSynthesis);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const { data: leccion } = useLeccion(leccionId);
-
   const { data: escenas } = useEscenas(leccionId);
-
+  const { data: configTts } = useConfiguracionTts();
   const iniciarMut = useIniciarLeccion();
-
   const completarMut = useCompletarLeccion();
 
   useEffect(() => {
@@ -28,18 +28,86 @@ export default function LessonPage() {
 
   const escena = escenas?.[escenaActual];
 
-  // TTS
-  useEffect(() => {
-    if (!escena?.guionAria || !ttsActivo) return;
+  // Detener audio en curso
+  const detenerAudio = useCallback(() => {
     synthRef.current.cancel();
-    const utterance = new SpeechSynthesisUtterance(escena.guionAria);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
+    }
+    setHablando(false);
+  }, []);
+
+  // TTS — intenta servidor primero, fallback a Web Speech API
+  useEffect(() => {
+    if (!escena?.guionAria || !ttsActivo) {
+      detenerAudio();
+      return;
+    }
+
+    let cancelado = false;
+    detenerAudio();
+
+    const reproducir = async () => {
+      const proveedorPreferido = configTts?.proveedorPreferido ?? 'WebSpeechApi';
+      const velocidad = configTts?.velocidadVoz ?? 0.95;
+
+      // Si el proveedor es WebSpeechApi o no hay config, usar directamente el navegador
+      if (proveedorPreferido === 'WebSpeechApi') {
+        reproducirConWebSpeech(escena.guionAria, velocidad, cancelado);
+        return;
+      }
+
+      // Intentar sintetizar con el servidor
+      try {
+        const resultado = await ttsApi.sintetizar(
+          escena.guionAria,
+          configTts?.vozSeleccionada ?? undefined,
+          velocidad
+        );
+
+        if (cancelado) return;
+
+        if (resultado.audioUrl) {
+          const audio = new Audio(resultado.audioUrl);
+          audioRef.current = audio;
+          audio.onplay = () => { if (!cancelado) setHablando(true); };
+          audio.onended = () => { if (!cancelado) setHablando(false); };
+          audio.onerror = () => {
+            // Fallback a Web Speech si falla la reproducción
+            if (!cancelado) reproducirConWebSpeech(escena.guionAria, velocidad, cancelado);
+          };
+          await audio.play();
+        } else {
+          // Servidor indicó fallback
+          reproducirConWebSpeech(escena.guionAria, velocidad, cancelado);
+        }
+      } catch {
+        // Error de red/servidor, fallback a Web Speech
+        if (!cancelado) reproducirConWebSpeech(escena.guionAria, velocidad, cancelado);
+      }
+    };
+
+    reproducir();
+
+    return () => {
+      cancelado = true;
+      detenerAudio();
+    };
+  }, [escenaActual, escena?.guionAria, ttsActivo, configTts?.proveedorPreferido, configTts?.vozSeleccionada, configTts?.velocidadVoz, detenerAudio]);
+
+  const reproducirConWebSpeech = (texto: string, velocidad: number, cancelado: boolean) => {
+    if (cancelado) return;
+    synthRef.current.cancel();
+    const utterance = new SpeechSynthesisUtterance(texto);
     utterance.lang = 'es-ES';
-    utterance.rate = 0.95;
-    utterance.onstart = () => setHablando(true);
-    utterance.onend = () => setHablando(false);
+    utterance.rate = velocidad;
+    utterance.onstart = () => { if (!cancelado) setHablando(true); };
+    utterance.onend = () => { if (!cancelado) setHablando(false); };
+    utterance.onerror = () => { if (!cancelado) setHablando(false); };
     synthRef.current.speak(utterance);
-    return () => { synthRef.current.cancel(); };
-  }, [escenaActual, escena?.guionAria, ttsActivo]);
+  };
 
   const siguiente = () => {
     if (escenas && escenaActual < escenas.length - 1) {
@@ -204,7 +272,7 @@ function EscenaVisual({ escena, hablando }: { escena: Escena; hablando: boolean 
       {/* Pausa reflexiva */}
       {escena.esPausaReflexiva && (
         <div className="mt-6 bg-[#3498DB]/5 border border-[#3498DB]/20 rounded-xl p-4 text-center">
-          <p className="text-[#3498DB] text-sm">💭 Momento de reflexión — Tómate {escena.segundosPausa}s para pensar</p>
+          <p className="text-[#3498DB] text-sm">Momento de reflexión — Tómate {escena.segundosPausa}s para pensar</p>
         </div>
       )}
     </div>

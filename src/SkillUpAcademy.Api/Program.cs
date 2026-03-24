@@ -155,6 +155,7 @@ try
         AppDbContext contexto = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         await contexto.Database.MigrateAsync();
         await SembradoDatos.SembrarAsync(contexto);
+        await SembradoProveedoresTts.SembrarAsync(contexto);
 
         // Sembrar rol Admin y usuario administrador
         RoleManagerType roleManager = scope.ServiceProvider.GetRequiredService<RoleManagerType>();

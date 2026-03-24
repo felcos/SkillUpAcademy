@@ -1,5 +1,34 @@
 # Sesión — SkillUp Academy
 
+## Sesión 7 — 2026-03-24
+
+### Qué se hizo
+1. **TTS multi-proveedor completo** — Sistema de Text-to-Speech con 3 proveedores: Azure Speech (voces neurales), ElevenLabs (voces ultra-realistas), y Web Speech API (fallback navegador). Todo configurable desde admin sin tocar código.
+2. **Backend TTS** — Nueva entidad `ProveedorTts`, `ServicioTts` reescrito como multi-proveedor, `ServicioAdminTts` para CRUD, `TtsController` con 5 endpoints, 4 endpoints admin TTS. 12 voces Azure + 6 ElevenLabs precargadas.
+3. **Preferencias de voz por usuario** — 3 columnas nuevas en `UsuarioApp` (VozPreferida, VelocidadVoz, ProveedorTtsPreferido). El usuario puede elegir proveedor, voz específica y velocidad desde su perfil.
+4. **Frontend TTS** — ProfilePage con selector de voz completo (tipo, voz con preview, slider velocidad). LessonPage usa audio del servidor cuando hay proveedor habilitado, fallback automático a Web Speech. AdminTtsPage para gestionar proveedores.
+5. **Tests** — 10 tests ServicioTts + 8 tests ServicioAdminTts + 6 tests integración endpoints TTS = 24 nuevos tests. Total: 130 (129 pass + 1 skip).
+
+### Estadísticas
+- **130 tests totales** (71 unit + 1 skip + 37 integration + 21 frontend)
+- **44 endpoints** — **16 páginas React**
+- **0 errores, 0 warnings**
+- **20 entidades** — **12 servicios** — **5 repositorios**
+
+### Qué queda pendiente
+- Configurar API keys reales (Azure Speech y/o ElevenLabs) desde admin en producción
+- Video AI generado para avatar V2
+- Notificaciones en tiempo real
+- Caché de audio para lecciones (los guiones son fijos, no necesitan regenerarse)
+
+### Problemas encontrados
+- Ninguno en esta sesión — implementación limpia
+
+### Siguiente paso sugerido
+Configurar una API key de Azure Speech en producción (desde /admin/tts) para activar voces de alta calidad. Alternativamente, implementar caché de audio para evitar regenerar TTS en cada visita a una lección.
+
+---
+
 ## Sesión 6 — 2026-03-24
 
 ### Qué se hizo
@@ -8,24 +37,31 @@
 3. **Paquete SQLite añadido** a UnitTests.csproj para tests de ServicioAdmin con Identity real
 4. **Rate limiting nativo .NET 8** — Reemplazado paquete terceros `AspNetCoreRateLimit` por middleware nativo `Microsoft.AspNetCore.RateLimiting`. 3 políticas: general (100/min por IP), ia (20/min por usuario), tts (30/min por usuario). Configuración desde `LimitesDeUso` en appsettings.json. `[EnableRateLimiting]` aplicado a los 8 controladores (excepto Health). ServicioSeguridadIA ahora lee `MaxMensajesPorMinuto` desde config.
 5. **Tests rate limiting** — 2 tests de integración verificando que endpoints con y sin rate limiting funcionan correctamente
+6. **Despliegue a producción** — App desplegada en `skillupacademy.felcos.es` (Ubuntu ARM64 vía SSH tunnel). Self-contained publish linux-arm64, systemd service, Nginx reverse proxy con SSE, Let's Encrypt SSL, PostgreSQL con usuario dedicado, migración EstaBloqueadoIA aplicada, seeding completo.
+7. **Fuentes Inter locales** — Eliminadas todas las referencias a Google Fonts CDN. Descargada fuente Inter (woff2, pesos 300-700) desde @fontsource/inter a `client/public/fonts/`. Declaraciones @font-face en index.css. CSP `font-src 'self'` ahora coherente con assets 100% locales.
 
 ### Estadísticas
 - **106 tests totales** (53 unit + 1 skip + 31 integration + 21 frontend)
 - **34 endpoints** — **15 páginas React**
 - **0 errores, 0 warnings**
+- **Producción**: https://skillupacademy.felcos.es — HTTPS válido, 0 referencias externas
 
 ### Qué queda pendiente
-- Despliegue a producción con secrets reales
 - Video AI generado para avatar V2
 - Notificaciones en tiempo real
+- Anthropic API key en producción (chat IA usa fallback)
+- Azure Speech key en producción (TTS usa fallback)
 
 ### Problemas encontrados
 - Query LINQ compleja con record constructor en Select + SelectMany no compatible con SQLite ni InMemory (bug EF Core 8) — test marcado con Skip, requiere PostgreSQL real
 - Sesión anterior interrumpida por reinicio del ordenador — trabajo recuperado sin pérdida
 - WebApplicationFactory con minimal hosting no permite override de `builder.Configuration.GetValue()` desde tests — rate limiting testeado verificando comportamiento dentro del límite
+- Google Fonts CDN bloqueado por CSP `font-src 'self'` — resuelto descargando Inter localmente
+- rsync --delete borró appsettings.Production.json configurado — recreado manualmente
+- PostgreSQL password con `!` causa problemas en Npgsql — cambiada a password alfanumérico
 
 ### Siguiente paso sugerido
-Desplegar a producción con secrets reales y dominio configurado.
+Configurar API keys reales de Anthropic y Azure Speech en producción para activar chat IA y TTS.
 
 ---
 

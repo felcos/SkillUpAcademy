@@ -44,6 +44,9 @@ public class AppDbContext : IdentityDbContext<UsuarioApp, IdentityRole<Guid>, Gu
     public DbSet<RecursoVisual> RecursosVisuales => Set<RecursoVisual>();
     public DbSet<ConfiguracionAvatar> ConfiguracionesAvatar => Set<ConfiguracionAvatar>();
 
+    // TTS (proveedores de voz)
+    public DbSet<ProveedorTts> ProveedoresTts => Set<ProveedorTts>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

@@ -1,6 +1,6 @@
 import { useDashboard } from '../hooks/useProgress';
 import { useAuth } from '../contexts/AuthContext';
-import { Flame, Star, BookOpen, Clock, TrendingUp } from 'lucide-react';
+import { Flame, Star, BookOpen, TrendingUp } from 'lucide-react';
 
 export default function DashboardPage() {
   const { usuario } = useAuth();
@@ -28,11 +28,10 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
         <StatCard icono={<Star size={22} className="text-yellow-400" />} valor={dashboard.puntosTotales} etiqueta="Puntos totales" />
         <StatCard icono={<Flame size={22} className="text-orange-400" />} valor={dashboard.rachaDias} etiqueta="Días de racha" />
         <StatCard icono={<BookOpen size={22} className="text-[#3498DB]" />} valor={dashboard.leccionesCompletadas} etiqueta="Lecciones" />
-        <StatCard icono={<Clock size={22} className="text-purple-400" />} valor={dashboard.tiempoTotalMinutos} etiqueta="Minutos" />
       </div>
 
       {/* Progreso general */}
@@ -58,13 +57,13 @@ export default function DashboardPage() {
       {/* Progreso por área */}
       <h2 className="font-semibold mb-4">Progreso por área</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {dashboard.progresoPorArea.map((area) => (
-          <div key={area.areaSlug} className="bg-[#25254A] rounded-xl p-5 border border-white/5">
+        {dashboard.resumenAreas.map((area) => (
+          <div key={area.slug} className="bg-[#25254A] rounded-xl p-5 border border-white/5">
             <div className="flex items-center gap-3 mb-3">
-              <span className="text-2xl">{area.areaIcono}</span>
+              <span className="text-2xl">{area.icono}</span>
               <div className="flex-1">
-                <h3 className="font-medium text-sm">{area.areaTitulo}</h3>
-                <p className="text-xs text-gray-500">{area.leccionesCompletadas}/{area.leccionesTotales} lecciones</p>
+                <h3 className="font-medium text-sm">{area.titulo}</h3>
+                <p className="text-xs text-gray-500">Nivel {area.nivelActual}</p>
               </div>
               <span className="text-sm font-semibold text-[#3498DB]">{area.porcentaje}%</span>
             </div>

@@ -46,7 +46,7 @@ public class MiddlewareManejoExcepciones(RequestDelegate _siguiente, ILogger<Mid
         {
             _logger.LogError(excepcion, "Error interno no controlado: {Mensaje}", excepcion.Message);
         }
-        else
+        else if (codigoEstado != HttpStatusCode.BadRequest)
         {
             _logger.LogWarning("Excepción controlada [{Codigo}]: {Mensaje}", codigoError, excepcion.Message);
         }

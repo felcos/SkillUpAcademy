@@ -88,7 +88,7 @@ describe('request (fetch mockeado)', () => {
   it('debe incluir Authorization header cuando hay token', async () => {
     localStorage.setItem('token', 'jwt-test-token');
 
-    const mockResponse = { id: '1', nombre: 'Test', apellidos: 'User', email: 'test@test.com', puntosTotales: 0, rachaDias: 0, fechaRegistro: '2024-01-01' };
+    const mockResponse = { id: '1', nombre: 'Test', apellidos: 'User', email: 'test@test.com', urlAvatar: null, puntosTotales: 0, rachaDias: 0, audioHabilitado: true, idiomaPreferido: 'es', roles: [], esAdmin: false };
     const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response(JSON.stringify(mockResponse), {
         status: 200,

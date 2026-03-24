@@ -132,6 +132,15 @@ public class ServicioAutenticacion(
         if (!string.IsNullOrWhiteSpace(peticion.IdiomaPreferido))
             usuario.IdiomaPreferido = peticion.IdiomaPreferido;
 
+        if (!string.IsNullOrWhiteSpace(peticion.VozPreferida))
+            usuario.VozPreferida = peticion.VozPreferida;
+
+        if (peticion.VelocidadVoz.HasValue)
+            usuario.VelocidadVoz = Math.Clamp(peticion.VelocidadVoz.Value, 0.5m, 2.0m);
+
+        if (!string.IsNullOrWhiteSpace(peticion.ProveedorTtsPreferido))
+            usuario.ProveedorTtsPreferido = peticion.ProveedorTtsPreferido;
+
         await _userManager.UpdateAsync(usuario);
         return await MapearAPerfilConRolesAsync(usuario);
     }
@@ -219,7 +228,10 @@ public class ServicioAutenticacion(
             AudioHabilitado = usuario.AudioHabilitado,
             IdiomaPreferido = usuario.IdiomaPreferido,
             Roles = roles.ToList(),
-            EsAdmin = roles.Contains("Admin")
+            EsAdmin = roles.Contains("Admin"),
+            VozPreferida = usuario.VozPreferida,
+            VelocidadVoz = usuario.VelocidadVoz,
+            ProveedorTtsPreferido = usuario.ProveedorTtsPreferido
         };
     }
 }

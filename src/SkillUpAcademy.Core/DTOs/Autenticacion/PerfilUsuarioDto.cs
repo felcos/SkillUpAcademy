@@ -37,4 +37,13 @@ public class PerfilUsuarioDto
 
     /// <summary>Indica si el usuario es administrador.</summary>
     public bool EsAdmin { get; set; }
+
+    /// <summary>Voz TTS preferida por el usuario.</summary>
+    public string? VozPreferida { get; set; }
+
+    /// <summary>Velocidad de voz preferida (0.5 a 2.0).</summary>
+    public decimal VelocidadVoz { get; set; } = 1.0m;
+
+    /// <summary>Proveedor TTS preferido.</summary>
+    public string ProveedorTtsPreferido { get; set; } = "WebSpeechApi";
 }

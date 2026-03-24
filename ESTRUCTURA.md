@@ -13,7 +13,7 @@ client/ → React + TypeScript + Vite + Tailwind
 ## Entidades (19)
 | Entidad | Tabla PostgreSQL | Descripcion |
 |---------|-----------------|-------------|
-| UsuarioApp | usuarios | Usuario extendido de Identity |
+| UsuarioApp | usuarios | Usuario extendido de Identity (+VozPreferida, VelocidadVoz, ProveedorTtsPreferido) |
 | AreaHabilidad | areas_habilidad | 6 areas de soft skills |
 | Nivel | niveles | 3 niveles por area |
 | Leccion | lecciones | Lecciones individuales |
@@ -32,6 +32,7 @@ client/ → React + TypeScript + Vite + Tailwind
 | EscenaLeccion | escenas_leccion | Motor de escenas del avatar |
 | RecursoVisual | recursos_visuales | Banco de imagenes/assets |
 | ConfiguracionAvatar | configuraciones_avatar | Personalidad de Aria |
+| ProveedorTts | proveedores_tts | Configuración de proveedores TTS (Azure, ElevenLabs) |
 
 ## Servicios registrados en DI
 | Interfaz | Implementacion | Lifetime |
@@ -47,6 +48,7 @@ client/ → React + TypeScript + Vite + Tailwind
 | IServicioChatIA | ServicioChatIA | Scoped (HttpClient) |
 | IServicioTts | ServicioTts | Scoped (HttpClient) |
 | IServicioAdmin | ServicioAdmin | Scoped |
+| IServicioAdminTts | ServicioAdminTts | Scoped |
 
 ## Repositorios
 | Interfaz | Implementacion |
@@ -68,7 +70,8 @@ client/ → React + TypeScript + Vite + Tailwind
 | ScenarioController | api/v1/lessons/{id}/scenario | /, /choose | Si |
 | ProgressController | api/v1/progress | /dashboard, /skill/{slug}, /achievements | Si |
 | AiChatController | api/v1/ai | session/start, session/{id}/message, session/{id}/message/stream (SSE), history, end | Si |
-| AdminController | api/v1/admin | resumen, usuarios, estadisticas-contenido, usuarios/{id}/alternar-bloqueo-ia | Si (Admin) |
+| AdminController | api/v1/admin | resumen, usuarios, estadisticas-contenido, usuarios/{id}/alternar-bloqueo-ia, tts/proveedores (CRUD+alternar) | Si (Admin) |
+| TtsController | api/v1/tts | voces, configuracion, preferencias, sintetizar, preview/{proveedor}/{id} | Si |
 
 ## Frontend — client/src/
 ```
@@ -90,12 +93,13 @@ client/src/
 │   ├── ProfilePage.tsx              — Perfil de usuario
 │   ├── AdminDashboardPage.tsx       — Panel admin (resumen + estadísticas)
 │   ├── AdminUsersPage.tsx           — Gestión usuarios (bloqueo IA)
+│   ├── AdminTtsPage.tsx             — Configuración proveedores TTS (admin)
 │   └── NotFoundPage.tsx             — 404
 ├── components/
 │   ├── layout/ (Navbar, Layout, ProtectedRoute, ProtectedAdminRoute)
 │   ├── ui/ (LoadingSpinner, ErrorMessage)
 │   └── avatar/ (AvatarAria — SVG animado con 4 estados)
-├── hooks/ (useSkills, useLessons, useProgress, useChat, useAdmin)
+├── hooks/ (useSkills, useLessons, useProgress, useChat, useAdmin, useTts)
 ├── contexts/ (AuthContext)
 ├── lib/ (api.ts — 34 endpoints tipados)
 └── test/ (setup.ts, utils.tsx)
@@ -104,10 +108,10 @@ client/src/
 ## Tests
 | Proyecto | Archivos | Tests | Framework |
 |----------|----------|-------|-----------|
-| UnitTests | 5 archivos | 54 (53+1 skip) | xUnit + FluentAssertions + Moq + SQLite |
-| IntegrationTests | 7 archivos | 31 | xUnit + WebApplicationFactory + InMemory |
+| UnitTests | 7 archivos | 72 (71+1 skip) | xUnit + FluentAssertions + Moq + SQLite |
+| IntegrationTests | 7 archivos | 37 | xUnit + WebApplicationFactory + InMemory |
 | Frontend | 3 archivos | 21 | Vitest + Testing Library + jsdom |
-| **Total** | **15** | **106** | |
+| **Total** | **17** | **130** | |
 
 ## Features
 - ✅ Estructura Clean Architecture

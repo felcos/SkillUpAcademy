@@ -34,9 +34,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [token]);
 
   const guardarSesion = (respuesta: RespuestaLogin) => {
-    localStorage.setItem('token', respuesta.token);
-    localStorage.setItem('refreshToken', respuesta.refreshToken);
-    setToken(respuesta.token);
+    localStorage.setItem('token', respuesta.tokenAcceso);
+    localStorage.setItem('refreshToken', respuesta.tokenRenovacion);
+    setToken(respuesta.tokenAcceso);
     setUsuario(respuesta.usuario);
   };
 

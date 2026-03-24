@@ -44,7 +44,9 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
   const data = await response.json();
 
   if (!response.ok) {
-    throw new ApiError(response.status, data.mensaje || data.message || 'Error del servidor');
+    // El backend devuelve { error: { code, message, details } }
+    const mensaje = data.error?.message || data.mensaje || data.message || 'Error del servidor';
+    throw new ApiError(response.status, mensaje);
   }
 
   return data as T;
@@ -65,22 +67,27 @@ export interface PeticionLogin {
 }
 
 export interface RespuestaLogin {
-  token: string;
-  refreshToken: string;
-  expiracion: string;
+  tokenAcceso: string;
+  tokenRenovacion: string;
+  expiraEnSegundos: number;
   usuario: PerfilUsuario;
 }
 
 export interface PerfilUsuario {
   id: string;
+  email: string;
   nombre: string;
   apellidos: string;
-  email: string;
+  urlAvatar: string | null;
   puntosTotales: number;
   rachaDias: number;
-  fechaRegistro: string;
+  audioHabilitado: boolean;
+  idiomaPreferido: string;
   roles: string[];
   esAdmin: boolean;
+  vozPreferida: string | null;
+  velocidadVoz: number;
+  proveedorTtsPreferido: string;
 }
 
 export const authApi = {
@@ -389,17 +396,31 @@ export interface Dashboard {
   rachaDias: number;
   leccionesCompletadas: number;
   leccionesTotales: number;
-  tiempoTotalMinutos: number;
-  progresoPorArea: ProgresoArea[];
+  resumenAreas: ResumenArea[];
+  logrosRecientes: LogroReciente[];
+  siguienteLeccionRecomendada: LeccionRecomendada | null;
 }
 
-export interface ProgresoArea {
-  areaSlug: string;
-  areaTitulo: string;
-  areaIcono: string;
+export interface ResumenArea {
+  slug: string;
+  titulo: string;
+  icono: string | null;
+  colorPrimario: string | null;
   porcentaje: number;
-  leccionesCompletadas: number;
-  leccionesTotales: number;
+  nivelActual: number;
+}
+
+export interface LogroReciente {
+  titulo: string;
+  icono: string | null;
+  fechaDesbloqueo: string;
+}
+
+export interface LeccionRecomendada {
+  id: number;
+  titulo: string;
+  areaHabilidad: string;
+  tipoLeccion: string;
 }
 
 export interface LogroDto {
@@ -480,6 +501,100 @@ export const adminApi = {
     request<EstadisticasContenido>('/admin/estadisticas-contenido'),
   alternarBloqueoIA: (id: string) =>
     request<{ estaBloqueadoIA: boolean }>(`/admin/usuarios/${id}/alternar-bloqueo-ia`, { method: 'POST' }),
+};
+
+// ============ TTS ============
+export interface VozDisponible {
+  idVoz: string;
+  nombre: string;
+  idioma: string;
+  genero: string;
+  proveedor: string;
+  descripcionPreview: string | null;
+}
+
+export interface ProveedorTtsPublico {
+  tipo: string;
+  nombreVisible: string;
+  descripcion: string | null;
+}
+
+export interface ConfiguracionTtsUsuario {
+  proveedores: ProveedorTtsPublico[];
+  voces: VozDisponible[];
+  vozSeleccionada: string | null;
+  velocidadVoz: number;
+  proveedorPreferido: string;
+}
+
+export interface ConfiguracionProveedorTts {
+  id: number;
+  tipo: string;
+  nombreVisible: string;
+  descripcion: string | null;
+  habilitado: boolean;
+  tieneApiKey: boolean;
+  region: string | null;
+  vozPorDefecto: string;
+  orden: number;
+  cantidadVoces: number;
+  fechaCreacion: string;
+  fechaActualizacion: string | null;
+}
+
+export const ttsApi = {
+  voces: () => request<VozDisponible[]>('/tts/voces'),
+  configuracion: () => request<ConfiguracionTtsUsuario>('/tts/configuracion'),
+  actualizarPreferencias: (datos: { vozPreferida?: string; velocidadVoz?: number; proveedorPreferido?: string }) =>
+    request<ConfiguracionTtsUsuario>('/tts/preferencias', { method: 'PUT', body: datos }),
+  sintetizar: async (texto: string, voz?: string, velocidad?: number): Promise<{ audioUrl: string | null; usarWebSpeech: boolean }> => {
+    const token = getToken();
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    const response = await fetch(`${API_BASE}/tts/sintetizar`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ texto, voz, velocidad }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new ApiError(response.status, data.error?.message || 'Error de TTS');
+    }
+
+    const contentType = response.headers.get('content-type');
+    if (contentType?.includes('audio/')) {
+      const blob = await response.blob();
+      return { audioUrl: URL.createObjectURL(blob), usarWebSpeech: false };
+    }
+
+    // Si no es audio, es JSON indicando fallback a Web Speech
+    return { audioUrl: null, usarWebSpeech: true };
+  },
+  previewVoz: (proveedor: string, idVoz: string) => {
+    const token = getToken();
+    return fetch(`${API_BASE}/tts/preview/${proveedor}/${idVoz}`, {
+      headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+    });
+  },
+};
+
+// ============ ADMIN TTS ============
+export const adminTtsApi = {
+  obtenerProveedores: () => request<ConfiguracionProveedorTts[]>('/admin/tts/proveedores'),
+  obtenerProveedor: (tipo: string) => request<ConfiguracionProveedorTts>(`/admin/tts/proveedores/${tipo}`),
+  actualizarProveedor: (tipo: string, datos: {
+    nombreVisible?: string;
+    descripcion?: string;
+    habilitado?: boolean;
+    apiKey?: string;
+    region?: string;
+    vozPorDefecto?: string;
+    orden?: number;
+  }) => request<ConfiguracionProveedorTts>(`/admin/tts/proveedores/${tipo}`, { method: 'PUT', body: datos }),
+  alternarProveedor: (tipo: string) =>
+    request<{ habilitado: boolean }>(`/admin/tts/proveedores/${tipo}/alternar`, { method: 'POST' }),
 };
 
 export { ApiError };

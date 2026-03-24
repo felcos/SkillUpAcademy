@@ -33,6 +33,12 @@ public class EndpointsProtegidosTests
     [InlineData("GET", "/api/v1/admin/usuarios")]
     [InlineData("GET", "/api/v1/admin/estadisticas-contenido")]
     [InlineData("POST", "/api/v1/admin/usuarios/00000000-0000-0000-0000-000000000001/alternar-bloqueo-ia")]
+    [InlineData("GET", "/api/v1/tts/voces")]
+    [InlineData("GET", "/api/v1/tts/configuracion")]
+    [InlineData("PUT", "/api/v1/tts/preferencias")]
+    [InlineData("POST", "/api/v1/tts/sintetizar")]
+    [InlineData("GET", "/api/v1/admin/tts/proveedores")]
+    [InlineData("POST", "/api/v1/admin/tts/proveedores/AzureSpeech/alternar")]
     public async Task EndpointsProtegidos_SinToken_DebenRetornar401(string metodo, string ruta)
     {
         // Arrange
@@ -43,6 +49,7 @@ public class EndpointsProtegidosTests
         {
             "GET" => await client.GetAsync(ruta),
             "POST" => await client.PostAsync(ruta, null),
+            "PUT" => await client.PutAsync(ruta, null),
             _ => throw new ArgumentException($"Método HTTP no soportado: {metodo}")
         };
 

@@ -1,5 +1,6 @@
+import { Link } from 'react-router-dom';
 import { useResumenAdmin, useEstadisticasContenido } from '../hooks/useAdmin';
-import { Users, MessageSquare, BookOpen, BarChart3, Brain, CheckCircle } from 'lucide-react';
+import { Users, MessageSquare, BookOpen, BarChart3, Brain, CheckCircle, Volume2, UserCog } from 'lucide-react';
 
 export default function AdminDashboardPage() {
   const { data: resumen, isLoading: cargandoResumen } = useResumenAdmin();
@@ -31,6 +32,14 @@ export default function AdminDashboardPage() {
       <div className="mb-10">
         <h1 className="text-3xl font-bold mb-1">Panel de Administracion</h1>
         <p className="text-gray-400">Resumen general de la plataforma</p>
+        <div className="flex gap-3 mt-4">
+          <Link to="/admin/usuarios" className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-sm text-gray-300 transition-colors">
+            <UserCog size={16} /> Usuarios
+          </Link>
+          <Link to="/admin/tts" className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-sm text-gray-300 transition-colors">
+            <Volume2 size={16} /> Configurar Voz
+          </Link>
+        </div>
       </div>
 
       {/* Metricas principales */}

@@ -19,4 +19,13 @@ public class PeticionActualizarPerfil
 
     /// <summary>Nuevo código de idioma preferido.</summary>
     public string? IdiomaPreferido { get; set; }
+
+    /// <summary>Voz TTS preferida.</summary>
+    public string? VozPreferida { get; set; }
+
+    /// <summary>Velocidad de voz (0.5 a 2.0).</summary>
+    public decimal? VelocidadVoz { get; set; }
+
+    /// <summary>Proveedor TTS preferido.</summary>
+    public string? ProveedorTtsPreferido { get; set; }
 }

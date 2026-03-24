@@ -43,6 +43,15 @@ public class UsuarioApp : IdentityUser<Guid>
     /// <summary>Indica si el usuario tiene bloqueado el acceso al chat con IA.</summary>
     public bool EstaBloqueadoIA { get; set; }
 
+    /// <summary>Voz TTS preferida por el usuario (ej: "es-ES-ElviraNeural").</summary>
+    public string? VozPreferida { get; set; }
+
+    /// <summary>Velocidad de voz preferida (0.5 a 2.0). Por defecto 1.0.</summary>
+    public decimal VelocidadVoz { get; set; } = 1.0m;
+
+    /// <summary>Proveedor TTS preferido (WebSpeechApi, AzureSpeech, ElevenLabs).</summary>
+    public string ProveedorTtsPreferido { get; set; } = "WebSpeechApi";
+
     // Navegación
     public ICollection<ProgresoUsuario> Progresos { get; set; } = new List<ProgresoUsuario>();
     public ICollection<RespuestaQuizUsuario> RespuestasQuiz { get; set; } = new List<RespuestaQuizUsuario>();

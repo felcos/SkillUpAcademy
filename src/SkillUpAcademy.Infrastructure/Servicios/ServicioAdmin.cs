@@ -112,24 +112,33 @@ public class ServicioAdmin(
         int totalEscenarios = await _contexto.Escenarios.CountAsync();
         int totalEscenas = await _contexto.EscenasLeccion.CountAsync();
 
-        List<AreaEstadistica> areasPorCompletados = await _contexto.AreasHabilidad
+        // Query simplificada: EF Core 8 no traduce bien record constructors con SelectMany anidados
+        var areasConDatos = await _contexto.AreasHabilidad
             .Where(a => a.Activo)
-            .Select(a => new AreaEstadistica(
+            .Select(a => new
+            {
                 a.Titulo,
-                a.Niveles
+                VecesCompletada = a.Niveles
                     .SelectMany(n => n.Lecciones)
                     .SelectMany(l => l.Progresos)
                     .Count(p => p.Estado == EstadoProgreso.Completado),
-                a.Niveles
+                Puntuaciones = a.Niveles
                     .SelectMany(n => n.Lecciones)
                     .SelectMany(l => l.Progresos)
                     .Where(p => p.Estado == EstadoProgreso.Completado && p.Puntuacion > 0)
                     .Select(p => (double)p.Puntuacion)
-                    .DefaultIfEmpty(0)
-                    .Average()
+                    .ToList()
+            })
+            .ToListAsync();
+
+        List<AreaEstadistica> areasPorCompletados = areasConDatos
+            .Select(a => new AreaEstadistica(
+                a.Titulo,
+                a.VecesCompletada,
+                a.Puntuaciones.Count > 0 ? a.Puntuaciones.Average() : 0
             ))
             .OrderByDescending(a => a.VecesCompletada)
-            .ToListAsync();
+            .ToList();
 
         return new EstadisticasContenido(
             totalAreas,

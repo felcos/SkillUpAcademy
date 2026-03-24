@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { ApiError } from '../lib/api';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function RegisterPage() {
   const [nombre, setNombre] = useState('');
@@ -9,6 +10,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [confirmarContrasena, setConfirmarContrasena] = useState('');
+  const [mostrarContrasena, setMostrarContrasena] = useState(false);
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
   const { registrar } = useAuth();
@@ -28,7 +30,11 @@ export default function RegisterPage() {
       await registrar({ nombre, apellidos, email, contrasena, confirmarContrasena });
       navigate('/areas');
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Error al registrarse');
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Error al registrarse');
+      }
     } finally {
       setCargando(false);
     }
@@ -70,15 +76,46 @@ export default function RegisterPage() {
 
           <div>
             <label className="block text-sm text-gray-300 mb-1.5">Contraseña</label>
-            <input type="password" value={contrasena} onChange={(e) => setContrasena(e.target.value)}
-              className="w-full bg-[#1A1A2E] border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-[#3498DB] focus:outline-none transition-colors"
-              placeholder="Mínimo 8 caracteres" required minLength={8} />
+            <div className="relative">
+              <input
+                type={mostrarContrasena ? 'text' : 'password'}
+                value={contrasena}
+                onChange={(e) => setContrasena(e.target.value)}
+                className="w-full bg-[#1A1A2E] border border-white/10 rounded-lg px-4 py-2.5 pr-11 text-white focus:border-[#3498DB] focus:outline-none transition-colors"
+                placeholder="Mínimo 8 caracteres, mayúscula, número y símbolo"
+                required minLength={8}
+              />
+              <button
+                type="button"
+                onClick={() => setMostrarContrasena(!mostrarContrasena)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                tabIndex={-1}
+              >
+                {mostrarContrasena ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">Debe incluir mayúscula, minúscula, número y carácter especial</p>
           </div>
 
           <div>
             <label className="block text-sm text-gray-300 mb-1.5">Confirmar contraseña</label>
-            <input type="password" value={confirmarContrasena} onChange={(e) => setConfirmarContrasena(e.target.value)}
-              className="w-full bg-[#1A1A2E] border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-[#3498DB] focus:outline-none transition-colors" required />
+            <div className="relative">
+              <input
+                type={mostrarContrasena ? 'text' : 'password'}
+                value={confirmarContrasena}
+                onChange={(e) => setConfirmarContrasena(e.target.value)}
+                className="w-full bg-[#1A1A2E] border border-white/10 rounded-lg px-4 py-2.5 pr-11 text-white focus:border-[#3498DB] focus:outline-none transition-colors"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setMostrarContrasena(!mostrarContrasena)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                tabIndex={-1}
+              >
+                {mostrarContrasena ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
 
           <button type="submit" disabled={cargando}
