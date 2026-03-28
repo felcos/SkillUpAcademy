@@ -1,12 +1,18 @@
 import { Link, useParams } from 'react-router-dom';
 import { useAreaDetalle, useNivel } from '../hooks/useSkills';
-import { ArrowLeft, Lock, CheckCircle2, Play, MessageSquare, HelpCircle, Theater } from 'lucide-react';
+import { ArrowLeft, Lock, CheckCircle2, Play, MessageSquare, HelpCircle, Theater, Brain, BookOpen, Target, Lightbulb, ClipboardCheck, Award } from 'lucide-react';
 
 const iconosTipo: Record<string, typeof Play> = {
   Teoria: Play,
   Quiz: HelpCircle,
   Escenario: Theater,
   Roleplay: MessageSquare,
+  Autoevaluacion: Brain,
+  CasoEstudio: BookOpen,
+  PracticaGuiada: Target,
+  Reflexion: Lightbulb,
+  PlanAccion: ClipboardCheck,
+  Capstone: Award,
 };
 
 const colorEstado: Record<string, string> = {
@@ -85,12 +91,13 @@ export default function AreaDetailPage() {
       <div className="space-y-3">
         {nivel?.lecciones?.map((leccion, index) => {
           const Icono = iconosTipo[leccion.tipoLeccion] || Play;
+          const tiposIA = ['Roleplay', 'Autoevaluacion', 'CasoEstudio', 'PracticaGuiada', 'Reflexion', 'PlanAccion', 'Capstone'];
           const rutaLeccion = leccion.tipoLeccion === 'Quiz'
             ? `/leccion/${leccion.id}/quiz`
             : leccion.tipoLeccion === 'Escenario'
             ? `/leccion/${leccion.id}/escenario`
-            : leccion.tipoLeccion === 'Roleplay'
-            ? `/chat?leccion=${leccion.id}`
+            : tiposIA.includes(leccion.tipoLeccion)
+            ? `/chat?leccion=${leccion.id}&tipo=${leccion.tipoLeccion}`
             : `/leccion/${leccion.id}`;
 
           return (

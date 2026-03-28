@@ -51,4 +51,6 @@ public class Leccion
     public ICollection<Escenario> Escenarios { get; set; } = new List<Escenario>();
     public ICollection<EscenaLeccion> Escenas { get; set; } = new List<EscenaLeccion>();
     public ICollection<ProgresoUsuario> Progresos { get; set; } = new List<ProgresoUsuario>();
+    public ICollection<PlanAccionUsuario> PlanesAccion { get; set; } = new List<PlanAccionUsuario>();
+    public ICollection<ResultadoAutoevaluacion> Autoevaluaciones { get; set; } = new List<ResultadoAutoevaluacion>();
 }

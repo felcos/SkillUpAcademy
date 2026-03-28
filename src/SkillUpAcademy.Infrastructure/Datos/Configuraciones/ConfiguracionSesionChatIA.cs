@@ -13,7 +13,7 @@ public class ConfiguracionSesionChatIA : IEntityTypeConfiguration<SesionChatIA>
         builder.Property(s => s.Id).HasColumnName("id").HasDefaultValueSql("gen_random_uuid()");
         builder.Property(s => s.UsuarioId).HasColumnName("usuario_id");
         builder.Property(s => s.LeccionId).HasColumnName("leccion_id");
-        builder.Property(s => s.TipoSesion).HasColumnName("tipo_sesion").HasConversion<string>().HasMaxLength(20);
+        builder.Property(s => s.TipoSesion).HasColumnName("tipo_sesion").HasConversion<string>().HasMaxLength(30);
         builder.Property(s => s.FechaInicio).HasColumnName("fecha_inicio").HasColumnType("timestamptz").HasDefaultValueSql("NOW()");
         builder.Property(s => s.FechaFin).HasColumnName("fecha_fin").HasColumnType("timestamptz");
         builder.Property(s => s.ContadorMensajes).HasColumnName("contador_mensajes").HasDefaultValue(0);

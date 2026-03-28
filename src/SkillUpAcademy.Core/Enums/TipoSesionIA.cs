@@ -7,5 +7,11 @@ public enum TipoSesionIA
 {
     Roleplay,
     ConsultaLibre,
-    RepasoDeLeccion
+    RepasoDeLeccion,
+    Autoevaluacion,
+    CasoEstudio,
+    PracticaGuiada,
+    Reflexion,
+    PlanAccion,
+    Capstone
 }

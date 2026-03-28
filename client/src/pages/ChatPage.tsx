@@ -14,6 +14,8 @@ export default function ChatPage() {
   const [searchParams] = useSearchParams();
   const leccionId = searchParams.get('leccion') ? Number(searchParams.get('leccion')) : undefined;
 
+  const tipoSesionParam = searchParams.get('tipo');
+
   const [sesionId, setSesionId] = useState<string | null>(sesionIdParam ?? null);
   const [mensajes, setMensajes] = useState<Mensaje[]>([]);
   const [input, setInput] = useState('');
@@ -29,6 +31,14 @@ export default function ChatPage() {
     const timer = setTimeout(() => setEstadoAria('idle'), 2000);
     return () => clearTimeout(timer);
   }, []);
+
+  // Si hay leccionId con tipo de sesión, iniciar automáticamente
+  useEffect(() => {
+    if (leccionId && tipoSesionParam && !sesionId && !iniciando) {
+      iniciarSesion(tipoSesionParam);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [leccionId, tipoSesionParam]);
 
   // Auto-scroll
   useEffect(() => {

@@ -16,53 +16,7 @@ public static partial class SembradoDatos
         int leccionId = 61;
 
         // ===== COMUNICACIÓN EFECTIVA — Nivel 3 (NivelId=3) =====
-        Leccion comN3L1 = new Leccion
-        {
-            Id = leccionId++, NivelId = 3, TipoLeccion = TipoLeccion.Teoria,
-            Titulo = "Comunicación ejecutiva: presenta como un CEO",
-            Descripcion = "Domina el arte de comunicar visión, estrategia y decisiones difíciles a nivel directivo.",
-            Contenido = "## El principio de la pirámide de Minto\n\nBarbara Minto (McKinsey) creó el framework más usado en comunicación ejecutiva: empieza por la conclusión, luego los argumentos que la sostienen, y finalmente la evidencia.\n\n## Inversión de la narrativa\n\nLos juniors narran así: «Investigamos X, encontramos Y, por lo tanto Z.»\nLos ejecutivos comunican así: «La recomendación es Z. Las razones son A, B y C.»\n\n## Las 3 reglas de comunicación ejecutiva\n\n### 1. Lidera con la respuesta\nDi la conclusión en los primeros 30 segundos. Si te cortan, ya dijiste lo importante.\n\n### 2. Anticipa las preguntas\nPrepara slides de backup para las 5 preguntas más probables. Nunca digas «no lo sé» a algo predecible.\n\n### 3. Cuantifica todo\nNo digas «mejoró mucho». Di «mejoró un 34% en 3 meses, generando $120K adicionales».\n\n## Comunicar malas noticias\nSandwich inverso: Situación actual → Impacto → Plan de acción → Recursos necesarios. Sin endulzar, sin alarmar.",
-            PuntosClave = "[\"Pirámide de Minto: conclusión primero, argumentos después, evidencia al final\",\"Los ejecutivos lideran con la respuesta, no con el proceso\",\"Anticipa las 5 preguntas más probables\",\"Cuantifica siempre: números, porcentajes, plazos\"]",
-            GuionAudio = "Los líderes más efectivos comunican con precisión quirúrgica. Hoy aprenderás a presentar como un CEO usando la pirámide de Minto.",
-            PuntosRecompensa = 20, Orden = 1, DuracionMinutos = 12
-        };
-
-        Leccion comN3L2 = new Leccion
-        {
-            Id = leccionId++, NivelId = 3, TipoLeccion = TipoLeccion.Teoria,
-            Titulo = "Comunicación de crisis: cuando todo sale mal",
-            Descripcion = "Protocolos para comunicar durante emergencias, incidentes y crisis organizacionales.",
-            Contenido = "## Las primeras 24 horas definen todo\n\nEn una crisis, la narrativa se forma en las primeras horas. Si no la controlas tú, alguien más lo hará.\n\n## El framework HEARD\n\n### H - Hear (Escucha)\nAntes de comunicar, entiende qué pasó realmente. Habla con los afectados.\n\n### E - Empathize (Empatiza)\nReconoce el impacto. «Entendemos que esto afecta directamente a...»\n\n### A - Apologize (Discúlpate si corresponde)\nSi hay responsabilidad, asúmela. Las excusas erosionan más que el error.\n\n### R - Resolve (Resuelve)\nPresenta el plan de acción con fechas. No prometas lo que no puedes cumplir.\n\n### D - Diagnose (Diagnostica)\nComparte qué harás para que no vuelva a pasar.\n\n## Errores fatales en crisis\n- Minimizar: «No es para tanto» → destruye confianza\n- Culpar: «Fue culpa de X» → pierde credibilidad\n- Silencio: no comunicar genera especulación\n- Sobreprometer: «Nunca más pasará» → si pasa, pierdes todo",
-            PuntosClave = "[\"Las primeras 24 horas de una crisis definen la narrativa\",\"Framework HEARD: Hear, Empathize, Apologize, Resolve, Diagnose\",\"Asumir responsabilidad genera más confianza que las excusas\",\"El silencio durante una crisis genera especulación\"]",
-            GuionAudio = "Cuando todo sale mal, tu comunicación puede salvarte o hundirte. Hoy aprendes el protocolo HEARD para gestionar crisis.",
-            PuntosRecompensa = 20, Orden = 2, DuracionMinutos = 12
-        };
-
-        Leccion comN3L3 = new Leccion
-        {
-            Id = leccionId++, NivelId = 3, TipoLeccion = TipoLeccion.Quiz,
-            Titulo = "Quiz: Comunicación de Alto Nivel",
-            Descripcion = "Demuestra tu dominio de la comunicación ejecutiva y de crisis.",
-            PuntosRecompensa = 25, Orden = 3, DuracionMinutos = 8
-        };
-
-        Leccion comN3L4 = new Leccion
-        {
-            Id = leccionId++, NivelId = 3, TipoLeccion = TipoLeccion.Escenario,
-            Titulo = "Escenario: Caída del sistema en producción",
-            Descripcion = "El sistema cayó afectando a 10,000 usuarios. El CEO quiere un informe en 30 minutos. ¿Cómo comunicas?",
-            PuntosRecompensa = 30, Orden = 4, DuracionMinutos = 12
-        };
-
-        Leccion comN3L5 = new Leccion
-        {
-            Id = leccionId++, NivelId = 3, TipoLeccion = TipoLeccion.Roleplay,
-            Titulo = "Roleplay: Presentación al board de directores",
-            Descripcion = "Presenta la estrategia del próximo año a un board exigente que cuestionará cada punto.",
-            PuntosRecompensa = 30, Orden = 5, DuracionMinutos = 15
-        };
-
-        contexto.Set<Leccion>().AddRange(comN3L1, comN3L2, comN3L3, comN3L4, comN3L5);
+        leccionId += 5; // Comunicación Efectiva usa el seeder piloto
 
         // ===== LIDERAZGO — Nivel 3 (NivelId=6) =====
         Leccion lidN3L1 = new Leccion
@@ -313,14 +267,7 @@ public static partial class SembradoDatos
 
         // ===== ESCENAS TEÓRICAS NIVEL 3 =====
 
-        // Escenas Comunicación N3
-        await SembrarEscenasDesdeLeccionAsync(contexto, comN3L1,
-            "En el nivel de dominio, tu comunicación debe inspirar y mover organizaciones enteras. Hoy aprenderás a comunicar visión y estrategia como un directivo.",
-            "En tu próxima presentación, empieza por la conclusión y luego desarrolla los argumentos. Observa cómo cambia la atención de tu audiencia.");
-
-        await SembrarEscenasDesdeLeccionAsync(contexto, comN3L2,
-            "Las crisis ponen a prueba tu comunicación al máximo. Hoy aprenderás protocolos para comunicar durante emergencias con claridad y calma.",
-            "Prepara un protocolo de comunicación de crisis para tu equipo: define roles, mensajes clave y canales antes de que los necesites.");
+        // Escenas Comunicación N3 — usa el seeder piloto
 
         // Escenas Liderazgo N3
         await SembrarEscenasDesdeLeccionAsync(contexto, lidN3L1,
@@ -374,49 +321,7 @@ public static partial class SembradoDatos
 
     private static async Task SembrarQuizzesNivel3Async(AppDbContext contexto)
     {
-        // Quiz Comunicación N3 (leccionId=63)
-        contexto.Set<PreguntaQuiz>().AddRange(
-            CrearPregunta(63, 1, "¿Cuál es el principio central de la pirámide de Minto?",
-                "Empezar por la conclusión, luego argumentos, luego evidencia.",
-                new[] {
-                    ("Empezar con la conclusión", true, "¡Correcto! Di lo importante primero, detalla después"),
-                    ("Empezar con los datos", false, "Eso es el enfoque junior: proceso antes que conclusión"),
-                    ("Empezar con una historia", false, "El storytelling tiene su lugar pero Minto es estructura lógica"),
-                    ("Empezar con una pregunta", false, "La pirámide de Minto lidera con la respuesta")
-                }),
-            CrearPregunta(63, 2, "¿Qué significa la H en el framework HEARD para crisis?",
-                "H = Hear (Escucha). Entiende qué pasó antes de comunicar.",
-                new[] {
-                    ("Help (Ayuda)", false, "La H es por escuchar primero"),
-                    ("Hear (Escucha)", true, "¡Correcto! Antes de hablar, entiende la situación"),
-                    ("Honesty (Honestidad)", false, "La honestidad es importante pero no es la H de HEARD"),
-                    ("Hurry (Prisa)", false, "Actuar rápido sí, pero la H es por escuchar")
-                }),
-            CrearPregunta(63, 3, "¿Cuál es el error más fatal en comunicación de crisis?",
-                "El silencio genera especulación que es peor que la realidad.",
-                new[] {
-                    ("Ser demasiado transparente", false, "La transparencia suele ser positiva en crisis"),
-                    ("El silencio", true, "¡Correcto! No comunicar deja que otros controlen la narrativa"),
-                    ("Hablar demasiado rápido", false, "Es mejor comunicar rápido que no comunicar"),
-                    ("Pedir disculpas", false, "Disculparse cuando corresponde genera confianza")
-                }),
-            CrearPregunta(63, 4, "¿En cuántos segundos debes decir tu conclusión según comunicación ejecutiva?",
-                "Los primeros 30 segundos son críticos.",
-                new[] {
-                    ("10 segundos", false, "Es un poco rápido, 30 es el estándar"),
-                    ("30 segundos", true, "¡Correcto! Si te cortan, ya dijiste lo importante"),
-                    ("2 minutos", false, "Demasiado tiempo, el ejecutivo ya se distrajo"),
-                    ("5 minutos", false, "En 5 minutos debería estar toda la presentación, no solo la conclusión")
-                }),
-            CrearPregunta(63, 5, "¿Qué es el 'sandwich inverso' para dar malas noticias?",
-                "Situación → Impacto → Plan de acción → Recursos necesarios.",
-                new[] {
-                    ("Buena noticia → Mala noticia → Buena noticia", false, "Ese es el sandwich normal, que es inefectivo"),
-                    ("Situación → Impacto → Plan → Recursos", true, "¡Correcto! Directo, sin endulzar ni alarmar"),
-                    ("Mala noticia → Disculpa → Solución", false, "Incompleto: falta el plan concreto y recursos"),
-                    ("Contexto → Causa → Culpable → Solución", false, "Buscar culpables erosiona la confianza")
-                })
-        );
+        // Quiz Comunicación N3 (leccionId=63) — usa el seeder piloto
 
         // Quiz Liderazgo N3 (leccionId=68)
         contexto.Set<PreguntaQuiz>().AddRange(
@@ -643,20 +548,7 @@ public static partial class SembradoDatos
 
     private static async Task SembrarEscenariosNivel3Async(AppDbContext contexto)
     {
-        // Escenario Comunicación N3 (leccionId=64)
-        contexto.Set<Escenario>().Add(new Escenario
-        {
-            LeccionId = 64,
-            TextoSituacion = "El sistema de producción se cayó hace 2 horas afectando a 10,000 usuarios. El CEO quiere un informe en 30 minutos para comunicar externamente. El equipo técnico aún no tiene la causa raíz.",
-            Contexto = "Eres el director de tecnología. Hay presión de comunicados en redes sociales y el equipo de soporte está desbordado.",
-            GuionAudio = "Crisis en tiempo real. El CEO necesita información y el mundo está mirando.",
-            Opciones = new List<OpcionEscenario>
-            {
-                new OpcionEscenario { TextoOpcion = "Usar el framework HEARD: informar al CEO con hechos conocidos (qué pasó, cuántos afectados, estado actual), reconocer el impacto, presentar plan de acción (equipo trabajando, ETA de restauración), y sugerir comunicado externo transparente con compromiso de actualización cada hora", TipoResultado = TipoResultadoEscenario.Optimo, TextoRetroalimentacion = "Magistral gestión de crisis. Comunicas con hechos sin especular, asumes responsabilidad, presentas plan y propones transparencia. El framework HEARD en acción.", PuntosOtorgados = 30, Orden = 1 },
-                new OpcionEscenario { TextoOpcion = "Decirle al CEO que espere a tener la causa raíz antes de comunicar nada", TipoResultado = TipoResultadoEscenario.Aceptable, TextoRetroalimentacion = "Esperar a tener toda la información es comprensible, pero en una crisis el silencio genera especulación. Es mejor comunicar lo que sabes ahora y actualizar después.", PuntosOtorgados = 15, Orden = 2 },
-                new OpcionEscenario { TextoOpcion = "Minimizar: 'Son solo 10 mil usuarios de millones, no es para tanto'", TipoResultado = TipoResultadoEscenario.Inadecuado, TextoRetroalimentacion = "Minimizar en crisis destruye credibilidad. Para esos 10,000 usuarios, es 100% de su experiencia la que está afectada.", PuntosOtorgados = 0, Orden = 3 }
-            }
-        });
+        // Escenario Comunicación N3 (leccionId=64) — usa el seeder piloto
 
         // Escenario Liderazgo N3 (leccionId=69)
         contexto.Set<Escenario>().Add(new Escenario

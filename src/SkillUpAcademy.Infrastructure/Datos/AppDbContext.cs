@@ -50,6 +50,10 @@ public class AppDbContext : IdentityDbContext<UsuarioApp, IdentityRole<Guid>, Gu
     // IA (proveedores de inteligencia artificial)
     public DbSet<ProveedorIA> ProveedoresIA => Set<ProveedorIA>();
 
+    // Piloto metodológico (planes de acción y autoevaluaciones)
+    public DbSet<PlanAccionUsuario> PlanesAccionUsuario => Set<PlanAccionUsuario>();
+    public DbSet<ResultadoAutoevaluacion> ResultadosAutoevaluacion => Set<ResultadoAutoevaluacion>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

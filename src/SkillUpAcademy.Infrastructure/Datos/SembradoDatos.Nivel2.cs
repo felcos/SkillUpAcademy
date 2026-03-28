@@ -16,53 +16,7 @@ public static partial class SembradoDatos
         int leccionId = 31;
 
         // ===== COMUNICACIÓN EFECTIVA — Nivel 2 (NivelId=2) =====
-        Leccion comN2L1 = new Leccion
-        {
-            Id = leccionId++, NivelId = 2, TipoLeccion = TipoLeccion.Teoria,
-            Titulo = "Comunicación no verbal en entornos profesionales",
-            Descripcion = "Domina los mensajes silenciosos que envías con tu cuerpo, gestos y postura.",
-            Contenido = "## El 93% del mensaje es no verbal\n\nAlbert Mehrabian demostró que en la comunicación emocional, solo el 7% del impacto viene de las palabras, el 38% del tono de voz y el 55% del lenguaje corporal.\n\n## Señales clave en el trabajo\n\n### Postura de poder\nHombros atrás, barbilla paralela al suelo, manos visibles. Transmite confianza sin decir una palabra.\n\n### Microexpresiones\nDuran menos de medio segundo pero revelan emociones reales. Aprende a leer la sorpresa, el desprecio y la alegría genuina.\n\n### Proxémica profesional\nLa distancia física comunica: zona íntima (0-45cm), personal (45cm-1.2m), social (1.2-3.6m). En reuniones, respeta la zona social.\n\n### Contacto visual\nMantén contacto 60-70% del tiempo. Menos parece evasivo, más puede resultar intimidante.",
-            PuntosClave = "[\"El 93% de la comunicación emocional es no verbal\",\"La postura de poder transmite confianza automáticamente\",\"Las microexpresiones revelan emociones en menos de medio segundo\",\"El contacto visual óptimo es del 60-70% del tiempo\"]",
-            GuionAudio = "Hoy vamos a descifrar el lenguaje silencioso del cuerpo. Porque en el trabajo, lo que no dices habla más fuerte que tus palabras.",
-            PuntosRecompensa = 15, Orden = 1, DuracionMinutos = 10
-        };
-
-        Leccion comN2L2 = new Leccion
-        {
-            Id = leccionId++, NivelId = 2, TipoLeccion = TipoLeccion.Teoria,
-            Titulo = "Feedback constructivo: el arte de la crítica que transforma",
-            Descripcion = "Aprende a dar y recibir retroalimentación que impulse el crecimiento.",
-            Contenido = "## Por qué tememos el feedback\n\nDar feedback activa el sistema de amenaza del receptor. La clave es hacerlo de forma que active el sistema de recompensa: crecimiento, no castigo.\n\n## El modelo SBI (Situación-Comportamiento-Impacto)\n\n### Situación\n«En la reunión del martes con el cliente...»\n\n### Comportamiento\n«...noté que interrumpiste tres veces a María...»\n\n### Impacto\n«...lo que hizo que perdiera el hilo de su propuesta y el cliente se confundiera.»\n\n## Feedback positivo: el refuerzo olvidado\nPor cada crítica constructiva, necesitas 5 reconocimientos positivos (ratio de Losada). No es adulación, es neuro-ciencia.\n\n## Recibir feedback como un profesional\n1. Escucha sin defenderte\n2. Agradece (genuinamente)\n3. Pide ejemplos concretos\n4. Decide qué implementar\n5. Haz seguimiento",
-            PuntosClave = "[\"El modelo SBI estructura el feedback: Situación + Comportamiento + Impacto\",\"El ratio de Losada: 5 positivos por cada 1 constructivo\",\"Recibir feedback requiere escuchar sin defenderse\",\"El feedback efectivo activa el sistema de recompensa, no el de amenaza\"]",
-            GuionAudio = "El feedback es un regalo cuando se da bien. Hoy aprenderás el modelo SBI y por qué necesitas cinco elogios por cada crítica.",
-            PuntosRecompensa = 15, Orden = 2, DuracionMinutos = 10
-        };
-
-        Leccion comN2L3 = new Leccion
-        {
-            Id = leccionId++, NivelId = 2, TipoLeccion = TipoLeccion.Quiz,
-            Titulo = "Quiz: Comunicación Avanzada",
-            Descripcion = "Evalúa tu dominio de la comunicación no verbal y el feedback constructivo.",
-            PuntosRecompensa = 20, Orden = 3, DuracionMinutos = 7
-        };
-
-        Leccion comN2L4 = new Leccion
-        {
-            Id = leccionId++, NivelId = 2, TipoLeccion = TipoLeccion.Escenario,
-            Titulo = "Escenario: Feedback al compañero que siempre llega tarde",
-            Descripcion = "Tu compañero de equipo lleva tres semanas llegando tarde a las reuniones. Necesitas abordar la situación.",
-            PuntosRecompensa = 25, Orden = 4, DuracionMinutos = 10
-        };
-
-        Leccion comN2L5 = new Leccion
-        {
-            Id = leccionId++, NivelId = 2, TipoLeccion = TipoLeccion.Roleplay,
-            Titulo = "Roleplay: Negociación salarial",
-            Descripcion = "Practica cómo comunicar tu valor y negociar un aumento con tu manager.",
-            PuntosRecompensa = 25, Orden = 5, DuracionMinutos = 15
-        };
-
-        contexto.Set<Leccion>().AddRange(comN2L1, comN2L2, comN2L3, comN2L4, comN2L5);
+        leccionId += 5; // Comunicación Efectiva usa el seeder piloto
 
         // ===== LIDERAZGO — Nivel 2 (NivelId=5) =====
         Leccion lidN2L1 = new Leccion
@@ -313,14 +267,7 @@ public static partial class SembradoDatos
 
         // ===== ESCENAS TEÓRICAS NIVEL 2 =====
 
-        // Escenas Comunicación N2
-        await SembrarEscenasDesdeLeccionAsync(contexto, comN2L1,
-            "Hoy llevaremos la comunicación al siguiente nivel: aprenderás a leer y controlar los mensajes que envías sin decir una palabra.",
-            "Esta semana, observa tu postura en las reuniones. Mantén las manos visibles y el contacto visual al 60-70%.");
-
-        await SembrarEscenasDesdeLeccionAsync(contexto, comN2L2,
-            "Dar feedback es un arte que transforma equipos. Hoy aprenderás una fórmula probada para que tu retroalimentación impulse el crecimiento.",
-            "Practica el modelo SBI esta semana: describe la situación, señala el comportamiento y explica el impacto concreto.");
+        // Escenas Comunicación N2 — usa el seeder piloto
 
         // Escenas Liderazgo N2
         await SembrarEscenasDesdeLeccionAsync(contexto, lidN2L1,
@@ -376,49 +323,7 @@ public static partial class SembradoDatos
 
     private static async Task SembrarQuizzesNivel2Async(AppDbContext contexto)
     {
-        // Quiz Comunicación N2 (leccionId=33)
-        contexto.Set<PreguntaQuiz>().AddRange(
-            CrearPregunta(33, 1, "Según Mehrabian, ¿qué porcentaje de la comunicación emocional es no verbal?",
-                "Albert Mehrabian demostró que el 93% del impacto viene del tono y lenguaje corporal.",
-                new[] {
-                    ("55%", false, "Ese es solo el porcentaje del lenguaje corporal"),
-                    ("93%", true, "¡Correcto! 55% cuerpo + 38% tono = 93% no verbal"),
-                    ("50%", false, "El porcentaje real es significativamente mayor"),
-                    ("75%", false, "Es aún mayor que eso")
-                }),
-            CrearPregunta(33, 2, "¿Qué es el modelo SBI para dar feedback?",
-                "SBI = Situación + Comportamiento + Impacto.",
-                new[] {
-                    ("Sistema-Base-Información", false, "SBI no corresponde a esas siglas"),
-                    ("Situación-Comportamiento-Impacto", true, "¡Exacto! Describe la situación, el comportamiento observado y su impacto"),
-                    ("Simple-Breve-Inmediato", false, "Aunque son buenas prácticas, no es el modelo SBI"),
-                    ("Sujeto-Beneficio-Instrucción", false, "Esas no son las siglas correctas")
-                }),
-            CrearPregunta(33, 3, "¿Cuál es el ratio de Losada para feedback?",
-                "Se necesitan 5 comentarios positivos por cada 1 constructivo.",
-                new[] {
-                    ("3 positivos por 1 negativo", false, "El ratio es mayor"),
-                    ("5 positivos por 1 constructivo", true, "¡Correcto! 5:1 es el ratio que mantiene relaciones productivas"),
-                    ("1 a 1", false, "Ese ratio no genera suficiente confianza"),
-                    ("10 a 1", false, "Eso sería excesivo y poco auténtico")
-                }),
-            CrearPregunta(33, 4, "¿Cuál es el porcentaje óptimo de contacto visual en una conversación?",
-                "El contacto visual óptimo es del 60-70% del tiempo.",
-                new[] {
-                    ("90-100%", false, "Eso resultaría intimidante"),
-                    ("30-40%", false, "Muy poco, puede parecer evasivo"),
-                    ("60-70%", true, "¡Correcto! Suficiente para mostrar interés sin intimidar"),
-                    ("50%", false, "Un poco bajo, lo ideal es algo más")
-                }),
-            CrearPregunta(33, 5, "¿Qué paso NO es parte de recibir feedback como profesional?",
-                "Defenderse no es parte del proceso; lo correcto es escuchar sin defenderse.",
-                new[] {
-                    ("Escuchar sin defenderte", false, "Este sí es un paso correcto"),
-                    ("Agradecer genuinamente", false, "Este sí es un paso correcto"),
-                    ("Justificar inmediatamente tu acción", true, "¡Correcto! Justificarse es lo opuesto a recibir feedback bien"),
-                    ("Pedir ejemplos concretos", false, "Este sí es un paso correcto")
-                })
-        );
+        // Quiz Comunicación N2 (leccionId=33) — usa el seeder piloto
 
         // Quiz Liderazgo N2 (leccionId=38)
         contexto.Set<PreguntaQuiz>().AddRange(
@@ -647,20 +552,7 @@ public static partial class SembradoDatos
 
     private static async Task SembrarEscenariosNivel2Async(AppDbContext contexto)
     {
-        // Escenario Comunicación N2 (leccionId=34)
-        contexto.Set<Escenario>().Add(new Escenario
-        {
-            LeccionId = 34,
-            TextoSituacion = "Tu compañero Carlos lleva 3 semanas llegando 10-15 minutos tarde a las reuniones del equipo. Esto retrasa al grupo y genera frustración. Necesitas hablar con él.",
-            Contexto = "Carlos es buen trabajador y se lleva bien con todos. No sabes si hay un motivo personal detrás de los retrasos.",
-            GuionAudio = "Carlos es parte importante del equipo, pero sus retrasos están afectando la dinámica grupal.",
-            Opciones = new List<OpcionEscenario>
-            {
-                new OpcionEscenario { TextoOpcion = "Usar el modelo SBI: 'Carlos, en las últimas reuniones he notado que llegas 10-15 minutos tarde, lo que hace que el equipo pierda tiempo y tenga que repetir información. ¿Hay algo que pueda ayudar?'", TipoResultado = TipoResultadoEscenario.Optimo, TextoRetroalimentacion = "Excelente uso del modelo SBI. Describes la situación y comportamiento objetivamente, expresas el impacto y abres espacio para que Carlos explique. Empático y directo.", PuntosOtorgados = 25, Orden = 1 },
-                new OpcionEscenario { TextoOpcion = "Mencionarlo casualmente: 'Oye Carlos, intenta llegar un poco antes a las reuniones, ¿vale?'", TipoResultado = TipoResultadoEscenario.Aceptable, TextoRetroalimentacion = "Es directo pero demasiado suave. No comunica el impacto real en el equipo y es fácil de ignorar. El modelo SBI sería más efectivo.", PuntosOtorgados = 10, Orden = 2 },
-                new OpcionEscenario { TextoOpcion = "Quejarte con el manager para que él hable con Carlos", TipoResultado = TipoResultadoEscenario.Inadecuado, TextoRetroalimentacion = "Escalar sin intentar resolver directamente daña la confianza y la relación. Siempre intenta la conversación directa primero.", PuntosOtorgados = 0, Orden = 3 }
-            }
-        });
+        // Escenario Comunicación N2 (leccionId=34) — usa el seeder piloto
 
         // Escenario Liderazgo N2 (leccionId=39)
         contexto.Set<Escenario>().Add(new Escenario

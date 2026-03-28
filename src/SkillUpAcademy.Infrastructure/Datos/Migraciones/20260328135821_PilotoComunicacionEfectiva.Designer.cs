@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SkillUpAcademy.Infrastructure.Datos;
@@ -11,9 +12,11 @@ using SkillUpAcademy.Infrastructure.Datos;
 namespace SkillUpAcademy.Infrastructure.Datos.Migraciones
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260328135821_PilotoComunicacionEfectiva")]
+    partial class PilotoComunicacionEfectiva
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

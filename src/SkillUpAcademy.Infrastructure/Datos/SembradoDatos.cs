@@ -19,7 +19,7 @@ public static partial class SembradoDatos
 
         await SembrarConfiguracionAvatarAsync(contexto);
         await SembrarAreasYNivelesAsync(contexto);
-        await SembrarLeccionesComunicacionAsync(contexto);
+        await SembrarLeccionesComunicacionPilotoAsync(contexto);
         await SembrarLeccionesLiderazgoAsync(contexto);
         await SembrarLeccionesTrabajoEnEquipoAsync(contexto);
         await SembrarLeccionesInteligenciaEmocionalAsync(contexto);
@@ -159,101 +159,42 @@ public static partial class SembradoDatos
         contexto.AreasHabilidad.AddRange(areas);
         await contexto.SaveChangesAsync();
 
-        // Niveles: 3 por área (solo nivel 1 con lecciones por ahora)
+        // Niveles: 3 por área (excepto Comunicación Efectiva que tiene 5 como piloto)
         int nivelId = 1;
         foreach (AreaHabilidad area in areas)
         {
-            contexto.Set<Nivel>().AddRange(new List<Nivel>
+            if (area.Id == 1) // Comunicación Efectiva — Piloto con 5 niveles (Dreyfus)
             {
-                new Nivel { Id = nivelId++, AreaHabilidadId = area.Id, NumeroNivel = 1, Nombre = "Fundamentos", Descripcion = $"Bases esenciales de {area.Titulo}", PuntosDesbloqueo = 0 },
-                new Nivel { Id = nivelId++, AreaHabilidadId = area.Id, NumeroNivel = 2, Nombre = "Práctica", Descripcion = $"Aplicación práctica de {area.Titulo}", PuntosDesbloqueo = 100 },
-                new Nivel { Id = nivelId++, AreaHabilidadId = area.Id, NumeroNivel = 3, Nombre = "Dominio", Descripcion = $"Dominio avanzado de {area.Titulo}", PuntosDesbloqueo = 300 }
-            });
+                contexto.Set<Nivel>().AddRange(new List<Nivel>
+                {
+                    new Nivel { Id = nivelId++, AreaHabilidadId = 1, NumeroNivel = 1, Nombre = "Despertar", Descripcion = "Diagnóstico y primeros descubrimientos sobre tu comunicación", PuntosDesbloqueo = 0 },
+                    new Nivel { Id = nivelId++, AreaHabilidadId = 1, NumeroNivel = 2, Nombre = "Fundamentar", Descripcion = "Bases teóricas y práctica inicial de comunicación efectiva", PuntosDesbloqueo = 60 },
+                    new Nivel { Id = nivelId++, AreaHabilidadId = 1, NumeroNivel = 3, Nombre = "Aplicar", Descripcion = "Comunicación bajo presión y situaciones complejas", PuntosDesbloqueo = 180 },
+                });
+            }
+            else
+            {
+                contexto.Set<Nivel>().AddRange(new List<Nivel>
+                {
+                    new Nivel { Id = nivelId++, AreaHabilidadId = area.Id, NumeroNivel = 1, Nombre = "Fundamentos", Descripcion = $"Bases esenciales de {area.Titulo}", PuntosDesbloqueo = 0 },
+                    new Nivel { Id = nivelId++, AreaHabilidadId = area.Id, NumeroNivel = 2, Nombre = "Práctica", Descripcion = $"Aplicación práctica de {area.Titulo}", PuntosDesbloqueo = 100 },
+                    new Nivel { Id = nivelId++, AreaHabilidadId = area.Id, NumeroNivel = 3, Nombre = "Dominio", Descripcion = $"Dominio avanzado de {area.Titulo}", PuntosDesbloqueo = 300 }
+                });
+            }
         }
 
+        // Niveles 4 y 5 de Comunicación Efectiva (piloto) — IDs 37-38
+        contexto.Set<Nivel>().AddRange(new List<Nivel>
+        {
+            new Nivel { Id = 37, AreaHabilidadId = 1, NumeroNivel = 4, Nombre = "Integrar", Descripcion = "Comunicación estratégica, influencia y mediación", PuntosDesbloqueo = 350 },
+            new Nivel { Id = 38, AreaHabilidadId = 1, NumeroNivel = 5, Nombre = "Dominar", Descripcion = "Liderazgo comunicativo y proyecto integrador", PuntosDesbloqueo = 550 },
+        });
+
         await contexto.SaveChangesAsync();
     }
 
-    // ============================================================
-    // COMUNICACIÓN EFECTIVA — Nivel 1 (NivelId = 1)
-    // ============================================================
-    private static async Task SembrarLeccionesComunicacionAsync(AppDbContext contexto)
-    {
-        int nivelId = 1;
-        int leccionBase = 1;
-
-        // Lección 1: Teoría introductoria
-        Leccion l1 = new Leccion
-        {
-            Id = leccionBase, NivelId = nivelId, TipoLeccion = TipoLeccion.Teoria,
-            Titulo = "Los pilares de la comunicación efectiva",
-            Descripcion = "Descubre los fundamentos que hacen que un mensaje sea claro, persuasivo y memorable.",
-            Contenido = "## ¿Qué es comunicar eficazmente?\n\nComunicar no es solo hablar. Es lograr que tu interlocutor entienda, sienta y actúe según tu mensaje. En el entorno profesional, la comunicación efectiva es la habilidad #1 que los empleadores buscan.\n\n## Los 4 pilares\n\n### 1. Claridad\nUsa palabras sencillas y frases cortas. Si tu abuela no lo entendería, simplifícalo.\n\n### 2. Empatía\nPonte en los zapatos del otro. ¿Qué necesita escuchar? ¿Qué le preocupa?\n\n### 3. Escucha activa\nEl 50% de comunicar bien es escuchar. No interrumpas, haz preguntas, parafrasea.\n\n### 4. Asertividad\nExpresa tus ideas con firmeza pero sin agresividad. Di lo que piensas respetando al otro.",
-            PuntosClave = "[\"La comunicación efectiva tiene 4 pilares: claridad, empatía, escucha activa y asertividad\",\"Comunicar no es solo hablar, es lograr comprensión mutua\",\"La escucha activa representa el 50% de la comunicación efectiva\",\"La asertividad equilibra firmeza con respeto\"]",
-            GuionAudio = "Hoy vamos a hablar sobre los pilares de la comunicación efectiva. Comunicar bien no es solo hablar mucho o usar palabras bonitas. Es lograr que la otra persona entienda exactamente lo que quieres transmitir.",
-            PuntosRecompensa = 10, Orden = 1, DuracionMinutos = 8
-        };
-
-        // Lección 2: Teoría conceptos clave
-        Leccion l2 = new Leccion
-        {
-            Id = leccionBase + 1, NivelId = nivelId, TipoLeccion = TipoLeccion.Teoria,
-            Titulo = "Escucha activa: la habilidad olvidada",
-            Descripcion = "Aprende las técnicas de escucha activa que transformarán tus conversaciones profesionales.",
-            Contenido = "## El problema: oímos pero no escuchamos\n\nEstudios muestran que retenemos solo el 25% de lo que escuchamos. En reuniones, la mayoría está pensando en qué va a decir, no en lo que el otro dice.\n\n## Técnicas de escucha activa\n\n### Parafraseo\nRepite con tus palabras lo que entendiste: «Si te entiendo bien, lo que dices es que...»\n\n### Preguntas abiertas\nEn lugar de «¿Estás de acuerdo?» pregunta «¿Qué opinas sobre esto?»\n\n### Lenguaje corporal\nMantén contacto visual, asiente, inclina ligeramente el cuerpo hacia adelante.\n\n### Silencio estratégico\nNo llenes cada pausa. A veces el silencio invita al otro a profundizar.",
-            PuntosClave = "[\"Solo retenemos el 25% de lo que escuchamos\",\"Parafrasear demuestra que realmente escuchaste\",\"Las preguntas abiertas generan conversaciones más ricas\",\"El lenguaje corporal comunica más que las palabras\",\"El silencio estratégico es una herramienta poderosa\"]",
-            GuionAudio = "¿Sabías que solo retenemos un 25% de lo que escuchamos? Hoy vamos a cambiar eso con técnicas concretas de escucha activa.",
-            PuntosRecompensa = 10, Orden = 2, DuracionMinutos = 8
-        };
-
-        // Lección 3: Quiz
-        Leccion l3 = new Leccion
-        {
-            Id = leccionBase + 2, NivelId = nivelId, TipoLeccion = TipoLeccion.Quiz,
-            Titulo = "Quiz: Comunicación Efectiva",
-            Descripcion = "Pon a prueba tus conocimientos sobre comunicación efectiva.",
-            PuntosRecompensa = 15, Orden = 3, DuracionMinutos = 5
-        };
-
-        // Lección 4: Escenario
-        Leccion l4 = new Leccion
-        {
-            Id = leccionBase + 3, NivelId = nivelId, TipoLeccion = TipoLeccion.Escenario,
-            Titulo = "Escenario: La reunión difícil",
-            Descripcion = "Practica tus habilidades de comunicación en una reunión tensa con un cliente insatisfecho.",
-            PuntosRecompensa = 20, Orden = 4, DuracionMinutos = 10
-        };
-
-        // Lección 5: Roleplay
-        Leccion l5 = new Leccion
-        {
-            Id = leccionBase + 4, NivelId = nivelId, TipoLeccion = TipoLeccion.Roleplay,
-            Titulo = "Roleplay: Presenta tu idea al director",
-            Descripcion = "Practica cómo presentar una propuesta a un directivo escéptico usando comunicación efectiva.",
-            Contenido = "Vas a practicar una presentación ante un director que tiene poco tiempo y muchas dudas. Tu objetivo es convencerle de aprobar tu proyecto en 5 minutos.",
-            GuionAudio = "En este roleplay, yo seré el director de tu empresa. Tienes 5 minutos para convencerme de aprobar tu proyecto. Recuerda: claridad, datos y empatía.",
-            PuntosRecompensa = 25, Orden = 5, DuracionMinutos = 10
-        };
-
-        contexto.Set<Leccion>().AddRange(l1, l2, l3, l4, l5);
-        await contexto.SaveChangesAsync();
-
-        // Escenas para lección 1 — contenido rico desde Leccion.Contenido
-        await SembrarEscenasDesdeLeccionAsync(contexto, l1,
-            "Hoy vamos a descubrir los 4 pilares que hacen que un mensaje sea claro, persuasivo y memorable. Esto cambiará la forma en que te comunicas en el trabajo.",
-            "Usa palabras simples, ponte en los zapatos del otro, escucha de verdad y expresa tus ideas con firmeza pero con respeto.");
-
-        // Escenas para lección 2 — contenido rico desde Leccion.Contenido
-        await SembrarEscenasDesdeLeccionAsync(contexto, l2,
-            "Solo retenemos un 25% de lo que escuchamos. Hoy vamos a aprender técnicas concretas para ser mejores oyentes.",
-            "Practica el parafraseo esta semana: repite con tus palabras lo que tu interlocutor acaba de decir. Verás cómo cambian las conversaciones.");
-
-        // Quiz comunicación
-        await SembrarQuizComunicacionAsync(contexto, l3.Id);
-
-        // Escenario comunicación
-        await SembrarEscenarioComunicacionAsync(contexto, l4.Id);
-    }
+    // COMUNICACIÓN EFECTIVA — Nivel 1 antiguo eliminado.
+    // Migrado al seeder piloto: SembradoDatos.ComunicacionEfectivaPiloto.cs
 
     // ============================================================
     // LIDERAZGO — Nivel 1 (NivelId = 4)

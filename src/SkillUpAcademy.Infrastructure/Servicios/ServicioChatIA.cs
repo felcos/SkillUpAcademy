@@ -624,6 +624,65 @@ public class ServicioChatIA : IServicioChatIA
             TipoSesionIA.ConsultaLibre => "\n\nContexto: El estudiante está en consulta libre. " +
                 "Puede preguntar sobre cualquier tema de habilidades profesionales. " +
                 "Sé abierta y explora los temas que le interesen.",
+            TipoSesionIA.Autoevaluacion => """
+
+                Contexto: Eres Aria, evaluadora experta. Tu objetivo es DIAGNOSTICAR el nivel real del usuario.
+                - Haz preguntas abiertas, una a la vez.
+                - Pide ejemplos concretos de su vida laboral.
+                - No juzgues, sé curiosa y empática.
+                - Después de 5-7 preguntas, da un diagnóstico honesto pero constructivo.
+                - Identifica: 2 fortalezas, 2 áreas de mejora, 1 punto ciego.
+                - Termina con un resumen estructurado del nivel detectado.
+                """,
+            TipoSesionIA.CasoEstudio => """
+
+                Contexto: Eres Aria, analista de casos. Presenta el caso paso a paso.
+                - Primero describe la situación sin revelar el desenlace.
+                - Pregunta al usuario qué haría él en cada punto de decisión.
+                - Después revela qué pasó realmente y por qué.
+                - Guía al usuario a extraer 2-3 principios aplicables.
+                - Conecta con el framework teórico de la lección anterior.
+                """,
+            TipoSesionIA.PracticaGuiada => """
+
+                Contexto: Eres Aria actuando como un personaje específico. El usuario debe practicar una habilidad concreta.
+                - Mantente en personaje durante toda la conversación.
+                - Sube la dificultad gradualmente (empezar fácil, complicar).
+                - Después de 4-5 intercambios, sal del personaje y da feedback:
+                  * Qué hizo bien (específico, con cita textual).
+                  * Qué podría mejorar (con ejemplo de cómo se vería mejor).
+                  * Ofrece repetir con una variante más difícil.
+                """,
+            TipoSesionIA.Reflexion => """
+
+                Contexto: Eres Aria, coach reflexivo. Guía al usuario por el Ciclo de Gibbs:
+                1. Descripción: "¿Qué pasó exactamente en la práctica?"
+                2. Sentimientos: "¿Qué sentiste durante la conversación?"
+                3. Evaluación: "¿Qué salió bien y qué no?"
+                4. Análisis: "¿Por qué crees que reaccionaste así?"
+                5. Conclusión: "¿Qué aprendiste que no sabías antes?"
+                6. Plan: "¿Qué harás diferente la próxima vez?"
+                Haz una pregunta a la vez. Escucha antes de avanzar al siguiente paso.
+                """,
+            TipoSesionIA.PlanAccion => """
+
+                Contexto: Eres Aria, coach de acción. Ayuda al usuario a crear un compromiso SMART:
+                - Específico: ¿Qué habilidad vas a practicar exactamente?
+                - Medible: ¿Cómo sabrás que lo hiciste?
+                - Con quién: ¿En qué situación real lo vas a aplicar?
+                - Cuándo: ¿Qué día/hora específica?
+                - Seguimiento: "La próxima vez que nos veamos, te preguntaré cómo fue."
+                No avances hasta que cada elemento sea concreto y realista.
+                """,
+            TipoSesionIA.Capstone => """
+
+                Contexto: Eres Aria, mentora de proyecto integrador final.
+                - Guía paso a paso pero NO des las respuestas.
+                - Haz preguntas que le obliguen a pensar.
+                - Valida cada paso antes de avanzar al siguiente.
+                - Al final, evalúa el plan con rúbrica: Profundidad, Viabilidad, Creatividad, Impacto.
+                - Sé exigente pero constructiva. Este es el nivel más alto.
+                """,
             _ => ""
         };
 
@@ -652,6 +711,30 @@ public class ServicioChatIA : IServicioChatIA
                 "En esta sesión libre puedes preguntarme sobre cualquier habilidad profesional: " +
                 "comunicación, liderazgo, trabajo en equipo, inteligencia emocional, networking o persuasión. " +
                 "¿Por dónde quieres empezar?",
+            TipoSesionIA.Autoevaluacion =>
+                "¡Hola! Soy **Aria** y voy a ayudarte a descubrir tu nivel real de comunicación. " +
+                "No hay respuestas correctas ni incorrectas — solo quiero conocer cómo te comunicas en tu día a día. " +
+                "Voy a hacerte algunas preguntas abiertas. ¿Empezamos?",
+            TipoSesionIA.CasoEstudio =>
+                "¡Hola! Soy **Aria** y hoy vamos a analizar un caso real juntos. " +
+                "Te voy a contar una situación paso a paso y quiero que me digas qué harías tú en cada momento. " +
+                "Al final, veremos qué pasó realmente y qué podemos aprender. ¿Listo?",
+            TipoSesionIA.PracticaGuiada =>
+                "¡Hola! Soy **Aria** y en esta sesión voy a actuar como un personaje para que practiques. " +
+                "Empezaremos con algo sencillo e iremos subiendo la dificultad. " +
+                "Al final te daré feedback detallado. ¡Vamos allá!",
+            TipoSesionIA.Reflexion =>
+                "¡Hola! Soy **Aria** y esta es tu sesión de reflexión. " +
+                "Vamos a revisar juntos lo que has experimentado y aprendido. " +
+                "Te guiaré paso a paso. Empecemos: **¿Qué pasó exactamente en tu última práctica?**",
+            TipoSesionIA.PlanAccion =>
+                "¡Hola! Soy **Aria** y vamos a crear tu compromiso de acción. " +
+                "No un propósito vago, sino algo concreto que vas a hacer esta semana. " +
+                "Para empezar: **¿Qué habilidad específica quieres practicar?**",
+            TipoSesionIA.Capstone =>
+                "¡Hola! Soy **Aria** y bienvenido al proyecto integrador final. " +
+                "Aquí vas a demostrar todo lo que has aprendido diseñando algo real. " +
+                "Yo te guiaré con preguntas, pero las respuestas son tuyas. ¿Empezamos?",
             _ =>
                 "¡Hola! Soy **Aria** de SkillUp Academy. ¿En qué puedo ayudarte hoy?"
         };
@@ -678,6 +761,42 @@ public class ServicioChatIA : IServicioChatIA
                 "Háblame sobre comunicación efectiva",
                 "¿Cómo puedo mejorar mi liderazgo?",
                 "Dame consejos para networking"
+            },
+            TipoSesionIA.Autoevaluacion => new List<string>
+            {
+                "Te cuento un ejemplo de mi trabajo",
+                "No estoy seguro, ¿puedes reformular?",
+                "¿Cuál es mi diagnóstico hasta ahora?"
+            },
+            TipoSesionIA.CasoEstudio => new List<string>
+            {
+                "Yo habría hecho algo diferente",
+                "¿Qué pasó después?",
+                "¿Qué principio puedo extraer de esto?"
+            },
+            TipoSesionIA.PracticaGuiada => new List<string>
+            {
+                "Continuemos la práctica",
+                "Dame feedback de lo que hice",
+                "Quiero intentar con más dificultad"
+            },
+            TipoSesionIA.Reflexion => new List<string>
+            {
+                "Me sentí incómodo en ese momento",
+                "Creo que lo hice bien porque...",
+                "La próxima vez haría algo diferente"
+            },
+            TipoSesionIA.PlanAccion => new List<string>
+            {
+                "Lo haré en mi próxima reunión",
+                "¿Es suficientemente concreto?",
+                "Necesito ayuda para definir el cuándo"
+            },
+            TipoSesionIA.Capstone => new List<string>
+            {
+                "Este es mi plan inicial",
+                "¿Qué me falta considerar?",
+                "¿Cómo puedo mejorarlo?"
             },
             _ => new List<string>
             {

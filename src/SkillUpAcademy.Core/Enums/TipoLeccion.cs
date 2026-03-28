@@ -8,5 +8,11 @@ public enum TipoLeccion
     Teoria,
     Quiz,
     Escenario,
-    Roleplay
+    Roleplay,
+    Autoevaluacion,
+    CasoEstudio,
+    PracticaGuiada,
+    Reflexion,
+    PlanAccion,
+    Capstone
 }

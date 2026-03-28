@@ -390,6 +390,28 @@ export const aiApi = {
     request<void>(`/ai/session/${sesionId}/end`, { method: 'POST' }),
 };
 
+// ============ PLAN DE ACCION ============
+export interface PlanAccionDto {
+  id: number;
+  leccionId: number;
+  tituloLeccion: string;
+  compromiso: string;
+  contextoAplicacion: string;
+  fechaObjetivo: string;
+  completado: boolean;
+  reflexionResultado?: string;
+  fechaCreacion: string;
+  fechaCompletado?: string;
+}
+
+export const planAccionApi = {
+  listar: () => request<PlanAccionDto[]>('/plan-accion'),
+  crear: (datos: { leccionId: number; compromiso: string; contextoAplicacion: string; fechaObjetivo: string }) =>
+    request<PlanAccionDto>('/plan-accion', { method: 'POST', body: datos }),
+  completar: (id: number, reflexionResultado: string) =>
+    request<void>(`/plan-accion/${id}/completar`, { method: 'PUT', body: { reflexionResultado } }),
+};
+
 // ============ PROGRESS ============
 export interface Dashboard {
   puntosTotales: number;

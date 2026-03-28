@@ -58,4 +58,6 @@ public class UsuarioApp : IdentityUser<Guid>
     public ICollection<EleccionEscenarioUsuario> EleccionesEscenario { get; set; } = new List<EleccionEscenarioUsuario>();
     public ICollection<SesionChatIA> SesionesChatIA { get; set; } = new List<SesionChatIA>();
     public ICollection<LogroUsuario> Logros { get; set; } = new List<LogroUsuario>();
+    public ICollection<PlanAccionUsuario> PlanesAccion { get; set; } = new List<PlanAccionUsuario>();
+    public ICollection<ResultadoAutoevaluacion> Autoevaluaciones { get; set; } = new List<ResultadoAutoevaluacion>();
 }
