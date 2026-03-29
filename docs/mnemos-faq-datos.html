@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MNEMOS — Captacion, Procesamiento y Flujo de Datos</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0b1120;--bg2:#111b2e;--bg3:#162035;--bg4:#1c2844;--text:#e8edf5;--text2:#9aa5b8;--text3:#6b7a90;--blue:#4d8ef7;--purple:#9775fa;--green:#40c78e;--amber:#f7b955;--rose:#f06595;--cyan:#22d3ee;--teal:#2dd4bf;--border:#1e2d45;--glow-blue:rgba(77,142,247,.12);--glow-purple:rgba(151,117,250,.12);--glow-green:rgba(64,199,142,.12);--glow-amber:rgba(247,185,85,.12);--glow-rose:rgba(240,101,149,.12);--glow-cyan:rgba(34,211,238,.12);--glow-teal:rgba(45,212,191,.12);--radius:14px;--ease:.35s cubic-bezier(.4,0,.2,1)}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(11,17,32,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem}
+.topbar-logo{font-weight:800;font-size:1.1rem;letter-spacing:.12em;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.topbar-nav{display:flex;gap:.15rem;overflow-x:auto}
+.topbar-nav a{color:var(--text3);text-decoration:none;padding:.4rem .55rem;border-radius:8px;font-size:.72rem;white-space:nowrap;transition:var(--ease)}
+.topbar-nav a:hover,.topbar-nav a.active{color:var(--text);background:var(--glow-blue)}
+.progress-bar{position:fixed;top:56px;left:0;height:3px;z-index:101;background:linear-gradient(90deg,var(--blue),var(--purple),var(--green));width:0%;transition:width .15s linear}
+.container{max-width:860px;margin:0 auto;padding:0 1.5rem}
+section{padding:5rem 0}section:first-of-type{padding-top:6rem}
+.label{font-size:.7rem;text-transform:uppercase;letter-spacing:.2em;color:var(--blue);margin-bottom:.75rem;font-weight:600}
+h1{font-size:clamp(2.2rem,4.5vw,3.5rem);font-weight:800;line-height:1.15;margin-bottom:1.5rem}
+h2{font-size:clamp(1.6rem,3vw,2rem);font-weight:700;line-height:1.25;margin-bottom:1rem;margin-top:3rem}
+h2:first-child{margin-top:0}
+h3{font-size:1.15rem;font-weight:600;margin-bottom:.6rem;margin-top:2rem;color:var(--text)}
+p{color:var(--text2);margin-bottom:1.2rem;font-size:1.02rem}
+.big{font-size:1.15rem;color:var(--text)}
+strong{color:var(--text);font-weight:600}
+em.concept{color:var(--amber);font-style:normal;font-weight:600}
+code{background:var(--bg3);padding:.15rem .4rem;border-radius:4px;font-size:.88rem;color:var(--cyan);font-family:'Cascadia Code','Fira Code',monospace}
+pre{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin:1.2rem 0;overflow-x:auto;font-size:.8rem;line-height:1.6;color:var(--text2);font-family:'Cascadia Code','Fira Code',monospace}
+.ref{border-bottom:1.5px dotted var(--purple);cursor:help;position:relative;color:var(--text);transition:color .2s}
+.ref:hover{color:var(--purple)}
+.ref .tip{display:none;position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);width:400px;max-width:90vw;background:var(--bg4);border:1px solid var(--purple);border-radius:var(--radius);padding:1rem 1.2rem;z-index:200;font-size:.82rem;line-height:1.55;color:var(--text2);box-shadow:0 8px 32px rgba(0,0,0,.5);pointer-events:none}
+.ref .tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--purple)}
+.ref:hover .tip,.ref:focus .tip{display:block;pointer-events:auto}
+.ref .tip .tip-title{font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem;color:var(--purple)}
+.ref .tip .tip-cite{color:var(--text3);font-style:italic;font-size:.78rem;margin-top:.5rem;padding-top:.4rem;border-top:1px solid var(--border)}
+.ref .tip .tip-quote{color:var(--amber);font-style:italic;margin:.4rem 0}
+.ref .tip pre{font-size:.72rem;margin:.5rem 0;padding:.6rem}
+.ref.phil{border-bottom-color:var(--amber)}.ref.phil:hover{color:var(--amber)}.ref.phil .tip{border-color:var(--amber)}.ref.phil .tip::after{border-top-color:var(--amber)}.ref.phil .tip .tip-title{color:var(--amber)}
+.ref.note{border-bottom-color:var(--green)}.ref.note:hover{color:var(--green)}.ref.note .tip{border-color:var(--green)}.ref.note .tip::after{border-top-color:var(--green)}.ref.note .tip .tip-title{color:var(--green)}
+.ref.adv{border-bottom-color:var(--cyan)}.ref.adv:hover{color:var(--cyan)}.ref.adv .tip{border-color:var(--cyan)}.ref.adv .tip::after{border-top-color:var(--cyan)}.ref.adv .tip .tip-title{color:var(--cyan)}
+.ref.code{border-bottom-color:var(--teal)}.ref.code:hover{color:var(--teal)}.ref.code .tip{border-color:var(--teal);width:500px}.ref.code .tip::after{border-top-color:var(--teal)}.ref.code .tip .tip-title{color:var(--teal)}
+.ref.integ{border-bottom-color:var(--rose)}.ref.integ:hover{color:var(--rose)}.ref.integ .tip{border-color:var(--rose)}.ref.integ .tip::after{border-top-color:var(--rose)}.ref.integ .tip .tip-title{color:var(--rose)}
+.ref.flux{border-bottom-color:var(--blue)}.ref.flux:hover{color:var(--blue)}.ref.flux .tip{border-color:var(--blue)}.ref.flux .tip::after{border-top-color:var(--blue)}.ref.flux .tip .tip-title{color:var(--blue)}
+.analogy{background:var(--glow-blue);border:1px solid rgba(77,142,247,.25);border-radius:var(--radius);padding:1.5rem 1.75rem;margin:1.5rem 0;position:relative}
+.analogy::before{content:'Analogia';position:absolute;top:-10px;left:16px;background:var(--bg);padding:0 8px;font-size:.7rem;color:var(--blue);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.analogy p{color:var(--text);margin-bottom:0;font-size:.95rem}
+.important{background:var(--glow-amber);border:1px solid rgba(247,185,85,.25);border-radius:var(--radius);padding:1.5rem 1.75rem;margin:1.5rem 0;position:relative}
+.important::before{content:'Clave';position:absolute;top:-10px;left:16px;background:var(--bg);padding:0 8px;font-size:.7rem;color:var(--amber);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.important p{color:var(--text);margin-bottom:0;font-size:.95rem}
+blockquote{border-left:3px solid var(--purple);padding:1.25rem 1.5rem;margin:1.5rem 0;background:var(--glow-purple);border-radius:0 var(--radius) var(--radius) 0}
+blockquote p{color:var(--text);font-style:italic;margin-bottom:.3rem;font-size:1.05rem}
+blockquote cite{color:var(--text3);font-style:normal;font-size:.85rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;margin:1.75rem 0}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;transition:var(--ease)}
+.card:hover{border-color:var(--blue);transform:translateY(-2px)}
+.card-badge{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:10px;font-size:1rem;font-weight:800;margin-bottom:.75rem}
+.card-badge.blue{background:var(--glow-blue);color:var(--blue)}.card-badge.purple{background:var(--glow-purple);color:var(--purple)}.card-badge.green{background:var(--glow-green);color:var(--green)}.card-badge.amber{background:var(--glow-amber);color:var(--amber)}.card-badge.rose{background:var(--glow-rose);color:var(--rose)}.card-badge.cyan{background:var(--glow-cyan);color:var(--cyan)}.card-badge.teal{background:var(--glow-teal);color:var(--teal)}
+.card h4{font-size:1rem;font-weight:600;margin-bottom:.4rem;color:var(--text)}.card p{font-size:.88rem;margin-bottom:0;color:var(--text2)}
+.flow{display:flex;align-items:center;justify-content:center;gap:.4rem;flex-wrap:wrap;margin:1.5rem 0}
+.flow-box{padding:.65rem 1.1rem;border-radius:10px;font-size:.82rem;font-weight:600;text-align:center;min-width:90px}
+.flow-arr{color:var(--text3);font-size:1.1rem}
+.layers{margin:1.5rem 0;display:flex;flex-direction:column;gap:.4rem}
+.layer-row{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;border-radius:var(--radius);background:var(--bg3);border:1px solid var(--border);transition:var(--ease)}
+.layer-row:hover{border-color:var(--blue)}
+.layer-label{font-weight:700;min-width:140px;font-size:.9rem}.layer-text{font-size:.85rem;color:var(--text2)}
+.tbl{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:.88rem}
+.tbl th{text-align:left;padding:.6rem .8rem;background:var(--bg3);color:var(--text);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--border)}
+.tbl td{padding:.6rem .8rem;border-bottom:1px solid var(--border);color:var(--text2)}.tbl tr:hover td{background:rgba(77,142,247,.04)}
+hr.sep{border:none;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:3rem 0}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .5s ease,transform .5s ease}.reveal.on{opacity:1;transform:translateY(0)}
+.hypothesis{background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.2);border-radius:var(--radius);padding:1.5rem 1.75rem;margin:1.5rem 0;position:relative}
+.hypothesis::before{content:'Hipotesis Falsificable';position:absolute;top:-10px;left:16px;background:var(--bg);padding:0 8px;font-size:.7rem;color:var(--cyan);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.hypothesis p{color:var(--text);margin-bottom:0;font-size:.92rem}
+.legend{display:flex;flex-wrap:wrap;gap:1rem;margin:1.5rem 0;padding:1rem 1.25rem;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)}
+.legend-item{display:flex;align-items:center;gap:.4rem;font-size:.8rem}.legend-dot{width:10px;height:10px;border-radius:50%}
+@media(max-width:700px){.topbar-nav{display:none}.cards{grid-template-columns:1fr}.flow{flex-direction:column}.flow-arr{transform:rotate(90deg)}.layer-row{flex-direction:column;gap:.3rem}.layer-label{min-width:auto}.ref .tip{width:280px;left:0;transform:none}.ref .tip::after{left:20px}}
+</style>
+</head>
+<body>
+<div class="topbar">
+<div class="topbar-logo">MNEMOS &middot; FAQ Datos</div>
+<div class="topbar-nav">
+<a href="mnemos-extendida.html">&larr; Volver a la presentacion principal</a>
+<a href="mnemos-faq-general.html">General</a>
+<a href="mnemos-faq-tecnico.html">Tecnico</a>
+<a href="mnemos-faq-academico.html">Academico</a>
+</div></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<section>
+<div class="container">
+<div class="label">FAQ &mdash; Captacion, Procesamiento y Flujo de Datos</div>
+<h1>Como entran, se procesan y se conectan los datos en MNEMOS</h1>
+<p class="big">Importacion, edicion, borrado, pipeline completo y auto-clasificacion.</p>
+
+<div class="legend">
+<span style="font-weight:600;font-size:.85rem;margin-right:.5rem">Tooltips descubribles:</span>
+<div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>Cita cientifica</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Cita filosofica</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Nota tecnica</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--cyan)"></div>Avanzado: Funcionamiento</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--teal)"></div>Avanzado: Codificacion</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--rose)"></div>Avanzado: Integracion</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Proceso: Flujo de datos</div>
+</div>
+
+<hr class="sep">
+
+<h2>Importacion de Datos</h2>
+
+<h3>Puede importar desde Obsidian, Notion u otras herramientas?</h3>
+<p>Todavia no de forma automatica, pero esta planificado via la interfaz <span class="ref code">IDataSourceConnector<span class="tip"><span class="tip-title">Codigo C#</span>IDataSourceConnector es la abstraccion para fuentes de datos externas. Cada conector implementa esta interfaz para inyectar datos en MNEMOS.<pre>public interface IDataSourceConnector
+{
+    string SourceName { get; }
+    Task&lt;IReadOnlyList&lt;RawDataItem&gt;&gt;
+        FetchNewItemsAsync(
+            DateTime since,
+            CancellationToken ct);
+    Task&lt;bool&gt; TestConnectionAsync();
+}</pre></span></span></span>. Obsidian seria el mas facil de integrar porque ya usa archivos .md &mdash; que es exactamente el formato nativo de MNEMOS para contenido.</p>
+
+<p>Para Notion se necesitaria un conector que use la API de Notion para extraer paginas y convertirlas a memors. Para Roam/Logseq, similar con sus respectivos formatos de exportacion.</p>
+
+<h3>Puede captar datos de navegacion web?</h3>
+<p>Futuro. Se planea un conector <span class="ref integ">IDataSourceConnector para el navegador<span class="tip"><span class="tip-title">Integracion</span>El conector de navegador funcionaria como una extension que captura: paginas guardadas como bookmarks, selecciones de texto, y opcionalmente historial de navegacion. Cada item se convierte en un memor con SourceContext que incluye URL, titulo, y timestamp. El Guardian filtraria contenido no relevante.</span></span></span> que podria capturar bookmarks, selecciones de texto y opcionalmente historial. Cada item capturado se convertiria en un memor con su SourceContext (URL, titulo, fecha).</p>
+
+<h3>Puede captar datos del IDE?</h3>
+<p>Futuro. Se planea un conector para <span class="ref note">VS Code y JetBrains<span class="tip"><span class="tip-title">Nota Tecnica</span>El conector de IDE captaria: snippets guardados, decisiones tecnicas (commits con mensajes especificos), errores resueltos, y patrones de codigo frecuentes. Esto alimentaria especialmente al motor Kahneman (decisiones tecnicas) y schemas de Piaget (conocimiento tecnico que evoluciona).</span></span></span>. La integracion mas inmediata es via MCP Server, que ya permite a Claude Code leer y crear memors directamente desde el terminal.</p>
+
+<h3>Hay bulk import?</h3>
+<p>No hay una herramienta dedicada todavia. Sin embargo, la <span class="ref flux">API REST<span class="tip"><span class="tip-title">Flujo de Datos</span>POST /api/memors acepta un memor individual. Para bulk import, se puede hacer un script que itere sobre archivos y haga POST secuenciales. Cada POST pasa por el pipeline completo: Guardian validation, ContentHash, embedding, SQL Server persist, DomainEvent append. Rate limit del Guardian: 100 memors/hora por source_agent.</span></span></span> permite crear memors programaticamente. Un script en cualquier lenguaje puede iterar sobre archivos y hacer POSTs secuenciales a <code>POST /api/memors</code>. Cada memor pasa por el pipeline completo de validacion y procesamiento.</p>
+
+<hr class="sep">
+
+<h2>Pipeline Completo de un Memor</h2>
+
+<h3>Que pasa exactamente cuando creo un memor?</h3>
+<p>El pipeline completo, de principio a fin:</p>
+
+<div class="flow">
+<div class="flow-box" style="background:var(--glow-blue);color:var(--blue)">POST /api/memors</div>
+<div class="flow-arr">&rarr;</div>
+<div class="flow-box" style="background:var(--glow-amber);color:var(--amber)">Guardian</div>
+<div class="flow-arr">&rarr;</div>
+<div class="flow-box" style="background:var(--glow-green);color:var(--green)">ContentHash</div>
+<div class="flow-arr">&rarr;</div>
+<div class="flow-box" style="background:var(--glow-purple);color:var(--purple)">AI Embedding</div>
+<div class="flow-arr">&rarr;</div>
+<div class="flow-box" style="background:var(--glow-cyan);color:var(--cyan)">SQL Server</div>
+<div class="flow-arr">&rarr;</div>
+<div class="flow-box" style="background:var(--glow-rose);color:var(--rose)">DomainEvent</div>
+<div class="flow-arr">&rarr;</div>
+<div class="flow-box" style="background:var(--glow-teal);color:var(--teal)">Bus &rarr; Schemas</div>
+</div>
+
+<div class="layers">
+<div class="layer-row">
+<div class="layer-label" style="color:var(--blue)">1. Recepcion</div>
+<div class="layer-text">La peticion llega al <span class="ref code">MemorsController<span class="tip"><span class="tip-title">Codigo C#</span>El controller es delgado &mdash; solo valida el DTO y delega al servicio.<pre>[HttpPost]
+public async Task&lt;IActionResult&gt; CreateAsync(
+    CreateMemorRequest request)
+{
+    GuardianValidationResult validation =
+        await _guardian.ValidateAsync(request);
+    if (!validation.IsApproved)
+        return BadRequest(validation.Reason);
+    // delegate to MemorService...
+}</pre></span></span></span> via POST. El DTO incluye contenido, tipo, dominios y contexto opcional.</div>
+</div>
+<div class="layer-row">
+<div class="layer-label" style="color:var(--amber)">2. Guardian</div>
+<div class="layer-text"><span class="ref adv">GuardianAgent<span class="tip"><span class="tip-title">Funcionamiento Interno</span>El Guardian valida: formato correcto, contenido no vacio, rate limiting (100/hora por source_agent), sanitizacion de prompt injection (detecta patrones como "ignore previous instructions"), inmutabilidad de campos protegidos (SS nunca decrece en updates), y source_agent no nulo para agentes.</span></span></span> valida formato, rate limiting, prompt injection sanitization y campos protegidos.</div>
+</div>
+<div class="layer-row">
+<div class="layer-label" style="color:var(--green)">3. ContentHash</div>
+<div class="layer-text">Se genera un hash SHA-256 del contenido para detectar duplicados exactos y rastrear modificaciones.</div>
+</div>
+<div class="layer-row">
+<div class="layer-label" style="color:var(--purple)">4. Embedding</div>
+<div class="layer-text">El <span class="ref integ">IAIEngine<span class="tip"><span class="tip-title">Integracion</span>IAIEngine es la abstraccion para TODAS las operaciones de AI. Dos implementaciones: OpenAiCompatibleEmbeddingEngine (usa API OpenAI o compatible como Together AI, Ollama) y StubAIEngine (embeddings locales bag-of-words). La interfaz tiene un solo metodo para embeddings: GenerateEmbeddingAsync(string text). El embedding resultante (float[]) se almacena junto al memor.</span></span></span> genera un vector de embedding (float[]) del contenido. ~200ms local, ~500ms con OpenAI.</div>
+</div>
+<div class="layer-row">
+<div class="layer-label" style="color:var(--cyan)">5. Persistencia</div>
+<div class="layer-text">El memor se guarda en SQL Server con SS=1.0 (Storage Strength inicial), RS=1.0 (Retrieval Strength inicial), timestamp, y el embedding.</div>
+</div>
+<div class="layer-row">
+<div class="layer-label" style="color:var(--rose)">6. Event Sourcing</div>
+<div class="layer-text">Se crea un <span class="ref flux">DomainEvent<span class="tip"><span class="tip-title">Flujo de Datos</span>Cada mutacion de estado genera un DomainEvent en la tabla DomainEvents con: AggregateId (el memor), EventType ("MemorCreated"), Payload (JSON con el estado completo), Actor (usuario o agente), y timestamp. Esto permite reconstruir el historial completo de cualquier entidad &mdash; es el fundamento del event sourcing.</span></span></span> de tipo "MemorCreated" con el estado completo en JSON.</div>
+</div>
+<div class="layer-row">
+<div class="layer-label" style="color:var(--teal)">7. Bus Cognitivo</div>
+<div class="layer-text">El evento se publica en el <span class="ref adv">CognitiveEventBus<span class="tip"><span class="tip-title">Funcionamiento Interno</span>El Bus Cognitivo tiene 11 tipos de evento. Cuando se crea un memor, se emite NewMemorEncoded. Los suscriptores incluyen: SchemaService (intenta asimilar el memor en schemas existentes), SpreadingActivationNetwork (activa nodos relacionados), y Discoverer (busca conexiones no obvias). Damping: 0.3 por salto, maximo 5 saltos.</span></span></span>. Los motores suscritos reaccionan: Piaget intenta asimilar en schemas, SAN activa nodos relacionados.</div>
+</div>
+</div>
+
+<hr class="sep">
+
+<h2>Procesamiento y Tiempos</h2>
+
+<h3>Cuanto tarda en procesarse un memor?</h3>
+<p>Depende de la fuente de embeddings:</p>
+
+<table class="tbl">
+<thead>
+<tr><th>Operacion</th><th>StubAIEngine (local)</th><th>OpenAI API</th></tr>
+</thead>
+<tbody>
+<tr><td>Guardian validation</td><td>~5ms</td><td>~5ms</td></tr>
+<tr><td>ContentHash</td><td>~1ms</td><td>~1ms</td></tr>
+<tr><td>Embedding generation</td><td>~10ms</td><td>~300ms</td></tr>
+<tr><td>SQL Server persist</td><td>~15ms</td><td>~15ms</td></tr>
+<tr><td>DomainEvent append</td><td>~5ms</td><td>~5ms</td></tr>
+<tr><td>Bus propagation</td><td>~10ms</td><td>~10ms</td></tr>
+<tr><td><strong>Total</strong></td><td><strong>~50ms</strong></td><td><strong>~340ms</strong></td></tr>
+</tbody>
+</table>
+
+<h3>Que pasa si la API de OpenAI no esta disponible?</h3>
+<p>MNEMOS aplica el <span class="ref phil">Principio 5: Graceful Degradation<span class="tip"><span class="tip-title">Principio Filosofico</span>El Principio 5 establece que MNEMOS debe funcionar de forma util incluso sin conexion a APIs externas, sin biometricos, sin todos los motores activos. Cada capa se degrada con gracia &mdash; pierde precision pero no funcionalidad. El StubAIEngine es la materializacion de este principio para embeddings.<span class="tip-quote">&laquo;Un sistema que solo funciona en condiciones perfectas no funciona.&raquo;</span></span></span>. El <code>StubAIEngine</code> toma el control automaticamente y genera embeddings locales usando bag-of-words + feature hashing. La busqueda funciona (por keywords), pero pierde la comprension semantica profunda que ofrece OpenAI.</p>
+
+<hr class="sep">
+
+<h2>Edicion y Borrado</h2>
+
+<h3>Puedo editar un memor despues de crearlo?</h3>
+<p>Si, via <code>PUT /api/memors/{id}</code> o el tool MCP <code>create_memor</code> (con update). El <span class="ref adv">Guardian valida los cambios<span class="tip"><span class="tip-title">Funcionamiento Interno</span>Cuando se edita un memor, el Guardian verifica: (1) que SS no decrece (invariante fundamental de Bjork), (2) que source_agent esta presente si es un agente quien edita, (3) que no hay prompt injection en el nuevo contenido, (4) rate limiting. El ContentHash se recalcula y el embedding se regenera con el contenido nuevo.</span></span></span>: SS nunca puede decrecer (invariante Bjork), el embedding se regenera, y un DomainEvent "MemorUpdated" registra el cambio completo.</p>
+
+<h3>Puedo borrar un memor?</h3>
+<p>MNEMOS no borra &mdash; <span class="ref">archiva<span class="tip"><span class="tip-title">Ciencia Cognitiva</span>Bjork &amp; Bjork (1992) demostraron que la informacion almacenada en memoria a largo plazo nunca se "borra" realmente &mdash; solo se vuelve inaccesible (RS baja a ~0). MNEMOS implementa esto literalmente: un memor archivado tiene ArchivalStatus cambiado, pero su SS permanece intacta. El event sourcing mantiene el historial completo.<span class="tip-cite">Bjork, R.A. &amp; Bjork, E.L. (1992). A New Theory of Disuse.</span></span></span>. Cuando "borras" un memor, su <code>ArchivalStatus</code> cambia de <code>Active</code> a <code>Archived</code>. El memor deja de aparecer en busquedas, pero:</p>
+<ul style="color:var(--text2);margin-bottom:1.2rem;padding-left:1.5rem">
+<li>Su Storage Strength (SS) permanece intacta</li>
+<li>El event sourcing conserva todo el historial</li>
+<li>Se puede des-archivar en cualquier momento</li>
+<li>Los links existentes se marcan como inactivos pero no se eliminan</li>
+</ul>
+
+<div class="important">
+<p><strong>Por que no borrado real?</strong> Porque SS nunca decrece (invariante Bjork). Borrar un memor violaria este principio. Ademas, el historial de eventos es sagrado para event sourcing &mdash; permite reconstruir el estado en cualquier punto del pasado (Cognitive Time Travel futuro).</p>
+</div>
+
+<h3>Que pasa si meto datos basura?</h3>
+<p>El <span class="ref note">Guardian<span class="tip"><span class="tip-title">Nota Tecnica</span>El GuardianAgent actua como portero: valida formato (contenido no vacio, tipo valido), aplica rate limiting (100/hora por source_agent), detecta prompt injection, y verifica inmutabilidad de campos protegidos. Sin embargo, no juzga la calidad del contenido &mdash; eso es responsabilidad del usuario. Si escribes "asdfgh", el Guardian lo dejara pasar si tiene formato valido.</span></span></span> valida formato y rate limiting, pero no juzga calidad de contenido. Si escribes algo sin sentido, entrara al sistema. La calidad del contenido es responsabilidad del usuario. En futuro, el agente Librarian podria sugerir mejoras.</p>
+
+<hr class="sep">
+
+<h2>Clasificacion y Conexiones</h2>
+
+<h3>Tengo que clasificar manualmente cada nota?</h3>
+<p>No obligatoriamente. Cada memor tiene un <code>MemorType</code> (Episodic, Semantic, Procedural, etc.) que actualmente se especifica al crear. En futuro, se planea <span class="ref adv">auto-clasificacion<span class="tip"><span class="tip-title">Funcionamiento Interno</span>La auto-clasificacion usaria el IAIEngine para analizar el contenido y sugerir el tipo mas probable. Un memor que describe "ayer tuve una reunion con..." seria Episodic. Uno que explica "la ley de Ohm establece..." seria Semantic. Uno con pasos "para deployar, primero..." seria Procedural. El usuario siempre puede corregir la clasificacion.</span></span></span> basada en analisis semantico del contenido.</p>
+
+<h3>Como se vincula un memor a un schema?</h3>
+<p>Automaticamente. Cuando se crea un memor, el Bus Cognitivo emite <code>NewMemorEncoded</code>. El motor Piaget, suscrito a este evento, ejecuta <span class="ref code">SchemaService.TryAssimilateAsync()<span class="tip"><span class="tip-title">Codigo C#</span>El servicio intenta encajar el memor en schemas existentes por similaridad semantica.<pre>public async Task TryAssimilateAsync(
+    Guid memorId,
+    CancellationToken ct)
+{
+    // 1. Obtener embedding del memor
+    // 2. Buscar schemas con mayor
+    //    similaridad coseno
+    // 3. Si similaridad > umbral:
+    //    asimilar (anadir a schema)
+    // 4. Si no encaja en ninguno:
+    //    puede triggear acomodacion
+    //    (modificar schema existente)
+    //    o crear schema nascent
+}</pre></span></span></span> que compara el embedding del memor con los schemas existentes. Si la similaridad supera el umbral, el memor se asimila al schema. Si no encaja en ninguno, puede triggerear una acomodacion (modificar el schema) o quedar sin clasificar hasta que surja un patron.</p>
+
+<h3>Como creo una creencia (belief)?</h3>
+<p>Actualmente via API REST (<code>POST /api/beliefs</code>) o MCP tool (<code>create_belief</code>). Cada belief tiene: nombre, descripcion, <span class="ref">credence_ideal y credence_actual<span class="tip"><span class="tip-title">Ciencia Cognitiva</span>El dual-track Bayesian es una innovacion de MNEMOS: credence_ideal es lo que la evidencia dice que deberias creer (calculado objetivamente). credence_actual es lo que realmente crees (subjetivo). La diferencia entre ambos es el bias_gap &mdash; una medida cuantificada de sesgo cognitivo que el motor detecta automaticamente.<span class="tip-cite">Inspirado en epistemologia Bayesiana formal. El dual-track fue propuesto durante los 303 debates PhD.</span></span></span> (ambos entre 0 y 1), dominio y evidencia asociada. En futuro, el sistema podria auto-inferir beliefs desde patrones en los memors.</p>
+
+<h3>Como registro una decision?</h3>
+<p>Via <code>POST /api/decisions</code> o MCP tool <code>create_decision</code>. Cada decision incluye: descripcion, <span class="ref adv">predicted_outcome<span class="tip"><span class="tip-title">Funcionamiento Interno</span>El motor Kahneman registra la prediccion del usuario ANTES del resultado real. Cuando el resultado llega (via resolve_decision), compara prediccion vs realidad. Esto alimenta success_rate del DecisionPattern asociado. Con el tiempo, MNEMOS puede mostrar: "En decisiones de este tipo, predices correctamente el 73% de las veces" o "Tiendes a ser sobre-optimista en estimaciones de tiempo (System 1)".</span></span></span>, contexto (memor asociado), schema, beliefs relevantes, y sistema de razonamiento (System1 o System2). Cuando el resultado llega, se resuelve con <code>resolve_decision</code>.</p>
+
+<h3>Los schemas se crean automaticamente?</h3>
+<p>Actualmente son manuales. El agente <span class="ref integ">Discoverer<span class="tip"><span class="tip-title">Integracion</span>El DiscovererAgent busca conexiones no obvias entre memors. Usa el IAIEngine para encontrar memors semanticamente relacionados que no estan vinculados. Cuando encuentra un cluster de memors no conectados pero tematicamete coherentes, sugiere la creacion de un schema. Implementado en Phase 1 Sprint 5 pero la auto-creacion de schemas esta en el roadmap.</span></span></span> detecta clusters de memors no conectados pero tematicamente coherentes, y en futuro sugerira la creacion automatica de schemas. El ciclo de vida de un schema sigue a Piaget: nascent &rarr; developing &rarr; stable &rarr; rigid &rarr; obsolete.</p>
+
+</div>
+</section>
+
+<script>
+window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progressBar').style.width = pct + '%';
+});
+</script>
+</body>
+</html>

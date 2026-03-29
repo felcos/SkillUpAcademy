@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FELCOS — Ingenieria de Inteligencia Artificial</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #050a18;
+            --bg2: #0a1128;
+            --bg3: #0f1a35;
+            --bg4: #162040;
+            --text: #e4eaf4;
+            --text2: #8d9bb5;
+            --text3: #5a6a85;
+            --accent1: #00d4ff;
+            --accent2: #7c3aed;
+            --accent3: #06d6a0;
+            --accent4: #f72585;
+            --accent5: #fca311;
+            --glass: rgba(15, 26, 53, 0.65);
+            --glass-border: rgba(0, 212, 255, 0.12);
+            --glow1: rgba(0, 212, 255, 0.08);
+            --glow2: rgba(124, 58, 237, 0.08);
+            --glow3: rgba(6, 214, 160, 0.08);
+            --glow4: rgba(247, 37, 133, 0.08);
+            --glow5: rgba(252, 163, 17, 0.08);
+            --radius: 16px;
+            --ease: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.75;
+            overflow-x: hidden;
+        }
+
+        /* ═══ ANIMATED MESH BACKGROUND ═══ */
+        .mesh-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none;
+        }
+        .mesh-orb {
+            position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.3;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+        .mesh-orb:nth-child(1) {
+            width: 600px; height: 600px; top: -10%; left: -10%;
+            background: radial-gradient(circle, var(--accent1), transparent 70%);
+            animation-delay: 0s;
+        }
+        .mesh-orb:nth-child(2) {
+            width: 500px; height: 500px; top: 40%; right: -15%;
+            background: radial-gradient(circle, var(--accent2), transparent 70%);
+            animation-delay: -7s; animation-duration: 25s;
+        }
+        .mesh-orb:nth-child(3) {
+            width: 400px; height: 400px; bottom: -5%; left: 20%;
+            background: radial-gradient(circle, var(--accent3), transparent 70%);
+            animation-delay: -14s; animation-duration: 22s;
+        }
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(60px, -40px) scale(1.1); }
+            50% { transform: translate(-30px, 50px) scale(0.9); }
+            75% { transform: translate(40px, 20px) scale(1.05); }
+        }
+
+        /* ═══ GRID OVERLAY ═══ */
+        .grid-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; opacity: 0.03;
+            background-image:
+                linear-gradient(var(--accent1) 1px, transparent 1px),
+                linear-gradient(90deg, var(--accent1) 1px, transparent 1px);
+            background-size: 80px 80px;
+        }
+
+        /* ═══ NAV ═══ */
+        .topbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(5, 10, 24, 0.85);
+            backdrop-filter: blur(20px) saturate(1.5);
+            border-bottom: 1px solid var(--glass-border);
+            height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 2rem;
+        }
+        .topbar-logo {
+            font-weight: 800; font-size: 1.2rem; letter-spacing: 0.15em;
+            background: linear-gradient(135deg, var(--accent1), var(--accent2), var(--accent3));
+            background-size: 200% 200%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            animation: gradientShift 4s ease infinite;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .topbar-nav { display: flex; gap: 0.25rem; }
+        .topbar-nav a {
+            color: var(--text3); text-decoration: none; padding: 0.4rem 0.8rem;
+            border-radius: 8px; font-size: 0.8rem; white-space: nowrap; transition: var(--ease);
+            letter-spacing: 0.02em;
+        }
+        .topbar-nav a:hover, .topbar-nav a.active { color: var(--accent1); background: var(--glow1); }
+        .topbar-login {
+            padding: 0.4rem 1.2rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+            border: 1px solid var(--accent1); color: var(--accent1); background: transparent;
+            cursor: pointer; transition: var(--ease); letter-spacing: 0.03em;
+        }
+        .topbar-login:hover {
+            background: var(--accent1); color: var(--bg);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .progress-bar {
+            position: fixed; top: 60px; left: 0; height: 2px; z-index: 101;
+            background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent3));
+            width: 0%; transition: width 0.15s linear;
+        }
+
+        /* ═══ LAYOUT ═══ */
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
+        section { padding: 6rem 0; }
+
+        /* ═══ TYPOGRAPHY ═══ */
+        .label {
+            font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.3em;
+            color: var(--accent1); margin-bottom: 0.75rem; font-weight: 700;
+        }
+        h1 {
+            font-size: clamp(2.5rem, 5.5vw, 4.2rem); font-weight: 800; line-height: 1.1;
+            margin-bottom: 1.5rem; letter-spacing: -0.02em;
+        }
+        h2 {
+            font-size: clamp(1.7rem, 3.5vw, 2.4rem); font-weight: 700; line-height: 1.2;
+            margin-bottom: 1.2rem;
+        }
+        h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.6rem; margin-top: 2.5rem; }
+        p { color: var(--text2); margin-bottom: 1.2rem; font-size: 1.02rem; }
+        .big { font-size: 1.2rem; color: var(--text); }
+        strong { color: var(--text); font-weight: 600; }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .gradient-text-2 {
+            background: linear-gradient(135deg, var(--accent2), var(--accent4));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .gradient-text-3 {
+            background: linear-gradient(135deg, var(--accent3), var(--accent1));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+
+        /* ═══ TOOLTIP ═══ */
+        .ref {
+            border-bottom: 1.5px dotted var(--accent2);
+            cursor: help; position: relative; color: var(--text); transition: color 0.2s;
+        }
+        .ref:hover { color: var(--accent2); }
+        .ref .tip {
+            display: none; position: absolute; bottom: calc(100% + 10px);
+            left: 50%; transform: translateX(-50%); width: 360px; max-width: 90vw;
+            background: var(--bg4); border: 1px solid var(--accent2);
+            border-radius: var(--radius); padding: 1rem 1.2rem; z-index: 200;
+            font-size: 0.82rem; line-height: 1.55; color: var(--text2);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6); pointer-events: none;
+        }
+        .ref .tip::after {
+            content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            border: 7px solid transparent; border-top-color: var(--accent2);
+        }
+        .ref:hover .tip, .ref:focus .tip { display: block; pointer-events: auto; }
+        .ref .tip .tip-title {
+            color: var(--accent2); font-weight: 700; font-size: 0.72rem;
+            text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.4rem;
+        }
+        .ref .tip .tip-cite {
+            color: var(--text3); font-style: italic; font-size: 0.78rem;
+            margin-top: 0.5rem; padding-top: 0.4rem; border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .ref .tip .tip-quote {
+            color: var(--accent5); font-style: italic; margin: 0.4rem 0;
+        }
+
+        .ref.phil { border-bottom-color: var(--accent5); }
+        .ref.phil:hover { color: var(--accent5); }
+        .ref.phil .tip { border-color: var(--accent5); }
+        .ref.phil .tip::after { border-top-color: var(--accent5); }
+        .ref.phil .tip .tip-title { color: var(--accent5); }
+
+        .ref.tech { border-bottom-color: var(--accent1); }
+        .ref.tech:hover { color: var(--accent1); }
+        .ref.tech .tip { border-color: var(--accent1); }
+        .ref.tech .tip::after { border-top-color: var(--accent1); }
+        .ref.tech .tip .tip-title { color: var(--accent1); }
+
+        /* ═══ GLASS CARDS ═══ */
+        .glass {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            transition: var(--ease);
+        }
+        .glass:hover {
+            border-color: rgba(0, 212, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 212, 255, 0.06);
+        }
+
+        /* ═══ HERO ═══ */
+        .hero { padding-top: 10rem; padding-bottom: 4rem; text-align: center; }
+        .hero-subtitle {
+            font-size: 1.1rem; color: var(--text2); max-width: 650px; margin: 0 auto 2.5rem;
+        }
+        .hero-cta {
+            display: inline-flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; justify-content: center;
+        }
+        .btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.75rem 1.8rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+            text-decoration: none; transition: var(--ease); cursor: pointer; border: none;
+            letter-spacing: 0.02em;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.2);
+        }
+        .btn-primary:hover {
+            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.35);
+            transform: translateY(-2px);
+        }
+        .btn-ghost {
+            background: transparent; color: var(--text);
+            border: 1px solid var(--glass-border);
+        }
+        .btn-ghost:hover {
+            border-color: var(--accent1); color: var(--accent1);
+            background: var(--glow1);
+        }
+
+        /* ═══ QUOTE BANNER ═══ */
+        .quote-banner {
+            text-align: center; padding: 3rem 0; position: relative; z-index: 1;
+        }
+        .quote-banner blockquote {
+            border: none; background: none; padding: 0; margin: 0;
+            font-size: clamp(1.1rem, 2vw, 1.4rem); font-style: italic; color: var(--text);
+            max-width: 700px; margin: 0 auto; line-height: 1.6;
+        }
+        .quote-banner cite {
+            display: block; margin-top: 1rem; font-style: normal;
+            font-size: 0.85rem; color: var(--text3);
+        }
+        .quote-banner .q-mark {
+            font-size: 4rem; line-height: 0.5; display: block; margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent2), var(--accent4));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+
+        /* ═══ PROJECT CARDS ═══ */
+        .projects-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin: 2rem 0;
+        }
+        .projects-grid-secondary {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin: 1.5rem 0 0;
+        }
+        .project-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 2rem 1.5rem;
+            transition: var(--ease);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .project-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent1), transparent);
+            opacity: 0; transition: var(--ease);
+        }
+        .project-card:hover::before { opacity: 1; }
+        .project-card:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+        }
+        .project-card.nexus:hover { border-color: rgba(0, 212, 255, 0.4); }
+        .project-card.nexus::before { background: linear-gradient(90deg, transparent, var(--accent1), transparent); }
+        .project-card.mnemos:hover { border-color: rgba(124, 58, 237, 0.4); }
+        .project-card.mnemos::before { background: linear-gradient(90deg, transparent, var(--accent2), transparent); }
+        .project-card.news:hover { border-color: rgba(6, 214, 160, 0.4); }
+        .project-card.news::before { background: linear-gradient(90deg, transparent, var(--accent3), transparent); }
+        .project-card.skillup:hover { border-color: rgba(247, 37, 133, 0.4); }
+        .project-card.skillup::before { background: linear-gradient(90deg, transparent, var(--accent4), transparent); }
+        .project-card.infoweb:hover { border-color: rgba(252, 163, 17, 0.4); }
+        .project-card.infoweb::before { background: linear-gradient(90deg, transparent, var(--accent5), transparent); }
+
+        .project-icon {
+            width: 60px; height: 60px; border-radius: 14px; margin: 0 auto 1rem;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: 800;
+        }
+        .project-card.nexus .project-icon { background: var(--glow1); color: var(--accent1); }
+        .project-card.mnemos .project-icon { background: var(--glow2); color: var(--accent2); }
+        .project-card.news .project-icon { background: var(--glow3); color: var(--accent3); }
+        .project-card.skillup .project-icon { background: var(--glow4); color: var(--accent4); }
+        .project-card.infoweb .project-icon { background: var(--glow5); color: var(--accent5); }
+        .project-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .project-card p { font-size: 0.88rem; margin-bottom: 1rem; }
+        .project-link {
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            font-size: 0.82rem; font-weight: 600; text-decoration: none;
+            transition: var(--ease); letter-spacing: 0.02em;
+        }
+        .project-card.nexus .project-link { color: var(--accent1); }
+        .project-card.mnemos .project-link { color: var(--accent2); }
+        .project-card.news .project-link { color: var(--accent3); }
+        .project-card.skillup .project-link { color: var(--accent4); }
+        .project-card.infoweb .project-link { color: var(--accent5); }
+        .project-link:hover { gap: 0.6rem; }
+
+        /* ═══ PHILOSOPHY SECTION ═══ */
+        .philosophy-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 2rem 0;
+        }
+        .phil-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 1.75rem;
+            transition: var(--ease);
+        }
+        .phil-card:hover { border-color: rgba(124, 58, 237, 0.25); }
+        .phil-card .phil-quote {
+            font-style: italic; color: var(--text); font-size: 0.95rem;
+            line-height: 1.6; margin-bottom: 0.75rem;
+        }
+        .phil-card .phil-author {
+            font-size: 0.78rem; color: var(--accent5); font-weight: 600;
+        }
+        .phil-card .phil-context {
+            font-size: 0.8rem; color: var(--text3); margin-top: 0.5rem;
+        }
+
+        /* ═══ STATS BAR ═══ */
+        .stats-bar {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 2.5rem 0;
+        }
+        .stat-item {
+            text-align: center; padding: 1.5rem 1rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            transition: var(--ease);
+        }
+        .stat-item:hover { border-color: rgba(0, 212, 255, 0.2); }
+        .stat-num {
+            font-size: 2.2rem; font-weight: 800; line-height: 1;
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .stat-label {
+            font-size: 0.72rem; color: var(--text3); text-transform: uppercase;
+            letter-spacing: 0.1em; margin-top: 0.4rem;
+        }
+
+        /* ═══ APPROACH SECTION ═══ */
+        .approach-cards {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem; margin: 2rem 0;
+        }
+        .approach-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 1.75rem;
+            transition: var(--ease);
+        }
+        .approach-card:hover { border-color: rgba(0, 212, 255, 0.2); transform: translateY(-2px); }
+        .approach-icon {
+            width: 42px; height: 42px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; margin-bottom: 0.75rem;
+        }
+        .approach-card h4 { font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem; }
+        .approach-card p { font-size: 0.88rem; margin-bottom: 0; }
+
+        /* ═══ NEWS SECTION ═══ */
+        .news-features {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 2rem 0;
+        }
+        .news-feature {
+            display: flex; gap: 1rem; align-items: flex-start;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: var(--ease);
+        }
+        .news-feature:hover { border-color: rgba(6, 214, 160, 0.25); }
+        .nf-icon {
+            width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--glow3); color: var(--accent3); font-size: 1rem;
+        }
+        .nf-text h4 { font-size: 0.95rem; margin-bottom: 0.25rem; }
+        .nf-text p { font-size: 0.82rem; margin-bottom: 0; }
+
+        /* ═══ LOGIN SECTION ═══ */
+        .login-section {
+            max-width: 420px; margin: 0 auto; text-align: center;
+        }
+        .login-box {
+            background: var(--glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 2.5rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .login-box::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent3));
+        }
+        .login-box h3 { margin-top: 0; margin-bottom: 1.5rem; }
+        .input-group { margin-bottom: 1rem; text-align: left; }
+        .input-group label {
+            display: block; font-size: 0.75rem; color: var(--text3);
+            text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.4rem; font-weight: 600;
+        }
+        .input-group input {
+            width: 100%; padding: 0.7rem 1rem; border-radius: 8px;
+            border: 1px solid var(--glass-border); background: var(--bg2);
+            color: var(--text); font-size: 0.9rem; outline: none;
+            transition: var(--ease); font-family: inherit;
+        }
+        .input-group input:focus {
+            border-color: var(--accent1);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+        .input-group input::placeholder { color: var(--text3); }
+        .login-btn {
+            width: 100%; padding: 0.75rem; border-radius: 8px; border: none;
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            color: white; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+            transition: var(--ease); margin-top: 0.5rem; font-family: inherit;
+            letter-spacing: 0.02em;
+        }
+        .login-btn:hover {
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.25);
+            transform: translateY(-1px);
+        }
+        .login-divider {
+            display: flex; align-items: center; gap: 1rem; margin: 1.25rem 0;
+            font-size: 0.75rem; color: var(--text3);
+        }
+        .login-divider::before, .login-divider::after {
+            content: ''; flex: 1; height: 1px; background: var(--glass-border);
+        }
+        .login-social {
+            display: flex; gap: 0.75rem; justify-content: center;
+        }
+        .social-btn {
+            width: 44px; height: 44px; border-radius: 10px;
+            border: 1px solid var(--glass-border); background: var(--bg2);
+            color: var(--text2); font-size: 1rem; cursor: pointer;
+            transition: var(--ease); display: flex; align-items: center; justify-content: center;
+        }
+        .social-btn:hover {
+            border-color: var(--accent1); color: var(--accent1);
+            background: var(--glow1);
+        }
+
+        /* ═══ SEPARATOR ═══ */
+        hr.sep {
+            border: none; height: 1px; margin: 4rem 0;
+            background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+        }
+
+        /* ═══ FOOTER ═══ */
+        footer {
+            text-align: center; padding: 3rem 2rem; font-size: 0.8rem; color: var(--text3);
+            border-top: 1px solid var(--glass-border); position: relative; z-index: 1;
+        }
+        footer a { color: var(--accent1); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        /* ═══ SCROLL ANIMATE ═══ */
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .reveal.on { opacity: 1; transform: translateY(0); }
+
+        /* ═══ RESPONSIVE ═══ */
+        @media (max-width: 800px) {
+            .topbar-nav { display: none; }
+            .projects-grid { grid-template-columns: 1fr; }
+            .projects-grid-secondary { grid-template-columns: 1fr; }
+            .philosophy-grid { grid-template-columns: 1fr; }
+            .stats-bar { grid-template-columns: 1fr 1fr; }
+            .news-features { grid-template-columns: 1fr; }
+            .hero { padding-top: 7rem; }
+            .ref .tip { width: 280px; left: 0; transform: none; }
+            .ref .tip::after { left: 20px; }
+        }
+        @media (max-width: 500px) {
+            .stats-bar { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="mesh-bg">
+    <div class="mesh-orb"></div>
+    <div class="mesh-orb"></div>
+    <div class="mesh-orb"></div>
+</div>
+<div class="grid-overlay"></div>
+
+<div class="topbar">
+    <div class="topbar-logo">FELCOS</div>
+    <div class="topbar-nav">
+        <a href="#hero" class="active">Inicio</a>
+        <a href="#vision">Vision</a>
+        <a href="#projects">Proyectos</a>
+        <a href="#approach">Enfoque</a>
+        <a href="#philosophy">Filosofia</a>
+        <a href="#login">Acceso</a>
+    </div>
+    <button class="topbar-login" onclick="document.getElementById('login').scrollIntoView({behavior:'smooth'})">Login</button>
+</div>
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section class="hero" id="hero">
+<div class="container">
+    <div class="label">Ingenieria &middot; Inteligencia Artificial &middot; Ciencia Cognitiva</div>
+    <h1>Construimos <span class="gradient-text">inteligencia</span> que <span class="gradient-text-2">avanza</span>, no que <span style="color:var(--text3);text-decoration:line-through;font-weight:400;">usa</span>.</h1>
+    <p class="hero-subtitle">
+        Proyectos personales ambiciosos donde la IA no es el producto final — es el
+        <span class="ref phil">catalizador de progreso<span class="tip"><span class="tip-title">Progreso como Proceso</span>Hegel concebia el progreso no como una linea recta, sino como una espiral dialectica: tesis, antitesis, sintesis. Cada proyecto que construimos sigue este patron — una idea inicial, un desafio que la contradice, y una sintesis que supera ambos.<span class="tip-quote">"La verdad es el todo."</span><span class="tip-cite">Hegel, G.W.F. (1807). Fenomenologia del Espiritu, Prefacio.</span></span></span>.
+        Tres proyectos, un mismo proposito: que la tecnologia amplifique la capacidad humana.
+    </p>
+    <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">Explorar Proyectos &#8595;</a>
+        <a href="#philosophy" class="btn btn-ghost">Nuestro Enfoque</a>
+    </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<div class="quote-banner">
+    <div class="container">
+        <div class="q-mark">"</div>
+        <blockquote>
+            Mi intencion es ayudar a la humanidad a resolver todos sus problemas
+            actuales y futuros con una inteligencia capaz de evolucionar de forma autonoma
+            con un valor fundamental: servir.
+        </blockquote>
+        <cite>— Felipe Costales</cite>
+    </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section id="vision">
+<div class="container">
+    <div class="label">Vision</div>
+    <h2>Avanzar es diferente a usar</h2>
+
+    <p class="big">
+        El mundo esta lleno de herramientas de IA que hacen cosas
+        <span class="ref phil">por ti<span class="tip"><span class="tip-title">Engelbart vs. Automation</span>Douglas Engelbart (1962) distinguia entre automatizar tareas humanas y augmentar la inteligencia humana. La primera reemplaza; la segunda amplifica. Nosotros elegimos amplificar. La IA no te sustituye — te convierte en una version mas capaz de ti mismo.<span class="tip-quote">"By 'augmenting human intellect' we mean increasing the capability of a man to approach a complex problem situation."</span><span class="tip-cite">Engelbart, D.C. (1962). Augmenting Human Intellect: A Conceptual Framework. SRI International.</span></span></span>.
+        Nosotros construimos inteligencia que avanza <strong>contigo</strong>.
+    </p>
+
+    <p>
+        Hay una diferencia fundamental entre "usar IA" y "avanzar con IA". Usar es consumir.
+        Avanzar es
+        <span class="ref phil">transformar<span class="tip"><span class="tip-title">Transformacion vs. Informacion</span>Jack Mezirow (1991) distinguio aprendizaje informativo (agregar datos) de aprendizaje transformativo (cambiar marcos de referencia). La mayoria de herramientas AI son informativas. Nuestros proyectos buscan ser transformativos — cambiar como piensas, como recuerdas, como te comunicas.<span class="tip-cite">Mezirow, J. (1991). Transformative Dimensions of Adult Learning. Jossey-Bass.</span></span></span>.
+        Cada proyecto que construimos resuelve un problema real usando IA como acelerador —
+        no como reemplazo, sino como
+        <span class="ref tech">multiplicador de capacidad<span class="tip"><span class="tip-title">AI como Multiplicador</span>McKinsey (2023) estima que la IA generativa puede aumentar la productividad laboral entre un 0.1% y 0.6% anual a nivel global, equivalente a $2.6-4.4 trillones de valor. Pero el impacto real no es la automatizacion — es la augmentacion: humanos + IA superando lo que cualquiera de los dos puede hacer solo.<span class="tip-cite">McKinsey Global Institute (2023). The Economic Potential of Generative AI.</span></span></span>.
+    </p>
+
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-num">5</div>
+            <div class="stat-label">Proyectos Activos</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">40+</div>
+            <div class="stat-label">Citas Cientificas</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">370+</div>
+            <div class="stat-label">Archivos de Codigo</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">&infin;</div>
+            <div class="stat-label">Ambicion</div>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section id="projects">
+<div class="container">
+    <div class="label">Proyectos</div>
+    <h2>Cinco sistemas, un ecosistema</h2>
+
+    <p class="big">
+        Cada proyecto ataca un problema diferente. Juntos, forman un ecosistema donde la
+        <span class="ref tech">IA sirve al humano<span class="tip"><span class="tip-title">IA Centrada en el Humano</span>Shneiderman (2022) propone el concepto de "Human-Centered AI" donde la IA amplifica las capacidades humanas manteniendo control, transparencia y responsabilidad. Los tres proyectos FELCOS siguen este principio: el humano decide, la IA ejecuta y amplifica.<span class="tip-cite">Shneiderman, B. (2022). Human-Centered AI. Oxford University Press.</span></span></span>
+        — no al reves.
+    </p>
+
+    <div class="projects-grid">
+        <div class="project-card nexus">
+            <div class="project-icon">N</div>
+            <h3><span class="gradient-text">NexusAI</span></h3>
+            <p>
+                Plataforma SaaS que despliega <strong>agentes de IA multi-canal</strong>.
+                Atienden por telefono, video, WhatsApp y Telegram.
+                Como tener un equipo de atencion que nunca duerme,
+                con voz, cara y el conocimiento de tu negocio.
+            </p>
+            <p style="font-size:0.78rem; color:var(--text3);">
+                .NET 10 &middot; React &middot; 10+ LLM providers &middot; 28+ entidades &middot; Multi-tenant
+            </p>
+            <a href="https://nexusai.felcos.es" class="project-link">Explorar NexusAI &rarr;</a>
+        </div>
+
+        <div class="project-card mnemos">
+            <div class="project-icon">M</div>
+            <h3><span class="gradient-text-2">MNEMOS</span></h3>
+            <p>
+                <strong>Sistema operativo para tu memoria</strong>.
+                7 motores cognitivos basados en Bjork, Piaget, Kahneman,
+                Bayes, Damasio y Friston. Recuerda, olvida, conecta y
+                aprende como tu cerebro — pero sin perder nada importante.
+            </p>
+            <p style="font-size:0.78rem; color:var(--text3);">
+                .NET 8 &middot; PostgreSQL &middot; 7 motores &middot; 6 agentes &middot; CRR 7D &middot; 337 tests
+            </p>
+            <a href="https://mnemos.felcos.es" class="project-link">Explorar MNEMOS &rarr;</a>
+            <br><a href="https://mnemos.felcos.es/extendida.html" class="project-link" style="font-size:0.75rem;margin-top:0.4rem;opacity:0.7;">Documentacion avanzada &rarr;</a>
+        </div>
+
+        <div class="project-card news">
+            <div class="project-icon">A</div>
+            <h3><span class="gradient-text-3">AgenteNews</span></h3>
+            <p>
+                <strong>Noticias que se adaptan a tu mente</strong>.
+                No un feed cronologico — un flujo de informacion inteligente
+                que prioriza segun tus intereses, tu contexto y como
+                procesas la informacion. Personalizable. Cognitivo.
+            </p>
+            <p style="font-size:0.78rem; color:var(--text3);">
+                Flujos cognitivos &middot; Personalizacion &middot; Multi-tema &middot; En produccion
+            </p>
+            <a href="https://news.felcos.es" class="project-link" target="_blank">Visitar AgenteNews &rarr;</a>
+        </div>
+    </div>
+
+    <div class="projects-grid-secondary">
+        <div class="project-card skillup">
+            <div class="project-icon">S</div>
+            <h3><span style="background:linear-gradient(135deg,var(--accent4),var(--accent5));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">SkillUp Academy</span></h3>
+            <p>
+                <strong>Plataforma de aprendizaje de soft skills con IA</strong>.
+                Un asistente virtual (Aria) ensena comunicacion, liderazgo, trabajo en equipo
+                e inteligencia emocional mediante lecciones interactivas, escenas visuales,
+                quizzes, escenarios de roleplay y chat con streaming.
+            </p>
+            <p style="font-size:0.78rem; color:var(--text3);">
+                .NET 8 &middot; React &middot; PostgreSQL &middot; Anthropic Claude &middot; 106 tests &middot; SSE Streaming
+            </p>
+            <a href="https://skillupacademy.felcos.es" class="project-link" target="_blank">Visitar SkillUp Academy &rarr;</a>
+        </div>
+
+        <div class="project-card infoweb">
+            <div class="project-icon">I</div>
+            <h3><span style="background:linear-gradient(135deg,var(--accent5),var(--accent1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">InfoWeb</span></h3>
+            <p>
+                <strong>Enciclopedia de preparacionismo</strong>.
+                Base de conocimiento estructurada sobre autosuficiencia, supervivencia
+                y preparacion ante emergencias. Contenido categorizado, buscable
+                y orientado a la practica.
+            </p>
+            <p style="font-size:0.78rem; color:var(--text3);">
+                .NET &middot; PostgreSQL &middot; Enciclopedia &middot; Busqueda &middot; En produccion
+            </p>
+            <a href="https://info.felcos.es" class="project-link" target="_blank">Visitar InfoWeb &rarr;</a>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section id="approach">
+<div class="container">
+    <div class="label">Enfoque</div>
+    <h2>Como construimos</h2>
+
+    <p class="big">
+        No seguimos modas. Seguimos
+        <span class="ref phil">principios<span class="tip"><span class="tip-title">Principios sobre Tendencias</span>Nassim Taleb (2012) distingue lo fragil (se rompe con el caos) de lo antifragil (mejora con el caos). Construir sobre principios solidos — no sobre frameworks del mes — produce sistemas antifragiles. Los frameworks cambian; la ciencia cognitiva, la teoria de la informacion y la ingenieria de software no.<span class="tip-quote">"Wind extinguishes a candle and energizes fire."</span><span class="tip-cite">Taleb, N.N. (2012). Antifragile: Things That Gain from Disorder. Random House.</span></span></span>.
+        Cada linea de codigo tiene un "por que" detras.
+    </p>
+
+    <div class="approach-cards">
+        <div class="approach-card">
+            <div class="approach-icon" style="background:var(--glow1);color:var(--accent1);">&#9670;</div>
+            <h4>Ciencia Primero</h4>
+            <p>No "creemos" que algo funciona — lo respaldamos con
+            <span class="ref">investigacion revisada<span class="tip"><span class="tip-title">Evidence-Based Development</span>Cada decision de diseno en nuestros proyectos esta respaldada por al menos una fuente academica o estudio empirico. MNEMOS tiene 40+ citas. NexusAI cita investigacion de MIT, Harvard, Bain, McKinsey y multiples papers de NLP y psicologia del consumidor. Si no hay evidencia, es una hipotesis — y la marcamos como tal.</span></span>.
+            Si no hay evidencia, es una hipotesis con condiciones de abandono.</p>
+        </div>
+        <div class="approach-card">
+            <div class="approach-icon" style="background:var(--glow2);color:var(--accent2);">&#9733;</div>
+            <h4>Ingenieria Seria</h4>
+            <p>Clean Architecture, CQRS, event-driven, tests automatizados. No prototipos desechables — sistemas disenados para durar y escalar.</p>
+        </div>
+        <div class="approach-card">
+            <div class="approach-icon" style="background:var(--glow3);color:var(--accent3);">&#8734;</div>
+            <h4>Ambicion Medida</h4>
+            <p>Cada proyecto es ambicioso pero
+            <span class="ref phil">falsificable<span class="tip"><span class="tip-title">Falsificabilidad (Popper, 1963)</span>Karl Popper propuso que una teoria solo es cientifica si puede ser demostrada falsa. Aplicamos esto a nuestros proyectos: cada componente tiene metricas de exito y condiciones de abandono. Si algo no funciona, lo admitimos y lo cambiamos — no lo escondemos.<span class="tip-quote">"In so far as a scientific statement speaks about reality, it must be falsifiable."</span><span class="tip-cite">Popper, K.R. (1963). Conjectures and Refutations. Routledge.</span></span></span>.
+            Hipotesis concretas, metricas claras, condiciones de abandono. No fe ciega — ciencia.</p>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section>
+<div class="container">
+    <div class="label">WebSoftware News — En Detalle</div>
+    <h2>Informacion que fluye como tu <span class="gradient-text-3">mente</span></h2>
+
+    <p class="big">
+        Las plataformas de noticias actuales te dan un muro cronologico infinito.
+        WebSoftware News te da un
+        <span class="ref">flujo cognitivo<span class="tip"><span class="tip-title">Flujo de Informacion Cognitivo</span>Csikszentmihalyi (1990) definio el "estado de flujo" como el estado optimo de concentracion donde el desafio coincide con la habilidad. Aplicado a noticias: el feed no te abruma ni te aburre — te presenta informacion al ritmo y nivel que tu mente puede procesar productivamente.<span class="tip-cite">Csikszentmihalyi, M. (1990). Flow: The Psychology of Optimal Experience. Harper & Row.</span></span></span>
+        — informacion priorizada segun lo que te interesa, como lo procesas y cuando lo necesitas.
+    </p>
+
+    <div class="news-features">
+        <div class="news-feature">
+            <div class="nf-icon">&#127919;</div>
+            <div class="nf-text">
+                <h4>Priorizacion Inteligente</h4>
+                <p>No todo es igual de relevante. El sistema aprende que temas, fuentes y profundidad prefieres — y ordena en consecuencia.</p>
+            </div>
+        </div>
+        <div class="news-feature">
+            <div class="nf-icon">&#128260;</div>
+            <div class="nf-text">
+                <h4>Flujos por Interes</h4>
+                <p>En vez de un feed unico, tienes flujos tematicos: tecnologia, ciencia, negocio, etc. Cada uno con su ritmo y profundidad.</p>
+            </div>
+        </div>
+        <div class="news-feature">
+            <div class="nf-icon">&#9881;</div>
+            <div class="nf-text">
+                <h4>Personalizable al 100%</h4>
+                <p>Temas, fuentes, frecuencia, formato, nivel de detalle. Tu decides como recibes la informacion. Sin algoritmos opacos.</p>
+            </div>
+        </div>
+        <div class="news-feature">
+            <div class="nf-icon">&#129504;</div>
+            <div class="nf-text">
+                <h4>Basado en Ciencia Cognitiva</h4>
+                <p>La forma en que presentamos la informacion esta disenada para como funciona tu
+                <span class="ref">atencion y memoria<span class="tip"><span class="tip-title">Carga Cognitiva</span>Sweller (1988) demostro que la capacidad de procesamiento de la memoria de trabajo es limitada. Sobrecargarla reduce comprension y retencion. News presenta la informacion en dosis calibradas, con contexto suficiente pero sin ruido — minimizando carga cognitiva extrinseca.<span class="tip-cite">Sweller, J. (1988). Cognitive Load During Problem Solving. Cognitive Science, 12(2), 257-285.</span></span></span>,
+                no para maximizar tu tiempo en pantalla.</p>
+            </div>
+        </div>
+    </div>
+
+    <p style="text-align:center; margin-top:1.5rem;">
+        <a href="https://news.websoftware.es" target="_blank" class="btn btn-ghost" style="color:var(--accent3);border-color:var(--accent3);">
+            Visitar news.websoftware.es &rarr;
+        </a>
+    </p>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section id="philosophy">
+<div class="container">
+    <div class="label">Fundamentos</div>
+    <h2>Filosofia aplicada, no decorativa</h2>
+
+    <p class="big">
+        Detras de cada decision tecnica hay un
+        <span class="ref phil">marco filosofico<span class="tip"><span class="tip-title">Praxis</span>Aristoteles distinguia theoria (conocimiento puro), poiesis (creacion) y praxis (accion informada por principios). Nuestro trabajo es praxis: accion tecnica guiada por principios filosoficos y cientificos. No es decoracion — es el fundamento que determina que construimos y por que.<span class="tip-cite">Aristoteles. Etica Nicomaquea, Libro VI.</span></span></span>.
+        No citamos filosofos para parecer intelectuales — los aplicamos porque sus ideas resuelven problemas reales de diseno.
+    </p>
+
+    <div class="philosophy-grid">
+        <div class="phil-card">
+            <div class="phil-quote">"La tecnologia deberia amplificar la inteligencia humana, no reemplazarla."</div>
+            <div class="phil-author">Douglas Engelbart, 1962</div>
+            <div class="phil-context">Principio rector: la IA es herramienta, no sustituto.</div>
+        </div>
+        <div class="phil-card">
+            <div class="phil-quote">"Todo lo que sube converge."</div>
+            <div class="phil-author">Teilhard de Chardin, 1955</div>
+            <div class="phil-context">MNEMOS evoluciona de memoria individual a inteligencia colectiva (Cortex).</div>
+        </div>
+        <div class="phil-card">
+            <div class="phil-quote">"La vida no examinada no merece ser vivida."</div>
+            <div class="phil-author">Socrates, via Platon (Apologia 38a)</div>
+            <div class="phil-context">Autoconocimiento computacional: ver como piensas, no solo que piensas.</div>
+        </div>
+        <div class="phil-card">
+            <div class="phil-quote">"Actua de tal modo que trates a la humanidad siempre como un fin, nunca como un medio."</div>
+            <div class="phil-author">Immanuel Kant, 1785</div>
+            <div class="phil-context">El usuario nunca es el producto. Sus datos son suyos. El sistema sirve.</div>
+        </div>
+        <div class="phil-card">
+            <div class="phil-quote">"Nada en la vida es tan importante como crees que es mientras estas pensando en ello."</div>
+            <div class="phil-author">Daniel Kahneman, 2011</div>
+            <div class="phil-context">Los agentes NexusAI no reaccionan en caliente — evaluan contexto completo.</div>
+        </div>
+        <div class="phil-card">
+            <div class="phil-quote">"El viento apaga una vela y aviva un fuego."</div>
+            <div class="phil-author">Nassim Taleb, 2012</div>
+            <div class="phil-context">Construimos sistemas antifragiles que mejoran con el caos, no que se rompen.</div>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section id="login">
+<div class="container">
+    <div class="login-section">
+        <div class="label" style="text-align:center;">Acceso</div>
+        <h2 style="text-align:center; margin-bottom:2rem;">Entra al ecosistema</h2>
+        <div class="login-box">
+            <h3 style="font-size:1.1rem;">Iniciar Sesion</h3>
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="tu@email.com" autocomplete="email">
+            </div>
+            <div class="input-group">
+                <label for="password">Contrasena</label>
+                <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+            </div>
+            <button class="login-btn" onclick="handleLogin()">Acceder</button>
+            <div class="login-divider">o continuar con</div>
+            <div class="login-social">
+                <button class="social-btn" title="Google">G</button>
+                <button class="social-btn" title="GitHub">&#9824;</button>
+                <button class="social-btn" title="Microsoft">M</button>
+            </div>
+            <p style="font-size:0.75rem; color:var(--text3); margin-top:1.25rem; margin-bottom:0;">
+                Proximamente. Registro por invitacion.
+            </p>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+
+<footer>
+    <p style="color:var(--text2); font-weight:600; font-size:0.95rem; margin-bottom:0.5rem;">FELCOS</p>
+    <p>Ingenieria de Inteligencia Artificial &middot; Ciencia Cognitiva &middot; Filosofia Aplicada</p>
+    <p style="margin-top:0.75rem;">
+        <a href="https://nexusai.felcos.es">NexusAI</a> &middot;
+        <a href="https://mnemos.felcos.es">MNEMOS</a> &middot;
+        <a href="https://news.websoftware.es" target="_blank">News</a>
+    </p>
+    <p style="margin-top:1rem; opacity:0.4;">Construido con servir como valor fundamental.</p>
+</footer>
+
+<script>
+'use strict';
+
+// Progress bar
+const progressBar = document.getElementById('progressBar');
+window.addEventListener('scroll', function() {
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    if (scrollHeight > 0) {
+        progressBar.style.width = (scrollTop / scrollHeight) * 100 + '%';
+    }
+}, { passive: true });
+
+// Active nav
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.topbar-nav a');
+window.addEventListener('scroll', function() {
+    const scrollY = window.scrollY + 100;
+    sections.forEach(function(section) {
+        const top = section.offsetTop;
+        const height = section.offsetHeight;
+        const id = section.getAttribute('id');
+        if (scrollY >= top && scrollY < top + height) {
+            navLinks.forEach(function(a) {
+                a.classList.remove('active');
+                if (a.getAttribute('href') === '#' + id) a.classList.add('active');
+            });
+        }
+    });
+}, { passive: true });
+
+// Scroll reveal
+const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('on'); observer.unobserve(e.target); }
+    });
+}, { threshold: 0.06 });
+
+document.querySelectorAll('.project-card, .phil-card, .approach-card, .stat-item, .news-feature, .login-box, .glass, blockquote').forEach(function(el) {
+    el.classList.add('reveal');
+    observer.observe(el);
+});
+
+// Tooltip touch support
+document.querySelectorAll('.ref').forEach(function(ref) {
+    ref.setAttribute('tabindex', '0');
+    ref.addEventListener('touchstart', function(e) {
+        document.querySelectorAll('.ref.touch-active').forEach(function(other) {
+            if (other !== ref) other.classList.remove('touch-active');
+        });
+        ref.classList.toggle('touch-active');
+        e.preventDefault();
+    }, { passive: false });
+});
+document.addEventListener('touchstart', function(e) {
+    if (!e.target.closest('.ref')) {
+        document.querySelectorAll('.ref.touch-active').forEach(function(ref) {
+            ref.classList.remove('touch-active');
+        });
+    }
+});
+
+// Login placeholder
+function handleLogin() {
+    const email = document.getElementById('email').value;
+    if (!email) {
+        document.getElementById('email').style.borderColor = 'var(--accent4)';
+        setTimeout(function() { document.getElementById('email').style.borderColor = ''; }, 2000);
+        return;
+    }
+    const btn = document.querySelector('.login-btn');
+    btn.textContent = 'Proximamente...';
+    btn.style.opacity = '0.6';
+    setTimeout(function() {
+        btn.textContent = 'Acceder';
+        btn.style.opacity = '1';
+    }, 2000);
+}
+</script>
+
+<style>
+    .ref.touch-active .tip { display: block; pointer-events: auto; }
+</style>
+
+</body>
+</html>

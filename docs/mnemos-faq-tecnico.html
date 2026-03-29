@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MNEMOS — Preguntas Tecnicas Avanzadas</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0b1120;--bg2:#111b2e;--bg3:#162035;--bg4:#1c2844;--text:#e8edf5;--text2:#9aa5b8;--text3:#6b7a90;--blue:#4d8ef7;--purple:#9775fa;--green:#40c78e;--amber:#f7b955;--rose:#f06595;--cyan:#22d3ee;--teal:#2dd4bf;--border:#1e2d45;--glow-blue:rgba(77,142,247,.12);--glow-purple:rgba(151,117,250,.12);--glow-green:rgba(64,199,142,.12);--glow-amber:rgba(247,185,85,.12);--glow-rose:rgba(240,101,149,.12);--glow-cyan:rgba(34,211,238,.12);--glow-teal:rgba(45,212,191,.12);--radius:14px;--ease:.35s cubic-bezier(.4,0,.2,1)}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(11,17,32,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem}
+.topbar-logo{font-weight:800;font-size:1.1rem;letter-spacing:.12em;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.topbar-nav{display:flex;gap:.15rem;overflow-x:auto}
+.topbar-nav a{color:var(--text3);text-decoration:none;padding:.4rem .55rem;border-radius:8px;font-size:.72rem;white-space:nowrap;transition:var(--ease)}
+.topbar-nav a:hover,.topbar-nav a.active{color:var(--text);background:var(--glow-blue)}
+.progress-bar{position:fixed;top:56px;left:0;height:3px;z-index:101;background:linear-gradient(90deg,var(--blue),var(--purple),var(--green));width:0%;transition:width .15s linear}
+.container{max-width:860px;margin:0 auto;padding:0 1.5rem}
+section{padding:5rem 0}section:first-of-type{padding-top:6rem}
+.label{font-size:.7rem;text-transform:uppercase;letter-spacing:.2em;color:var(--blue);margin-bottom:.75rem;font-weight:600}
+h1{font-size:clamp(2.2rem,4.5vw,3.5rem);font-weight:800;line-height:1.15;margin-bottom:1.5rem}
+h2{font-size:clamp(1.6rem,3vw,2rem);font-weight:700;line-height:1.25;margin-bottom:1rem;margin-top:3rem}
+h2:first-child{margin-top:0}
+h3{font-size:1.15rem;font-weight:600;margin-bottom:.6rem;margin-top:2rem;color:var(--text)}
+p{color:var(--text2);margin-bottom:1.2rem;font-size:1.02rem}
+.big{font-size:1.15rem;color:var(--text)}
+strong{color:var(--text);font-weight:600}
+em.concept{color:var(--amber);font-style:normal;font-weight:600}
+code{background:var(--bg3);padding:.15rem .4rem;border-radius:4px;font-size:.88rem;color:var(--cyan);font-family:'Cascadia Code','Fira Code',monospace}
+pre{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin:1.2rem 0;overflow-x:auto;font-size:.8rem;line-height:1.6;color:var(--text2);font-family:'Cascadia Code','Fira Code',monospace}
+.ref{border-bottom:1.5px dotted var(--purple);cursor:help;position:relative;color:var(--text);transition:color .2s}
+.ref:hover{color:var(--purple)}
+.ref .tip{display:none;position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);width:400px;max-width:90vw;background:var(--bg4);border:1px solid var(--purple);border-radius:var(--radius);padding:1rem 1.2rem;z-index:200;font-size:.82rem;line-height:1.55;color:var(--text2);box-shadow:0 8px 32px rgba(0,0,0,.5);pointer-events:none}
+.ref .tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--purple)}
+.ref:hover .tip,.ref:focus .tip{display:block;pointer-events:auto}
+.ref .tip .tip-title{font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem;color:var(--purple)}
+.ref .tip .tip-cite{color:var(--text3);font-style:italic;font-size:.78rem;margin-top:.5rem;padding-top:.4rem;border-top:1px solid var(--border)}
+.ref .tip .tip-quote{color:var(--amber);font-style:italic;margin:.4rem 0}
+.ref .tip pre{font-size:.72rem;margin:.5rem 0;padding:.6rem}
+.ref.phil{border-bottom-color:var(--amber)}.ref.phil:hover{color:var(--amber)}.ref.phil .tip{border-color:var(--amber)}.ref.phil .tip::after{border-top-color:var(--amber)}.ref.phil .tip .tip-title{color:var(--amber)}
+.ref.note{border-bottom-color:var(--green)}.ref.note:hover{color:var(--green)}.ref.note .tip{border-color:var(--green)}.ref.note .tip::after{border-top-color:var(--green)}.ref.note .tip .tip-title{color:var(--green)}
+.ref.adv{border-bottom-color:var(--cyan)}.ref.adv:hover{color:var(--cyan)}.ref.adv .tip{border-color:var(--cyan)}.ref.adv .tip::after{border-top-color:var(--cyan)}.ref.adv .tip .tip-title{color:var(--cyan)}
+.ref.code{border-bottom-color:var(--teal)}.ref.code:hover{color:var(--teal)}.ref.code .tip{border-color:var(--teal);width:500px}.ref.code .tip::after{border-top-color:var(--teal)}.ref.code .tip .tip-title{color:var(--teal)}
+.ref.integ{border-bottom-color:var(--rose)}.ref.integ:hover{color:var(--rose)}.ref.integ .tip{border-color:var(--rose)}.ref.integ .tip::after{border-top-color:var(--rose)}.ref.integ .tip .tip-title{color:var(--rose)}
+.ref.flux{border-bottom-color:var(--blue)}.ref.flux:hover{color:var(--blue)}.ref.flux .tip{border-color:var(--blue)}.ref.flux .tip::after{border-top-color:var(--blue)}.ref.flux .tip .tip-title{color:var(--blue)}
+.analogy{background:var(--glow-blue);border:1px solid rgba(77,142,247,.25);border-radius:var(--radius);padding:1.5rem 1.75rem;margin:1.5rem 0;position:relative}
+.analogy::before{content:'Analogia';position:absolute;top:-10px;left:16px;background:var(--bg);padding:0 8px;font-size:.7rem;color:var(--blue);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.analogy p{color:var(--text);margin-bottom:0;font-size:.95rem}
+.important{background:var(--glow-amber);border:1px solid rgba(247,185,85,.25);border-radius:var(--radius);padding:1.5rem 1.75rem;margin:1.5rem 0;position:relative}
+.important::before{content:'Clave';position:absolute;top:-10px;left:16px;background:var(--bg);padding:0 8px;font-size:.7rem;color:var(--amber);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.important p{color:var(--text);margin-bottom:0;font-size:.95rem}
+blockquote{border-left:3px solid var(--purple);padding:1.25rem 1.5rem;margin:1.5rem 0;background:var(--glow-purple);border-radius:0 var(--radius) var(--radius) 0}
+blockquote p{color:var(--text);font-style:italic;margin-bottom:.3rem;font-size:1.05rem}
+blockquote cite{color:var(--text3);font-style:normal;font-size:.85rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;margin:1.75rem 0}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;transition:var(--ease)}
+.card:hover{border-color:var(--blue);transform:translateY(-2px)}
+.card-badge{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:10px;font-size:1rem;font-weight:800;margin-bottom:.75rem}
+.card-badge.blue{background:var(--glow-blue);color:var(--blue)}.card-badge.purple{background:var(--glow-purple);color:var(--purple)}.card-badge.green{background:var(--glow-green);color:var(--green)}.card-badge.amber{background:var(--glow-amber);color:var(--amber)}.card-badge.rose{background:var(--glow-rose);color:var(--rose)}.card-badge.cyan{background:var(--glow-cyan);color:var(--cyan)}.card-badge.teal{background:var(--glow-teal);color:var(--teal)}
+.card h4{font-size:1rem;font-weight:600;margin-bottom:.4rem;color:var(--text)}.card p{font-size:.88rem;margin-bottom:0;color:var(--text2)}
+.flow{display:flex;align-items:center;justify-content:center;gap:.4rem;flex-wrap:wrap;margin:1.5rem 0}
+.flow-box{padding:.65rem 1.1rem;border-radius:10px;font-size:.82rem;font-weight:600;text-align:center;min-width:90px}
+.flow-arr{color:var(--text3);font-size:1.1rem}
+.layers{margin:1.5rem 0;display:flex;flex-direction:column;gap:.4rem}
+.layer-row{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;border-radius:var(--radius);background:var(--bg3);border:1px solid var(--border);transition:var(--ease)}
+.layer-row:hover{border-color:var(--blue)}
+.layer-label{font-weight:700;min-width:140px;font-size:.9rem}.layer-text{font-size:.85rem;color:var(--text2)}
+.tbl{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:.88rem}
+.tbl th{text-align:left;padding:.6rem .8rem;background:var(--bg3);color:var(--text);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--border)}
+.tbl td{padding:.6rem .8rem;border-bottom:1px solid var(--border);color:var(--text2)}.tbl tr:hover td{background:rgba(77,142,247,.04)}
+hr.sep{border:none;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:3rem 0}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .5s ease,transform .5s ease}.reveal.on{opacity:1;transform:translateY(0)}
+.hypothesis{background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.2);border-radius:var(--radius);padding:1.5rem 1.75rem;margin:1.5rem 0;position:relative}
+.hypothesis::before{content:'Hipotesis Falsificable';position:absolute;top:-10px;left:16px;background:var(--bg);padding:0 8px;font-size:.7rem;color:var(--cyan);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.hypothesis p{color:var(--text);margin-bottom:0;font-size:.92rem}
+.legend{display:flex;flex-wrap:wrap;gap:1rem;margin:1.5rem 0;padding:1rem 1.25rem;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)}
+.legend-item{display:flex;align-items:center;gap:.4rem;font-size:.8rem}.legend-dot{width:10px;height:10px;border-radius:50%}
+@media(max-width:700px){.topbar-nav{display:none}.cards{grid-template-columns:1fr}.flow{flex-direction:column}.flow-arr{transform:rotate(90deg)}.layer-row{flex-direction:column;gap:.3rem}.layer-label{min-width:auto}.ref .tip{width:280px;left:0;transform:none}.ref .tip::after{left:20px}}
+</style>
+</head>
+<body>
+<div class="topbar">
+<div class="topbar-logo">MNEMOS &middot; FAQ Tecnico</div>
+<div class="topbar-nav">
+<a href="mnemos-extendida.html">&larr; Volver a la presentacion principal</a>
+<a href="mnemos-faq-general.html">General</a>
+<a href="mnemos-faq-datos.html">Datos</a>
+<a href="mnemos-faq-academico.html">Academico</a>
+</div></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<section>
+<div class="container">
+<div class="label">FAQ &mdash; Preguntas Tecnicas Avanzadas</div>
+<h1>Arquitectura, escalabilidad y decisiones de ingenieria</h1>
+<p class="big">Stack, base de datos, concurrencia, seguridad, rendimiento y CI/CD.</p>
+
+<div class="legend">
+<span style="font-weight:600;font-size:.85rem;margin-right:.5rem">Tooltips descubribles:</span>
+<div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>Cita cientifica</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Cita filosofica</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Nota tecnica</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--cyan)"></div>Avanzado: Funcionamiento</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--teal)"></div>Avanzado: Codificacion</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--rose)"></div>Avanzado: Integracion</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Proceso: Flujo de datos</div>
+</div>
+
+<hr class="sep">
+
+<h2>Stack y Decisiones de Diseno</h2>
+
+<h3>Por que C# / .NET?</h3>
+<p>Multiples razones convergentes: <strong>experiencia del autor</strong> (Felipe es desarrollador C# profesional), <span class="ref note">performance del runtime<span class="tip"><span class="tip-title">Nota Tecnica</span>.NET 8 tiene un JIT compiler avanzado con tiered compilation, SIMD vectorization, y un garbage collector optimizado para baja latencia. En benchmarks TechEmpower, ASP.NET Core esta consistentemente entre los top 5 frameworks mas rapidos. Para un sistema que calcula CRR con 9 dimensiones por cada resultado de busqueda, el rendimiento importa.</span></span></span>, ecosistema maduro (EF Core, ASP.NET Core, SignalR), type safety fuerte que previene errores en tiempo de compilacion, y soporte LTS de Microsoft.</p>
+
+<h3>Por que SQL Server y no PostgreSQL?</h3>
+<p>SQL Server se eligio para <strong>desarrollo</strong> porque estaba disponible en el equipo de trabajo. Sin embargo, la <span class="ref note">migracion a PostgreSQL<span class="tip"><span class="tip-title">Nota Tecnica</span>PostgreSQL ofrece ventajas criticas para MNEMOS en produccion: pgvector con indices HNSW para busqueda vectorial O(log N) en lugar del brute force actual O(N), tsvector con indices GiST para full-text search nativo (actualmente se usa LIKE), jsonb para metadata con indices GIN, y es open source sin licencia comercial. La migracion es viable porque todo el SQL esta encapsulado en repositorios (capa Infrastructure).</span></span></span> esta planeada para produccion, donde se aprovecharian pgvector (busqueda vectorial O(log N)), tsvector (full-text search nativo) y jsonb (metadata indexable).</p>
+
+<h3>Como escala MNEMOS?</h3>
+<p>Actualmente es single-server, pero la arquitectura permite escalar:</p>
+
+<div class="cards">
+<div class="card">
+<div class="card-badge blue">1</div>
+<h4>Read Replicas</h4>
+<p>Las busquedas (CRR, full-text, vectorial) pueden ir a replicas de lectura. Las escrituras van al primario.</p>
+</div>
+<div class="card">
+<div class="card-badge green">2</div>
+<h4>Particionamiento</h4>
+<p>Los memors se pueden particionar por fecha. Los mas recientes (hot) en SSD rapido, los antiguos (cold) en storage economico.</p>
+</div>
+<div class="card">
+<div class="card-badge purple">3</div>
+<h4>pgvector + HNSW</h4>
+<p>En PostgreSQL, los indices HNSW permiten busqueda vectorial O(log N) en lugar del brute force actual O(N).</p>
+</div>
+</div>
+
+<hr class="sep">
+
+<h2>Busqueda y Rendimiento</h2>
+
+<h3>Como funciona la busqueda vectorial sin pgvector?</h3>
+<p>Actualmente, <span class="ref code">brute force cosine similarity<span class="tip"><span class="tip-title">Codigo C#</span>La busqueda vectorial actual carga todos los embeddings y calcula similaridad coseno en C#.<pre>// VectorStoreRepository.cs
+public async Task&lt;IReadOnlyList&lt;VectorMatch&gt;&gt;
+    SearchAsync(float[] query, int topK)
+{
+    // Carga TODOS los embeddings de BD
+    // Calcula cosine similarity vs query
+    // Ordena por score descendente
+    // Retorna top K resultados
+    // Complejidad: O(N) donde N = memors
+}</pre>Funcional para &lt;10K memors. Para produccion: pgvector con HNSW = O(log N).</span></span></span> en C#. Se cargan todos los embeddings de la base de datos, se calcula la similaridad coseno contra el query, y se retornan los top K. Es O(N) donde N es el numero total de memors. Funcional para hasta ~10.000 memors, pero no escala mas alla sin pgvector.</p>
+
+<h3>Como funciona la busqueda full-text sin tsvector?</h3>
+<p>Actualmente usa <span class="ref note">LIKE queries<span class="tip"><span class="tip-title">Nota Tecnica</span>Las queries LIKE con wildcards (%texto%) no pueden usar indices en SQL Server, resultando en full table scans. Para volumenes pequenos es aceptable. En produccion con PostgreSQL, tsvector + indices GiST permiten full-text search con ranking nativo (ts_rank), stemming, y busqueda por proximidad. La migracion es transparente porque IFullTextSearch es una abstraccion.</span></span></span> con pattern matching en SQL Server. No es optimo pero funciona para el volumen de desarrollo. En produccion con PostgreSQL, tsvector con indices GiST daria full-text search real con ranking, stemming y busqueda por proximidad.</p>
+
+<h3>Cual es la complejidad algoritmica del CRR?</h3>
+<p>El <span class="ref adv">CRR (Cognitive Retrieval Ranking)<span class="tip"><span class="tip-title">Funcionamiento Interno</span>CRR v5 tiene 9 componentes ponderados: Semantic (0.22), RS (0.11), Evidence (0.11), Credence (0.07), DecisionOutcome (0.07), Context (0.14), Serendipity (0.09), Activation (0.09), Text (0.10). Cada componente se calcula para cada resultado candidato. Los pesos se calibraron durante los 303 debates PhD y se validaron con 10K usuarios simulados.</span></span></span> tiene complejidad O(N) por la busqueda vectorial + O(K) por los 9 score components por resultado, donde K es constante. El cuello de botella es la busqueda vectorial. Con pgvector+HNSW: O(log N) + O(K) = O(log N).</p>
+
+<h3>Hay caching?</h3>
+<p>No todavia. El <span class="ref integ">SAN (Spreading Activation Network)<span class="tip"><span class="tip-title">Integracion</span>El SAN funciona como un pre-cache cognitivo: mantiene niveles de activacion in-memory para nodos (memors, schemas, beliefs). Cuando un memor se accede, activa nodos vecinos con propagation factor 0.5 y half-life de 300s. La proxima busqueda CRR usa estos niveles de activacion como factor alpha-8 (peso 0.09). Es cache "inteligente" &mdash; no cachea resultados sino que prioriza lo cognitivamente activo.</span></span></span> funciona como pre-cache cognitivo in-memory. Redis esta planeado para produccion como cache de consultas frecuentes y session state.</p>
+
+<hr class="sep">
+
+<h2>Concurrencia y Estado</h2>
+
+<h3>MCP Server y API Server comparten la misma BD?</h3>
+<p>Si. Ambos usan la misma <span class="ref note">connection string<span class="tip"><span class="tip-title">Nota Tecnica</span>La connection string apunta a la misma base de datos MnemosDev en SQL Server. El MCP Server (proceso stdio para Claude Code) y el API Server (proceso ASP.NET Core HTTP) son procesos independientes que acceden a los mismos datos. La concurrencia se maneja via EF Core (unit of work por request) y SQL Server transactions para operaciones criticas.</span></span></span> hacia la base de datos MnemosDev. Son procesos independientes que acceden a los mismos datos. La concurrencia se maneja por EF Core y transacciones SQL Server.</p>
+
+<h3>Como se maneja la concurrencia?</h3>
+<p>EF Core <span class="ref adv">optimistic concurrency<span class="tip"><span class="tip-title">Funcionamiento Interno</span>Optimistic concurrency funciona asi: cada fila tiene un RowVersion (timestamp). Cuando lees un registro, capturas su version. Cuando escribes, el UPDATE incluye WHERE RowVersion = @captured. Si otro proceso modifico la fila entre tu lectura y escritura, el WHERE no match, EF Core lanza DbUpdateConcurrencyException, y puedes reintentar. Esto evita locks pesimistas que degradan rendimiento. Nota: todavia no implementado en MNEMOS, planeado para produccion.</span></span></span> via RowVersion esta planeado (no implementado aun). Actualmente, SQL Server transactions protegen las operaciones criticas (crear memor + append event + update embedding es una transaccion atomica).</p>
+
+<h3>Que pasa si dos instancias del Bus corren en paralelo?</h3>
+<p>El Bus Cognitivo es un <span class="ref code">singleton in-memory<span class="tip"><span class="tip-title">Codigo C#</span>InMemoryCognitiveEventBus se registra como Singleton en DI.<pre>// DependencyInjection.cs
+services.AddSingleton&lt;ICognitiveEventBus,
+    InMemoryCognitiveEventBus&gt;();
+services.AddSingleton&lt;CognitiveEventWiring&gt;();
+services.AddSingleton&lt;ISpreadingActivationNetwork,
+    SpreadingActivationNetwork&gt;();</pre>Una instancia por proceso. Multi-server requeriria Redis Pub/Sub o RabbitMQ como transport distribuido.</span></span></span>, una instancia por proceso. Si ejecutas multiples servidores, cada uno tendria su propio bus. Para multi-server se necesitaria un transport distribuido (Redis Pub/Sub, RabbitMQ). Esto esta en el roadmap de escalabilidad.</p>
+
+<h3>Como se recupera el SAN despues de reinicio?</h3>
+<p>No se recupera &mdash; <span class="ref phil">por diseno<span class="tip"><span class="tip-title">Principio de Diseno</span>El SAN es transiente a proposito. Al reiniciar, empieza en cero y se "recalienta" organicamente con el uso. La alternativa (persistir el estado) introduciria riesgo de state corruption y complejidad de sincronizacion. La perdida de activacion temporal es un precio aceptable por la garantia de consistencia. Bjork diria: la re-recuperacion tras el reinicio fortalece los nodos realmente importantes (desirable difficulty).</span></span></span>. El SAN es transiente (in-memory only). Al reiniciar, los niveles de activacion empiezan en cero y se recalientan organicamente con el uso. Esto es intencional: evita state corruption y la re-recuperacion fortalece los nodos importantes (desirable difficulty aplicada al propio sistema).</p>
+
+<hr class="sep">
+
+<h2>Seguridad</h2>
+
+<h3>Hay autenticacion en la API?</h3>
+<p>No todavia &mdash; es desarrollo local single-user. Para produccion se planea <span class="ref note">JWT + ASP.NET Identity<span class="tip"><span class="tip-title">Nota Tecnica</span>El plan de autenticacion incluye: JWT bearer tokens para la API REST, ASP.NET Identity para gestion de usuarios, refresh tokens con rotacion, y multi-tenant con aislamiento por esquema de BD. Los endpoints sensibles (crear/editar memors, beliefs, decisions) requeriran [Authorize]. Los endpoints de lectura publica (si los hay) usaran trust_levels para filtrar.</span></span></span> con soporte multi-tenant.</p>
+
+<h3>Hay cifrado en reposo y en transito?</h3>
+<p>HTTPS esta configurado para transito. Cifrado en reposo depende de la configuracion de SQL Server (<span class="ref note">TDE<span class="tip"><span class="tip-title">Nota Tecnica</span>Transparent Data Encryption (TDE) cifra los archivos de datos de SQL Server en disco. Es transparente para la aplicacion &mdash; no requiere cambios en codigo. Para PostgreSQL, el equivalente es pgcrypto o cifrado a nivel de filesystem. Cifrado a nivel de aplicacion (por campo) esta en el roadmap para datos ultra-privados (trust_level 0).</span></span></span>). No hay cifrado a nivel de aplicacion todavia. Planeado para trust_level 0 (datos ultra-privados).</p>
+
+<h3>Que son los trust levels?</h3>
+<p>5 niveles de visibilidad y acceso:</p>
+
+<table class="tbl">
+<thead>
+<tr><th>Nivel</th><th>Nombre</th><th>Significado</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>0</strong></td><td>Ultra-privado</td><td>Solo accesible por el usuario. Cifrado extra planeado. Datos biometricos, emocionales.</td></tr>
+<tr><td><strong>1</strong></td><td>Privado</td><td>Solo el usuario. Sin cifrado extra pero no compartible.</td></tr>
+<tr><td><strong>2</strong></td><td>Personal</td><td>Visible para el usuario y sus agentes de confianza.</td></tr>
+<tr><td><strong>3</strong></td><td>Compartible</td><td>Puede compartirse con otros usuarios o equipos.</td></tr>
+<tr><td><strong>4</strong></td><td>Publico</td><td>Visible para cualquier usuario del sistema. Candidato a Cortex colectivo.</td></tr>
+</tbody>
+</table>
+
+<h3>Que pasa si un agente crea miles de memors?</h3>
+<p>El <span class="ref adv">Guardian rate limiting<span class="tip"><span class="tip-title">Funcionamiento Interno</span>El GuardianAgent mantiene un contador por source_agent con ventana deslizante de 1 hora. Cuando un agente alcanza 100 memors/hora, todas las peticiones siguientes reciben GuardianValidationResult.Denied con razon "Rate limit exceeded". El contador se resetea automaticamente. Esto previene loops infinitos de agentes y ataques de inyeccion masiva.</span></span></span> lo previene: maximo 100 memors/hora por <code>source_agent</code>. Si se excede, el Guardian devuelve <code>Denied</code>. Esto previene loops infinitos de agentes y ataques de inyeccion masiva.</p>
+
+<h3>Hay audit log accesible?</h3>
+<p>Si. La tabla <span class="ref flux">DomainEvents<span class="tip"><span class="tip-title">Flujo de Datos</span>DomainEvents registra TODA mutacion del sistema: creacion, edicion, archivado de memors, creacion de beliefs, decisiones, links, cambios de schema, etc. Cada evento tiene: AggregateId, AggregateType, EventType, Payload (JSON completo), Actor (usuario o agente), y timestamp. Es la base del event sourcing y permite reconstruir el estado en cualquier punto del pasado.</span></span></span> registra TODA mutacion del sistema. Cada creacion, edicion, archivado, vinculacion &mdash; todo queda registrado con actor, timestamp y payload completo. Un endpoint de consulta esta planeado para futuro.</p>
+
+<h3>Como funciona CORS?</h3>
+<p>Configurado en <code>Server/Program.cs</code> con <span class="ref note">AllowedOrigins<span class="tip"><span class="tip-title">Nota Tecnica</span>CORS (Cross-Origin Resource Sharing) controla que dominios pueden hacer peticiones a la API. En desarrollo, se permite localhost. En produccion, se restringiria a los dominios del frontend (Blazor client) y cualquier integracion autorizada. La configuracion se lee desde appsettings.json, no esta hardcodeada.</span></span></span> desde appsettings. Default: localhost para desarrollo. En produccion se restringiria a dominios autorizados.</p>
+
+<hr class="sep">
+
+<h2>Integraciones y APIs</h2>
+
+<h3>Hay Swagger?</h3>
+<p>Si, habilitado en modo Development via <code>AddSwaggerGen()</code>. Accesible en <code>http://localhost:5000/swagger</code> cuando el servidor esta corriendo en modo desarrollo.</p>
+
+<h3>Se puede usar con otros LLMs ademas de OpenAI?</h3>
+<p>Si. <span class="ref code">IAIEngine<span class="tip"><span class="tip-title">Codigo C#</span>La abstraccion permite cualquier provider compatible con la API de OpenAI.<pre>public interface IAIEngine
+{
+    Task&lt;float[]&gt; GenerateEmbeddingAsync(
+        string text,
+        CancellationToken ct);
+}
+
+// OpenAiCompatibleEmbeddingEngine
+// funciona con cualquier API compatible:
+// - OpenAI (text-embedding-3-small)
+// - Together AI
+// - Ollama (local)
+// - Mistral
+// - Azure OpenAI</pre></span></span></span> es una abstraccion. <code>OpenAiCompatibleEmbeddingEngine</code> funciona con cualquier API compatible con el formato OpenAI: Together AI, Ollama (local), Mistral, Azure OpenAI, etc. Solo necesitas cambiar la URL base y el API key en la configuracion.</p>
+
+<h3>Hay webhooks?</h3>
+<p>No todavia. El Bus Cognitivo podria exponer webhooks en futuro: suscribirte a eventos como <code>NewMemorEncoded</code>, <code>SchemaAccommodation</code> o <code>BeliefRevision</code> y recibir notificaciones HTTP en tu endpoint.</p>
+
+<h3>Hay SignalR activo?</h3>
+<p>Configurado en el Server pero no activamente usado. Futuro: <span class="ref integ">notificaciones real-time<span class="tip"><span class="tip-title">Integracion</span>SignalR permitiria al frontend Blazor recibir notificaciones en tiempo real cuando: un agente descubre una conexion nueva (Discoverer), un schema cambia de estado (Piaget accommodation), una belief tiene nueva evidencia, o un DomainEvent ocurre. El hub ya esta registrado en Program.cs, solo falta conectar los handlers del Bus Cognitivo como publishers de SignalR.</span></span></span> de eventos cognitivos al frontend Blazor.</p>
+
+<hr class="sep">
+
+<h2>DevOps y CI/CD</h2>
+
+<h3>Hay CI/CD?</h3>
+<p>Pre-commit hooks estan configurados con 6 verificaciones:</p>
+
+<div class="cards">
+<div class="card">
+<div class="card-badge green">1</div>
+<h4>Build</h4>
+<p><code>dotnet build</code> &mdash; compila sin errores.</p>
+</div>
+<div class="card">
+<div class="card-badge blue">2</div>
+<h4>Test</h4>
+<p><code>dotnet test</code> &mdash; 688 tests pasan.</p>
+</div>
+<div class="card">
+<div class="card-badge purple">3</div>
+<h4>Architecture Guard</h4>
+<p>ArchUnitNET verifica que no haya SQL en Domain/Application.</p>
+</div>
+<div class="card">
+<div class="card-badge amber">4</div>
+<h4>Invariant Scan</h4>
+<p>Verifica invariantes de motores (SS nunca decrece, etc.).</p>
+</div>
+<div class="card">
+<div class="card-badge rose">5</div>
+<h4>Secrets Scan</h4>
+<p>Detecta connection strings, API keys o tokens en el codigo.</p>
+</div>
+<div class="card">
+<div class="card-badge cyan">6</div>
+<h4>Layer Deps</h4>
+<p>Verifica que las dependencias entre capas sean correctas (Domain sin dependencias externas).</p>
+</div>
+</div>
+
+<p>CI pipeline con GitHub Actions esta planeado para cuando el proyecto se publique.</p>
+
+<h3>Como se manejan las migraciones en produccion?</h3>
+<p>EF Core Code First con migrations. Actualmente hay 6 migraciones aplicadas (Initial, Piaget, Consolidator, Bayesian, Kahneman, y la ultima de ajustes). Deployment: <code>dotnet ef database update --project src/Mnemos.Infrastructure</code>.</p>
+
+</div>
+</section>
+
+<script>
+window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progressBar').style.width = pct + '%';
+});
+</script>
+</body>
+</html>

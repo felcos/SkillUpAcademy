@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MNEMOS — Presentacion Extendida y Exhaustiva</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0b1120;--bg2:#111b2e;--bg3:#162035;--bg4:#1c2844;--text:#e8edf5;--text2:#9aa5b8;--text3:#6b7a90;--blue:#4d8ef7;--purple:#9775fa;--green:#40c78e;--amber:#f7b955;--rose:#f06595;--cyan:#22d3ee;--teal:#2dd4bf;--border:#1e2d45;--glow-blue:rgba(77,142,247,.12);--glow-purple:rgba(151,117,250,.12);--glow-green:rgba(64,199,142,.12);--glow-amber:rgba(247,185,85,.12);--glow-rose:rgba(240,101,149,.12);--glow-cyan:rgba(34,211,238,.12);--glow-teal:rgba(45,212,191,.12);--radius:14px;--ease:.35s cubic-bezier(.4,0,.2,1)}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(11,17,32,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem}
+.topbar-logo{font-weight:800;font-size:1.1rem;letter-spacing:.12em;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.topbar-nav{display:flex;gap:.15rem;overflow-x:auto}
+.topbar-nav a{color:var(--text3);text-decoration:none;padding:.4rem .55rem;border-radius:8px;font-size:.72rem;white-space:nowrap;transition:var(--ease)}
+.topbar-nav a:hover,.topbar-nav a.active{color:var(--text);background:var(--glow-blue)}
+.progress-bar{position:fixed;top:56px;left:0;height:3px;z-index:101;background:linear-gradient(90deg,var(--blue),var(--purple),var(--green));width:0%;transition:width .15s linear}
+.container{max-width:860px;margin:0 auto;padding:0 1.5rem}
+section{padding:5rem 0}section:first-of-type{padding-top:6rem}
+.label{font-size:.7rem;text-transform:uppercase;letter-spacing:.2em;color:var(--blue);margin-bottom:.75rem;font-weight:600}
+h1{font-size:clamp(2.2rem,4.5vw,3.5rem);font-weight:800;line-height:1.15;margin-bottom:1.5rem}
+h2{font-size:clamp(1.6rem,3vw,2rem);font-weight:700;line-height:1.25;margin-bottom:1rem;margin-top:3rem}
+h2:first-child{margin-top:0}
+h3{font-size:1.15rem;font-weight:600;margin-bottom:.6rem;margin-top:2rem;color:var(--text)}
+p{color:var(--text2);margin-bottom:1.2rem;font-size:1.02rem}
+.big{font-size:1.15rem;color:var(--text)}
+strong{color:var(--text);font-weight:600}
+em.concept{color:var(--amber);font-style:normal;font-weight:600}
+code{background:var(--bg3);padding:.15rem .4rem;border-radius:4px;font-size:.88rem;color:var(--cyan);font-family:'Cascadia Code','Fira Code',monospace}
+pre{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin:1.2rem 0;overflow-x:auto;font-size:.8rem;line-height:1.6;color:var(--text2);font-family:'Cascadia Code','Fira Code',monospace}
+/* Tooltip base */
+.ref{border-bottom:1.5px dotted var(--purple);cursor:help;position:relative;color:var(--text);transition:color .2s}
+.ref:hover{color:var(--purple)}
+.ref .tip{display:none;position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);width:400px;max-width:90vw;background:var(--bg4);border:1px solid var(--purple);border-radius:var(--radius);padding:1rem 1.2rem;z-index:200;font-size:.82rem;line-height:1.55;color:var(--text2);box-shadow:0 8px 32px rgba(0,0,0,.5);pointer-events:none}
+.ref .tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--purple)}
+.ref:hover .tip,.ref:focus .tip{display:block;pointer-events:auto}
+.ref .tip .tip-title{font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem;color:var(--purple)}
+.ref .tip .tip-cite{color:var(--text3);font-style:italic;font-size:.78rem;margin-top:.5rem;padding-top:.4rem;border-top:1px solid var(--border)}
+.ref .tip .tip-quote{color:var(--amber);font-style:italic;margin:.4rem 0}
+.ref .tip pre{font-size:.72rem;margin:.5rem 0;padding:.6rem}
+/* Tooltip: cientifica (purpura - default) */
+/* Tooltip: filosofica (dorado) */
+.ref.phil{border-bottom-color:var(--amber)}.ref.phil:hover{color:var(--amber)}.ref.phil .tip{border-color:var(--amber)}.ref.phil .tip::after{border-top-color:var(--amber)}.ref.phil .tip .tip-title{color:var(--amber)}
+/* Tooltip: tecnica (verde) */
+.ref.note{border-bottom-color:var(--green)}.ref.note:hover{color:var(--green)}.ref.note .tip{border-color:var(--green)}.ref.note .tip::after{border-top-color:var(--green)}.ref.note .tip .tip-title{color:var(--green)}
+/* Tooltip: Avanzado Funcionamiento (cyan) */
+.ref.adv{border-bottom-color:var(--cyan)}.ref.adv:hover{color:var(--cyan)}.ref.adv .tip{border-color:var(--cyan)}.ref.adv .tip::after{border-top-color:var(--cyan)}.ref.adv .tip .tip-title{color:var(--cyan)}
+/* Tooltip: Avanzado Codificacion (teal) */
+.ref.code{border-bottom-color:var(--teal)}.ref.code:hover{color:var(--teal)}.ref.code .tip{border-color:var(--teal);width:500px}.ref.code .tip::after{border-top-color:var(--teal)}.ref.code .tip .tip-title{color:var(--teal)}
+/* Tooltip: Integracion (rose) */
+.ref.integ{border-bottom-color:var(--rose)}.ref.integ:hover{color:var(--rose)}.ref.integ .tip{border-color:var(--rose)}.ref.integ .tip::after{border-top-color:var(--rose)}.ref.integ .tip .tip-title{color:var(--rose)}
+/* Tooltip: Flujo de datos (azul) */
+.ref.flux{border-bottom-color:var(--blue)}.ref.flux:hover{color:var(--blue)}.ref.flux .tip{border-color:var(--blue)}.ref.flux .tip::after{border-top-color:var(--blue)}.ref.flux .tip .tip-title{color:var(--blue)}
+/* Boxes */
+.analogy{background:var(--glow-blue);border:1px solid rgba(77,142,247,.25);border-radius:var(--radius);padding:1.5rem 1.75rem;margin:1.5rem 0;position:relative}
+.analogy::before{content:'Analogia';position:absolute;top:-10px;left:16px;background:var(--bg);padding:0 8px;font-size:.7rem;color:var(--blue);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.analogy p{color:var(--text);margin-bottom:0;font-size:.95rem}
+.important{background:var(--glow-amber);border:1px solid rgba(247,185,85,.25);border-radius:var(--radius);padding:1.5rem 1.75rem;margin:1.5rem 0;position:relative}
+.important::before{content:'Clave';position:absolute;top:-10px;left:16px;background:var(--bg);padding:0 8px;font-size:.7rem;color:var(--amber);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.important p{color:var(--text);margin-bottom:0;font-size:.95rem}
+blockquote{border-left:3px solid var(--purple);padding:1.25rem 1.5rem;margin:1.5rem 0;background:var(--glow-purple);border-radius:0 var(--radius) var(--radius) 0}
+blockquote p{color:var(--text);font-style:italic;margin-bottom:.3rem;font-size:1.05rem}
+blockquote cite{color:var(--text3);font-style:normal;font-size:.85rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;margin:1.75rem 0}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;transition:var(--ease)}
+.card:hover{border-color:var(--blue);transform:translateY(-2px)}
+.card-badge{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:10px;font-size:1rem;font-weight:800;margin-bottom:.75rem}
+.card-badge.blue{background:var(--glow-blue);color:var(--blue)}.card-badge.purple{background:var(--glow-purple);color:var(--purple)}.card-badge.green{background:var(--glow-green);color:var(--green)}.card-badge.amber{background:var(--glow-amber);color:var(--amber)}.card-badge.rose{background:var(--glow-rose);color:var(--rose)}.card-badge.cyan{background:var(--glow-cyan);color:var(--cyan)}.card-badge.teal{background:var(--glow-teal);color:var(--teal)}
+.card h4{font-size:1rem;font-weight:600;margin-bottom:.4rem;color:var(--text)}.card p{font-size:.88rem;margin-bottom:0;color:var(--text2)}
+.flow{display:flex;align-items:center;justify-content:center;gap:.4rem;flex-wrap:wrap;margin:1.5rem 0}
+.flow-box{padding:.65rem 1.1rem;border-radius:10px;font-size:.82rem;font-weight:600;text-align:center;min-width:90px}
+.flow-arr{color:var(--text3);font-size:1.1rem}
+.layers{margin:1.5rem 0;display:flex;flex-direction:column;gap:.4rem}
+.layer-row{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;border-radius:var(--radius);background:var(--bg3);border:1px solid var(--border);transition:var(--ease)}
+.layer-row:hover{border-color:var(--blue)}
+.layer-label{font-weight:700;min-width:140px;font-size:.9rem}.layer-text{font-size:.85rem;color:var(--text2)}
+.tbl{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:.88rem}
+.tbl th{text-align:left;padding:.6rem .8rem;background:var(--bg3);color:var(--text);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--border)}
+.tbl td{padding:.6rem .8rem;border-bottom:1px solid var(--border);color:var(--text2)}.tbl tr:hover td{background:rgba(77,142,247,.04)}
+hr.sep{border:none;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:3rem 0}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .5s ease,transform .5s ease}.reveal.on{opacity:1;transform:translateY(0)}
+.hypothesis{background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.2);border-radius:var(--radius);padding:1.5rem 1.75rem;margin:1.5rem 0;position:relative}
+.hypothesis::before{content:'Hipotesis Falsificable';position:absolute;top:-10px;left:16px;background:var(--bg);padding:0 8px;font-size:.7rem;color:var(--cyan);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.hypothesis p{color:var(--text);margin-bottom:0;font-size:.92rem}
+.legend{display:flex;flex-wrap:wrap;gap:1rem;margin:1.5rem 0;padding:1rem 1.25rem;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)}
+.legend-item{display:flex;align-items:center;gap:.4rem;font-size:.8rem}.legend-dot{width:10px;height:10px;border-radius:50%}
+@media(max-width:700px){.topbar-nav{display:none}.cards{grid-template-columns:1fr}.flow{flex-direction:column}.flow-arr{transform:rotate(90deg)}.layer-row{flex-direction:column;gap:.3rem}.layer-label{min-width:auto}.ref .tip{width:280px;left:0;transform:none}.ref .tip::after{left:20px}}
+</style>
+</head>
+<body>
+<div class="topbar">
+<div class="topbar-logo">MNEMOS &middot; Extendida</div>
+<div class="topbar-nav">
+<a href="#intro">Intro</a><a href="#problem">Problema</a><a href="#capture">Captacion</a><a href="#memor">Memor</a><a href="#bjork">Bjork</a><a href="#piaget">Piaget</a><a href="#bayesian">Bayesian</a><a href="#kahneman">Kahneman</a><a href="#crr">CRR</a><a href="#san">SAN</a><a href="#bus">Bus</a><a href="#agents">Agentes</a><a href="#arch">Arquitectura</a><a href="#db">BD</a><a href="#mcp">MCP</a><a href="#api">API</a><a href="#testing">Tests</a><a href="#security">Seguridad</a><a href="#future">Futuro</a><a href="#principles">Principios</a><a href="#faq">FAQ</a>
+</div></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="legend container" style="margin-top:70px">
+<span style="font-weight:600;font-size:.85rem;margin-right:.5rem">Tooltips descubribles:</span>
+<div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>Cita cientifica</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Cita filosofica</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Nota tecnica</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--cyan)"></div>Avanzado: Funcionamiento</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--teal)"></div>Avanzado: Codificacion</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--rose)"></div>Avanzado: Integracion</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Proceso: Flujo de datos</div>
+</div>
+
+
+<section id="intro">
+<div class="container">
+<div class="label">Presentacion Extendida &mdash; Version Exhaustiva con Tooltips Descubribles</div>
+<h1>MNEMOS no es una app de notas.</h1>
+<p class="big">
+Es un <strong>sistema operativo cognitivo</strong> que modela matematicamente como funciona la
+<span class="ref">memoria humana<span class="tip"><span class="tip-title">Ciencia Cognitiva</span>Endel Tulving (1972) distinguio memoria episodica (eventos) de semantica (hechos). MNEMOS implementa estas taxonomias directamente en sus tipos de memor: Episodic, Semantic, Procedural.<span class="tip-cite">Tulving, E. (1972). Episodic and Semantic Memory. En Organization of Memory. Academic Press.</span></span></span>.
+Cada pieza de conocimiento tiene fuerzas que evolucionan, se conecta con otras ideas, y el sistema sabe que mostrarte basandose en
+<span class="ref">ciencia cognitiva real<span class="tip"><span class="tip-title">Base Cientifica</span>MNEMOS se fundamenta en trabajo de 6 investigadores: Bjork (retencion), Piaget (esquemas), Bayes (creencias), Kahneman (decisiones), Damasio (emociones) y Friston (prediccion). Los primeros 4 estan implementados operativamente.<span class="tip-cite">El proyecto paso por 303 debates PhD + 12 filosofos como jurado.</span></span></span>.
+</p>
+
+<div class="analogy">
+<p><strong>Tu cerebro real:</strong> Lees algo el lunes. El viernes ya olvidaste la mitad. Pero si ese viernes haces el esfuerzo de recordarlo, se graba mas profundo que antes. Esto lo descubrio
+<span class="ref">Ebbinghaus en 1885<span class="tip"><span class="tip-title">Investigacion Pionera</span>Ebbinghaus fue el primero en cuantificar el olvido. Demostro que el 67% se pierde en 24 horas. Su &laquo;savings effect&raquo; es el precursor del modelo de doble fuerza de MNEMOS.<span class="tip-cite">Ebbinghaus, H. (1885). &Uuml;ber das Ged&auml;chtnis. Leipzig: Duncker &amp; Humblot.</span></span></span>
+y Bjork lo formalizo 107 a&ntilde;os despues. <strong>MNEMOS hace esto con matematicas.</strong></p>
+</div>
+
+<div class="important">
+<p><strong>Estado actual (marzo 2026):</strong> 4 motores cognitivos operativos, 3 agentes, CRR v5 con 9 dimensiones, 12 tools MCP, 6 controllers REST, 688 tests pasando, 14 tablas SQL Server. Codigo en C# .NET 8, arquitectura Clean Architecture CQRS+ES.</p>
+</div>
+
+<p>Las
+<span class="ref note" style="cursor:help">palabras subrayadas<span class="tip"><span class="tip-title">Guia de Tooltips</span>Este documento tiene 80+ tooltips descubribles en 7 categorias de color. <strong>Purpura</strong> = cita cientifica. <strong>Dorado</strong> = cita filosofica. <strong>Verde</strong> = nota tecnica. <strong>Cyan</strong> = funcionamiento interno. <strong>Teal</strong> = codigo C# real. <strong>Rosa</strong> = integracion entre piezas. <strong>Azul</strong> = flujo de datos.</span></span>
+contienen informacion descubrible. Pasa el cursor para revelarlas.</p>
+</div>
+</section>
+
+<section id="problem">
+<div class="container">
+<div class="label">El Problema</div>
+<h2>Por que las apps de notas actuales fallan</h2>
+<p class="big">Obsidian, Notion, Roam, Logseq... todas tratan notas como <strong>archivos de texto muertos</strong>. Las guardas, buscas por palabras, y eventualmente se acumulan miles que nunca vuelves a ver.</p>
+
+<div class="cards">
+<div class="card">
+<div class="card-badge amber">1</div>
+<h4>Busqueda plana</h4>
+<p>Buscan por texto similar, no por lo que es <span class="ref">cognitivamente relevante para ti<span class="tip"><span class="tip-title">Relevancia Cognitiva</span>La relevancia cognitiva incluye fuerza de recuperacion, contexto emocional, y conexiones con esquemas activos. El CRR de MNEMOS combina 9 de estos factores en una formula ponderada.<span class="tip-cite">Tulving, E. &amp; Thomson, D.M. (1973). Encoding Specificity and Retrieval Processes. Psychological Review, 80(5).</span></span></span> para ti ahora.</p>
+</div>
+<div class="card">
+<div class="card-badge amber">2</div>
+<h4>Sin olvido inteligente</h4>
+<p>Todo pesa igual. Tu <span class="ref">cerebro no funciona asi<span class="tip"><span class="tip-title">Olvido Funcional</span>El olvido es una funcion adaptativa. Anderson &amp; Bjork (1994) demostraron que inhibir recuerdos irrelevantes mejora la recuperacion de los relevantes. MNEMOS implementa esto como Principio 2: Olvido Sabio.<span class="tip-cite">Anderson, M.C. &amp; Bjork, R.A. (1994). Mechanisms of Inhibition in Long-Term Memory.</span></span></span>.</p>
+</div>
+<div class="card">
+<div class="card-badge amber">3</div>
+<h4>Sin conexiones inteligentes</h4>
+<p>Conectas ideas manualmente. Nadie detecta que tu nota sobre liderazgo contradice tu creencia sobre autonomia.</p>
+</div>
+<div class="card">
+<div class="card-badge amber">4</div>
+<h4>Sin evolucion</h4>
+<p>Tus ideas cambian, tus creencias se actualizan, tus decisiones tienen resultados. Las apps de notas no rastrean nada de esto.</p>
+</div>
+</div>
+</div>
+</section>
+
+
+<section id="capture">
+<div class="container">
+<div class="label">Seccion Critica</div>
+<h2>Como se captan los datos en MNEMOS</h2>
+<p class="big">MNEMOS acepta datos de <strong>multiples canales</strong>. Hoy hay 3 canales operativos y varios planificados para el futuro.</p>
+
+<h3>Canales operativos</h3>
+<div class="cards">
+<div class="card">
+<div class="card-badge blue">API</div>
+<h4>API REST</h4>
+<p>Cualquier aplicacion puede hacer POST a <code>/api/memors</code> con content, domains y sourceContext.
+<span class="ref code">Ver payload<span class="tip"><span class="tip-title">Avanzado: Codificacion</span>Ejemplo de POST real a la API:<pre>{
+  "content": "La delegacion efectiva requiere confianza",
+  "memoryType": "Semantic",
+  "domains": ["liderazgo", "gestion"],
+  "sourceContext": {
+    "source": "manual",
+    "application": "postman"
+  },
+  "encodingQuality": 0.7,
+  "sourceAgent": null
+}</pre>Campo <code>sourceAgent</code> null indica que lo creo un humano.</span></span>
+</p>
+</div>
+<div class="card">
+<div class="card-badge purple">MCP</div>
+<h4>MCP (Claude Code / Desktop)</h4>
+<p>Claude usa la tool <code>create_memor</code> via protocolo MCP stdio. Se marca automaticamente con
+<span class="ref adv">source_agent<span class="tip"><span class="tip-title">Avanzado: Funcionamiento</span>Cuando Claude Code crea un memor via MCP, el tool <code>CreateMemorTool</code> fuerza <code>sourceAgent = "mcp-claude-code"</code>. Esto permite al GuardianAgent distinguir contenido humano de contenido generado por IA. Es un invariante de seguridad: ningun agente puede crear contenido sin identificarse.</span></span>
+= "mcp-claude-code".</p>
+</div>
+<div class="card">
+<div class="card-badge green">UI</div>
+<h4>Blazor UI</h4>
+<p>Pagina <code>/new</code> con editor de texto. El frontend envia a la API REST internamente. El usuario ve sus memors en <code>/</code> y busca en <code>/search</code>.
+<span class="ref flux">Flujo UI a BD<span class="tip"><span class="tip-title">Proceso: Flujo de Datos</span>1. Usuario escribe en /new (Blazor)<br>2. Click guardar &rarr; HTTP POST a /api/memors<br>3. MemorsController recibe CreateMemorRequest<br>4. Mapea a Memor con SourceAgent=null (humano)<br>5. MemorService.CreateAsync &rarr; Guardian &rarr; Embedding &rarr; SQL &rarr; Event<br>6. Response 201 &rarr; Redirect a /memor/{id}</span></span>
+</p>
+</div>
+</div>
+
+<h3>Flujo de datos completo</h3>
+<p>Independientemente del canal, todo memor pasa por el mismo pipeline interno:</p>
+<div class="flow">
+<div class="flow-box" style="background:var(--glow-blue);color:var(--blue)">Fuente</div>
+<div class="flow-arr">&rarr;</div>
+<div class="flow-box" style="background:var(--glow-amber);color:var(--amber)">
+<span class="ref flux">Guardian<span class="tip"><span class="tip-title">Proceso: Flujo de Datos</span><strong>Paso 1 — Validacion Guardian:</strong><br>1. Rate limiting: max 100 memors/hora por actor<br>2. Prompt injection scan: 7 regex patterns<br>3. Source agent validation<br>4. Immutability check (no editar memors inmutables)<br>5. Content hash calculation (SHA256)<br><br>Si falla cualquier check, el memor se RECHAZA antes de llegar a la BD.</span></span>
+</span>
+</div>
+<div class="flow-arr">&rarr;</div>
+<div class="flow-box" style="background:var(--glow-cyan);color:var(--cyan)">
+<span class="ref integ">Embedding<span class="tip"><span class="tip-title">Avanzado: Integracion</span>IAIEngine genera un vector de 1536 dimensiones usando OpenAI text-embedding-3-small. Este vector captura el significado semantico del contenido. Se almacena como float[] en la columna Embedding de la tabla Memors. En desarrollo se usa StubAIEngine que genera vectores deterministicos basados en hash del contenido.</span></span>
+</span>
+</div>
+<div class="flow-arr">&rarr;</div>
+<div class="flow-box" style="background:var(--glow-green);color:var(--green)">
+<span class="ref flux">SQL Server<span class="tip"><span class="tip-title">Proceso: Flujo de Datos</span><strong>Paso 3 — Persistencia:</strong><br>1. INSERT en tabla Memors (14 columnas)<br>2. Embedding almacenado como JSON float[]<br>3. Domains y SourceContext como columnas JSON<br>4. ContentHash para deteccion de duplicados<br>5. DomainEvent registrado (MemorCreated)<br>6. SS=0.1, RS=1.0, Lambda=86400 (valores iniciales)</span></span>
+</span>
+</div>
+<div class="flow-arr">&rarr;</div>
+<div class="flow-box" style="background:var(--glow-purple);color:var(--purple)">Indexado CRR</div>
+</div>
+
+<div class="analogy">
+<p><strong>Analogia:</strong> Piensa en MNEMOS como un hospital. No importa si llegas en ambulancia (MCP), en coche (API) o caminando (UI) — una vez dentro, todos pasan por triaje (Guardian), diagnostico (Embedding) y se les asigna una habitacion (SQL Server). El CRR es el sistema que decide a quien atender primero cuando hay una emergencia (busqueda).</p>
+</div>
+
+<h3>
+<span class="ref code">MemorService.CreateAsync<span class="tip"><span class="tip-title">Avanzado: Codificacion</span>Codigo simplificado del flujo de creacion:<pre>// MemorService.CreateAsync (simplificado)
+GuardianValidationResult validation =
+    await _guardian.ValidateCreationAsync(memor);
+if (!validation.IsValid)
+    throw new ValidationException(validation.Reason);
+
+float[] embedding =
+    await _aiEngine.GenerateEmbeddingAsync(
+        memor.Content, ct);
+memor.Embedding = embedding;
+memor.ContentHash = ComputeHash(memor.Content);
+
+await _memorRepository.AddAsync(memor, ct);
+await _eventStore.AppendAsync(
+    DomainEvent.MemorCreated(memor), ct);</pre></span></span>
+</span> orquesta todo el proceso</h3>
+<p>El servicio de aplicacion <code>MemorService</code> coordina la validacion, generacion de embedding, persistencia y registro de eventos. Es el punto central donde convergen todos los canales de entrada.</p>
+
+<h3>Canales futuros (planificados)</h3>
+<div class="cards">
+<div class="card"><div class="card-badge rose">Email</div><h4>Importador de email</h4><p>Extrae conocimiento de correos via IMAP. Cada email se convierte en 1+ memors con metadatos de remitente, fecha, hilo.</p></div>
+<div class="card"><div class="card-badge rose">Chat</div><h4>Telegram / WhatsApp</h4><p>Bot que captura mensajes marcados. Communication Governor controla respuestas automaticas con 4 niveles de autonomia.</p></div>
+<div class="card"><div class="card-badge rose">Audio</div><h4>Speech-to-Text</h4><p>ISpeechToText con speaker diarization para meetings. El audio raw NUNCA sale del dispositivo (privacidad fundamental).</p></div>
+<div class="card"><div class="card-badge rose">Bio</div><h4>Biometricos</h4><p>Oura Ring, Apple Watch: HRV, sleep, stress, recovery. Modulan encoding_quality. Evento BiometricStateChanged en el bus cognitivo.</p></div>
+</div>
+</div>
+</section>
+
+
+<section id="memor">
+<div class="container">
+<div class="label">La Unidad Fundamental</div>
+<h2>El Memor</h2>
+<p class="big">Cada pieza de conocimiento es un <em class="concept">memor</em>: una unidad de memoria con propiedades cognitivas que evolucionan en el tiempo.</p>
+
+<div class="analogy">
+<p>Un memor es como una <strong>neurona artificial</strong>. No es solo datos: tiene conexiones, un umbral de activacion que cambia, se fortalece cuando se usa y se debilita cuando no.</p>
+</div>
+
+<h3>Modelo completo de un Memor</h3>
+<table class="tbl">
+<tr><th>Campo</th><th>Tipo</th><th>Descripcion</th></tr>
+<tr><td><code>Id</code></td><td>Guid</td><td>
+<span class="ref note">GUID generado por .NET<span class="tip"><span class="tip-title">Nota Tecnica</span>Guid.NewGuid() genera un UUID v4 aleatorio. En SQL Server se usa como PK. Consideracion: para indices clustered, NEWSEQUENTIALID() seria mas eficiente, pero MNEMOS prioriza la generacion en codigo sobre la generacion en BD para compatibilidad con event sourcing.</span></span>
+</td></tr>
+<tr><td><code>Content</code></td><td>string</td><td>Texto del memor</td></tr>
+<tr><td><code>ContentHash</code></td><td>string?</td><td>
+<span class="ref adv">SHA256 del contenido<span class="tip"><span class="tip-title">Avanzado: Funcionamiento</span>El ContentHash se calcula con SHA256 sobre el Content normalizado. Sirve para: (1) deteccion de duplicados exactos, (2) verificacion de integridad, (3) el GuardianAgent lo usa para detectar si alguien intenta modificar un memor inmutable comparando hashes.</span></span>
+</span></td></tr>
+<tr><td><code>MemoryType</code></td><td>enum</td><td>
+<span class="ref">Episodic | Semantic | Procedural<span class="tip"><span class="tip-title">Taxonomia de Tulving</span>Tulving (1972) distinguio memoria episodica (eventos personales) de semantica (hechos generales). Squire (1987) agrego procedimental (habilidades). MNEMOS implementa las tres.<span class="tip-cite">Squire, L.R. (1987). Memory and Brain. Oxford University Press.</span></span></span>
+</td></tr>
+<tr><td><code>StorageStrength</code></td><td>float</td><td>SS: profundidad de grabado. Inicia 0.1. NUNCA decrece.</td></tr>
+<tr><td><code>RetrievalStrength</code></td><td>float</td><td>RS: accesibilidad actual. Inicia 1.0. Decae exponencialmente.</td></tr>
+<tr><td><code>RsUpdatedAt</code></td><td>DateTime</td><td>Ultimo reset de RS (para calculo lazy)</td></tr>
+<tr><td><code>LambdaDecay</code></td><td>float</td><td>Constante de decaimiento. Lambda = 86400 * SS</td></tr>
+<tr><td><code>Embedding</code></td><td>float[]?</td><td>
+<span class="ref adv">Vector 1536 dimensiones<span class="tip"><span class="tip-title">Avanzado: Funcionamiento</span>OpenAI text-embedding-3-small genera un vector de 1536 floats que captura el significado semantico del texto. Dos textos con significados similares tendran vectores cercanos (cosine similarity alta). Se almacena como JSON array en SQL Server. En produccion con PostgreSQL se usaria pgvector con indices HNSW para busqueda eficiente.</span></span>
+</td></tr>
+<tr><td><code>Domains</code></td><td>List&lt;string&gt;</td><td>Tags tematicos (JSON column)</td></tr>
+<tr><td><code>SourceContext</code></td><td>Dict</td><td>Metadatos de origen (JSON column)</td></tr>
+<tr><td><code>SourceAgent</code></td><td>string?</td><td>null=humano, "mcp-claude-code", "consolidator", etc.</td></tr>
+<tr><td><code>EncodingQuality</code></td><td>float</td><td>Contexto informativo (0-1). NUNCA penaliza ranking.</td></tr>
+<tr><td><code>ArchivalStatus</code></td><td>enum</td><td>
+<span class="ref integ">Active | Warm | Cold | Archived<span class="tip"><span class="tip-title">Avanzado: Integracion</span>ArchivalStatus lo determina BjorkEngine.RecommendArchivalStatus() segun RS actual. El ConsolidatorAgent lo usa para decidir que memors procesar en batch: Cold y Archived se procesan primero. El cambio de status NO afecta SS ni elimina datos &mdash; solo cambia la prioridad de procesamiento.</span></span>
+</td></tr>
+<tr><td><code>IsImmutable</code></td><td>bool</td><td>Si true, Guardian rechaza modificaciones</td></tr>
+</table>
+
+<span class="ref code">Clase Memor completa<span class="tip"><span class="tip-title">Avanzado: Codificacion</span><pre>public class Memor
+{
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public string Content { get; set; } = string.Empty;
+    public string? ContentHash { get; set; }
+    public MemoryType MemoryType { get; set; }
+        = MemoryType.Episodic;
+    public float StorageStrength { get; set; } = 0.1f;
+    public float RetrievalStrength { get; set; } = 1.0f;
+    public DateTime RsUpdatedAt { get; set; }
+        = DateTime.UtcNow;
+    public float LambdaDecay { get; set; } = 86400f;
+    public float EncodingQuality { get; set; } = 0.5f;
+    public float[]? Embedding { get; set; }
+    public List&lt;string&gt; Domains { get; set; } = new();
+    public Dictionary&lt;string, object&gt; SourceContext
+        { get; set; } = new();
+    public string? SourceAgent { get; set; }
+    public bool IsImmutable { get; set; }
+    public DateTime CreatedAt { get; set; }
+        = DateTime.UtcNow;
+}</pre></span></span>
+</div>
+</section>
+
+
+<section id="bjork">
+<div class="container">
+<div class="label">Motor 1 — Retencion</div>
+<h2>Motor Bjork</h2>
+<p class="big">El motor central de MNEMOS. Modela como recordamos y olvidamos usando la
+<span class="ref">New Theory of Disuse<span class="tip"><span class="tip-title">Bjork &amp; Bjork, 1992</span>La teoria propone dos fuerzas independientes: Storage Strength (permanencia) y Retrieval Strength (accesibilidad). RS decae con el tiempo, SS NUNCA decrece. Cuanto mas bajo RS al reactivar, mayor el incremento en SS (desirable difficulty).<span class="tip-quote">&laquo;The act of retrieval is itself a powerful learning event.&raquo;</span><span class="tip-cite">Bjork, R.A. &amp; Bjork, E.L. (1992). A New Theory of Disuse.</span></span></span>
+de Robert y Elizabeth Bjork.</p>
+
+<h3>Formulas matematicas</h3>
+<div class="important">
+<p><strong>Decaimiento de RS (lazy):</strong> RS(t) = RS&#8320; &times; e<sup>-(t - t<sub>last</sub>) / &lambda;</sup> donde &lambda; = 86400 &times; SS<br><br>
+<strong>Incremento de SS:</strong> &Delta;SS = &alpha; &times; (1 - RS<sub>actual</sub>) donde &alpha; = 0.3<br><br>
+<strong>Invariante absoluto:</strong> SS NUNCA decrece. Si &Delta;SS &lt; 0, se clampea a 0.</p>
+</div>
+
+<h3>Ejemplo numerico</h3>
+<p>Un memor con SS=2.0, RS=1.0 creado hace 48 horas:</p>
+<pre>Lambda = 86400 * 2.0 = 172800 segundos (2 dias)
+Elapsed = 48h = 172800 segundos
+RS(48h) = 1.0 * e^(-172800/172800) = 1.0 * e^(-1) = 0.368
+
+Si lo recuperas ahora:
+  DeltaSS = 0.3 * (1 - 0.368) = 0.3 * 0.632 = 0.190
+  New SS = 2.0 + 0.190 = 2.190  (SUBIO - nunca baja)
+  New RS = 1.0  (reset por recuperacion)
+  New Lambda = 86400 * 2.190 = 189216 seg (decae mas lento ahora)</pre>
+
+<span class="ref code">BjorkEngine.CalculateRS<span class="tip"><span class="tip-title">Avanzado: Codificacion</span><pre>public static float CalculateRS(Memor memor, DateTime now)
+{
+    if (now &lt;= memor.RsUpdatedAt)
+        return memor.RetrievalStrength;
+
+    float elapsedSeconds =
+        (float)(now - memor.RsUpdatedAt).TotalSeconds;
+    float lambda = memor.LambdaDecay;
+
+    if (lambda &lt;= 0f) return 0f;
+
+    float decay = MathF.Exp(-elapsedSeconds / lambda);
+    return memor.RetrievalStrength * decay;
+}</pre>El calculo es LAZY: RS no se actualiza en la BD continuamente. Se computa on-demand cuando alguien accede al memor.</span></span>
+
+<span class="ref code">BjorkEngine.UpdateOnRetrieval<span class="tip"><span class="tip-title">Avanzado: Codificacion</span><pre>public static BjorkUpdate UpdateOnRetrieval(
+    Memor memor, DateTime now)
+{
+    float currentRS = CalculateRS(memor, now);
+    // Desirable difficulty: bajo RS = alto deltaSS
+    float deltaSS = Alpha * (1f - currentRS);
+    if (deltaSS &lt; 0f) deltaSS = 0f; // INVARIANTE
+
+    float newSS = memor.StorageStrength + deltaSS;
+    float newLambda = BaseLambdaMultiplier * newSS;
+
+    return new BjorkUpdate {
+        NewSS = newSS,
+        NewRS = 1.0f, // Siempre reset
+        NewLambdaDecay = newLambda
+    };
+}</pre></span></span>
+
+<h3>
+<span class="ref adv">Archival Status<span class="tip"><span class="tip-title">Avanzado: Funcionamiento</span>BjorkEngine clasifica memors en 4 niveles segun RS actual:<br><br>RS &gt; 0.5 = <strong>Active</strong> (acceso facil)<br>RS 0.2-0.5 = <strong>Warm</strong> (aun accesible)<br>RS 0.05-0.2 = <strong>Cold</strong> (dificil acceso)<br>RS &lt; 0.05 = <strong>Archived</strong> (casi inaccesible)<br><br>Esto NO borra memors. Solo cambia su ArchivalStatus para que el Consolidator pueda priorizar. El SS sigue intacto.</span></span>
+</span>
+</h3>
+<p>Los memors se clasifican automaticamente en Active/Warm/Cold/Archived segun su RS actual. Esto permite al ConsolidatorAgent priorizar que memors revisar.</p>
+
+<span class="ref integ">Bjork se conecta con CRR y el Bus<span class="tip"><span class="tip-title">Avanzado: Integracion</span><strong>Con CRR:</strong> RS alimenta el alpha2 (peso 0.11) del Cognitive Retrieval Ranking. Memors con RS alto se rankean mejor.<br><br><strong>Con Bus Cognitivo:</strong> Cuando RS cae por debajo de un umbral critico, se emite RetrievalStrengthCritical. El handler activa el memor en el SAN para boostearlo en busquedas posteriores.<br><br><strong>Con Consolidator:</strong> El agente usa CalculateRS para recalcular RS de memors en batch. Si RS &lt; 0.05 durante consolidacion, propone archival.</span></span>
+
+<div class="hypothesis">
+<p><strong>H2:</strong> Bjork predice accesibilidad real. Medible: comparar RS predicho vs. tiempo real de recuperacion del usuario. Si correlacion &gt; 0.6, la hipotesis se sostiene.</p>
+</div>
+</div>
+</section>
+
+
+<section id="piaget">
+<div class="container">
+<div class="label">Motor 2 — Estructura</div>
+<h2>Motor Piaget</h2>
+<p class="big">Modela como organizamos conocimiento en
+<span class="ref">esquemas cognitivos<span class="tip"><span class="tip-title">Jean Piaget (1896-1980)</span>Su teoria de equilibracion describe como los esquemas mentales cambian mediante asimilacion (integrar lo nuevo) y acomodacion (reestructurar lo existente). MNEMOS implementa ambos procesos computacionalmente.<span class="tip-cite">Piaget, J. (1976). The Grasp of Consciousness. Harvard University Press.</span></span></span>
+que evolucionan a lo largo de 5 etapas.</p>
+
+<h3>Ciclo de vida de un Schema</h3>
+<div class="flow">
+<div class="flow-box" style="background:var(--glow-green);color:var(--green)">Nascent</div>
+<div class="flow-arr">&rarr;</div>
+<div class="flow-box" style="background:var(--glow-blue);color:var(--blue)">Developing</div>
+<div class="flow-arr">&rarr;</div>
+<div class="flow-box" style="background:var(--glow-purple);color:var(--purple)">Stable</div>
+<div class="flow-arr">&rarr;</div>
+<div class="flow-box" style="background:var(--glow-amber);color:var(--amber)">Rigid</div>
+<div class="flow-arr">&rarr;</div>
+<div class="flow-box" style="background:var(--glow-rose);color:var(--rose)">Obsolete</div>
+</div>
+
+<h3>Umbrales reales</h3>
+<table class="tbl">
+<tr><th>Transicion</th><th>Condicion</th></tr>
+<tr><td>Nascent &rarr; Developing</td><td>AssimilationCount &ge; 3</td></tr>
+<tr><td>Developing &rarr; Stable</td><td>AssimilationCount &ge; 10</td></tr>
+<tr><td>Stable &rarr; Rigid</td><td>StabilityScore &ge; 0.95 AND AssimilationCount &ge; 20</td></tr>
+<tr><td>Rigid &rarr; Obsolete</td><td>AccommodationRatio &ge; 0.5 con minimo 5 eventos totales</td></tr>
+</table>
+
+<h3>Asimilacion vs. Acomodacion</h3>
+<div class="cards">
+<div class="card">
+<div class="card-badge green">A</div>
+<h4>Asimilacion</h4>
+<p>Informacion nueva encaja en el schema existente. Requiere similaridad &ge; 0.6 (AssimilationThreshold). Incrementa el AssimilationCount y el StabilityScore.</p>
+</div>
+<div class="card">
+<div class="card-badge rose">D</div>
+<h4>Acomodacion</h4>
+<p>Informacion desafia el schema. Requiere un memor con rol Challenging y similaridad &lt; 0.6. Reestructura el schema y SIEMPRE registra
+<span class="ref adv">PriorState y PosteriorState<span class="tip"><span class="tip-title">Avanzado: Funcionamiento</span>Una acomodacion es como una cirugia: se registra el estado antes (PriorState) y despues (PosteriorState) como diccionarios. Esto permite:<br>1. Auditoria: ver que cambio exactamente<br>2. Rollback conceptual: el usuario puede entender como evoluciono su pensamiento<br>3. Event sourcing: el EquilibrationEvent queda persistido con ambos estados<br><br>Si PriorState o PosteriorState estan vacios, el engine lanza InvalidOperationException.</span></span>
+.</p>
+</div>
+</div>
+
+<span class="ref code">PiagetEngine.EvaluateAssimilation<span class="tip"><span class="tip-title">Avanzado: Codificacion</span><pre>public static AssimilationResult? EvaluateAssimilation(
+    Schema schema, float similarityScore)
+{
+    if (similarityScore &lt; AssimilationThreshold)
+        return null; // No encaja
+
+    float cognitiveCost = 1.0f - similarityScore;
+    return new AssimilationResult {
+        SchemaId = schema.Id,
+        SimilarityScore = similarityScore,
+        CognitiveCost = cognitiveCost,
+        StabilityDelta = similarityScore * 0.01f
+    };
+}</pre></span></span>
+
+<span class="ref code">PiagetEngine.CalculateEvolutionStage<span class="tip"><span class="tip-title">Avanzado: Codificacion</span><pre>public static EvolutionStage CalculateEvolutionStage(
+    Schema schema)
+{
+    int totalEvents = schema.AssimilationCount
+        + schema.AccommodationCount;
+    EvolutionStage calculated;
+
+    if (schema.EvolutionStage &gt;= EvolutionStage.Rigid
+        &amp;&amp; totalEvents &gt;= RigidToObsoleteMinEvents
+        &amp;&amp; (float)schema.AccommodationCount / totalEvents
+           &gt;= RigidToObsoleteAccommodationRatio)
+        calculated = EvolutionStage.Obsolete;
+    else if (...)
+        // ... mas transiciones
+    // INVARIANTE: Nunca regresa
+    return calculated &gt; schema.EvolutionStage
+        ? calculated : schema.EvolutionStage;
+}</pre></span></span>
+
+<span class="ref integ">Piaget se integra con Bus y CRR<span class="tip"><span class="tip-title">Avanzado: Integracion</span><strong>Bus Cognitivo:</strong> SchemaService publica AccommodationOccurred cuando ocurre una acomodacion. El handler en CognitiveEventWiring activa el schema en el SAN.<br><br><strong>Bus Cognitivo:</strong> SchemaRigidityDetected se emite cuando un schema alcanza etapa Rigid. Futuro: activara el Challenger agent.<br><br><strong>CRR:</strong> Los schemas no alimentan directamente el CRR, pero los memors asociados a schemas activos obtienen boost via el SAN (alpha8).</span></span>
+</div>
+</section>
+
+
+<section id="bayesian">
+<div class="container">
+<div class="label">Motor 3 — Certeza</div>
+<h2>Motor Bayesian</h2>
+<p class="big">Rastrea tus creencias con
+<span class="ref">credence dual<span class="tip"><span class="tip-title">Epistemologia Bayesiana</span>El teorema de Bayes permite actualizar creencias ante nueva evidencia. MNEMOS implementa DOS credencias independientes: credence_ideal (lo que la evidencia dice) y credence_actual (lo que realmente crees). La diferencia es el bias_gap.<span class="tip-cite">Bayes, T. (1763). An Essay towards solving a Problem in the Doctrine of Chances. Phil. Trans. Royal Society, 53.</span></span></span>
+: lo que la evidencia dice vs. lo que realmente crees.</p>
+
+<h3>Credence dual</h3>
+<div class="cards">
+<div class="card">
+<div class="card-badge cyan">I</div>
+<h4>credence_ideal</h4>
+<p>Lo que DEBERIA creer segun la evidencia. Se actualiza automaticamente via BayesianEngine cuando se registra nueva evidencia. El usuario NO lo controla directamente.</p>
+</div>
+<div class="card">
+<div class="card-badge amber">A</div>
+<h4>credence_actual</h4>
+<p>Lo que REALMENTE cree el usuario. Solo el usuario puede cambiarlo. El sistema puede sugerir, nunca imponer.</p>
+</div>
+<div class="card">
+<div class="card-badge rose">G</div>
+<h4>bias_gap</h4>
+<p>|credence_actual - credence_ideal|. Si &ge; 0.15, se detecta una
+<span class="ref adv">divergencia<span class="tip"><span class="tip-title">Avanzado: Funcionamiento</span>Cuando el bias_gap supera 0.15, BayesianEngine clasifica la divergencia en 6 tipos:<br><br>1. <strong>Confirmation</strong>: actual &gt; ideal, tiene revisiones previas<br>2. <strong>Anchoring</strong>: actual &gt; ideal, sin revisiones (anclado al valor inicial)<br>3. <strong>DunningKruger</strong>: actual &gt; 0.9 pero ideal &lt; 0.7<br>4. <strong>Recency</strong>: actual &lt; ideal, muchas revisiones<br>5. <strong>Availability</strong>: actual &lt; ideal, pocas revisiones<br>6. <strong>SunkCost</strong>: creencia antigua con resistencia al cambio<br><br>El usuario tiene 3 opciones: CorrectToBayesian, KeepAsPreference, o ExploreFurther.</span></span>
+.</p>
+</div>
+</div>
+
+<h3>Formula de actualizacion</h3>
+<div class="important">
+<p><strong>Update simplificado:</strong><br>
+Si evidencia Supporting: rawDelta = evidenceStrength &times; (1 - credence_ideal)<br>
+Si evidencia Contradicting: rawDelta = -evidenceStrength &times; credence_ideal<br>
+dampenedDelta = rawDelta &times; (1 - entrenchment &times; 0.7)<br>
+Clampeado a [-0.3, +0.3] (MaxSingleUpdateDelta)<br>
+newCredenceIdeal = clamp(credence_ideal + dampenedDelta, 0, 1)</p>
+</div>
+
+<span class="ref code">BayesianEngine.CalculateUpdate<span class="tip"><span class="tip-title">Avanzado: Codificacion</span><pre>public static BayesianUpdate CalculateUpdate(
+    Belief belief,
+    EvidenceDirection direction,
+    float evidenceStrength)
+{
+    if (direction == EvidenceDirection.Neutral)
+        return unchanged;
+
+    float rawDelta = direction == Supporting
+        ? evidenceStrength * (1f - belief.CredenceIdeal)
+        : -evidenceStrength * belief.CredenceIdeal;
+
+    float entrenchmentDamping =
+        1f - (belief.EntrenchmentScore
+              * EntrenchmentDampingFactor);
+    float dampenedDelta =
+        rawDelta * entrenchmentDamping;
+    dampenedDelta = Math.Clamp(
+        dampenedDelta, -0.3f, 0.3f);
+
+    float newCredenceIdeal = Math.Clamp(
+        belief.CredenceIdeal + dampenedDelta, 0f, 1f);
+    // ... return BayesianUpdate
+}</pre>El entrenchment score crece +0.02 con evidencia confirmante y baja -0.05 con contradictoria. Beliefs atrincheradas son mas dificiles de mover.</span></span>
+
+<span class="ref code">BayesianEngine.DetectDivergence<span class="tip"><span class="tip-title">Avanzado: Codificacion</span><pre>public static DivergenceDetection? DetectDivergence(
+    Belief belief)
+{
+    float biasGap = belief.BiasGap;
+    float absBiasGap = MathF.Abs(biasGap);
+    if (absBiasGap &lt; DivergenceThreshold)
+        return null; // No hay divergencia
+
+    DivergenceType type =
+        ClassifyDivergence(belief, biasGap);
+    float severity = Math.Clamp(
+        (absBiasGap - 0.15f) / (1f - 0.15f),
+        0f, 1f);
+
+    return new DivergenceDetection {
+        BiasGap = biasGap,
+        DivergenceType = type,
+        Severity = severity
+    };
+}</pre></span></span>
+
+<p><strong>Invariantes criticos:</strong> Las revisiones SUPERSEDEN, nunca borran. <code>CreateRevision()</code> crea un nuevo Belief que supersede al anterior. El historial completo queda intacto. El usuario SIEMPRE elige que hacer con una divergencia.</p>
+
+<span class="ref integ">Bayesian se integra con Bus y Piaget<span class="tip"><span class="tip-title">Avanzado: Integracion</span><strong>Bus:</strong> BeliefRevised se publica cuando cambia credence. El handler activa la belief en el SAN. DivergenceDetected alerta al usuario.<br><br><strong>CRR:</strong> alpha3 (Evidence, 0.11) usa el average EvidenceStrength de BeliefEvidence. alpha4 (Credence, 0.07) usa el average CredenceIdeal de beliefs vinculadas.<br><br><strong>AGM Propagation:</strong> Cuando una belief cambia, beliefs dependientes se actualizan proporcionalmente via BeliefDependency.Strength.</span></span>
+</div>
+</section>
+
+
+<section id="kahneman">
+<div class="container">
+<div class="label">Motor 4 — Decision</div>
+<h2>Motor Kahneman</h2>
+<p class="big">Rastrea decisiones, detecta patrones recurrentes, y clasifica pensamiento en
+<span class="ref">Sistema 1 vs Sistema 2<span class="tip"><span class="tip-title">Daniel Kahneman (1934-2024)</span>Premio Nobel 2002. Sistema 1: pensamiento rapido e intuitivo. Sistema 2: lento y deliberado. Con experiencia, patrones migran de S2 a S1 (automatizacion). Si un patron S1 empieza a fallar, vuelve a S2.<span class="tip-cite">Kahneman, D. (2011). Thinking, Fast and Slow. Farrar, Straus and Giroux.</span></span></span>.</p>
+
+<h3>Decisiones inmutables</h3>
+<p>Una vez creada, la Decision es <strong>inmutable</strong> — solo los campos de outcome se actualizan al resolverse. Description, PredictedOutcome y ReasoningSystem nunca cambian despues de la creacion.</p>
+
+<h3>Patrones y System Transitions</h3>
+<table class="tbl">
+<tr><th>Transicion</th><th>Condicion</th></tr>
+<tr><td>System2 &rarr; Transitioning</td><td>SuccessRate &ge; 0.8 AND TimesApplied &ge; 10</td></tr>
+<tr><td>Transitioning &rarr; System1</td><td>SuccessRate &ge; 0.8 AND TimesApplied &ge; 20</td></tr>
+<tr><td>System1 &rarr; System2</td><td>SuccessRate &lt; 0.5 (patron fallando)</td></tr>
+</table>
+
+<span class="ref code">KahnemanEngine.ResolveDecision<span class="tip"><span class="tip-title">Avanzado: Codificacion</span><pre>public static DecisionResolution ResolveDecision(
+    Decision decision,
+    string actualOutcome,
+    float outcomeSatisfaction)
+{
+    if (decision.IsResolved)
+        throw new InvalidOperationException(
+            "Decisions are immutable after resolution.");
+
+    bool isSuccess =
+        outcomeSatisfaction &gt;= SuccessThreshold; // 0.6
+
+    return new DecisionResolution {
+        DecisionId = decision.Id,
+        ActualOutcome = actualOutcome,
+        OutcomeSatisfaction = outcomeSatisfaction,
+        IsSuccess = isSuccess,
+        ResolvedAt = DateTime.UtcNow
+    };
+}</pre></span></span>
+
+<span class="ref code">KahnemanEngine.DetectSystemTransition<span class="tip"><span class="tip-title">Avanzado: Codificacion</span><pre>public static ReasoningSystem? DetectSystemTransition(
+    DecisionPattern pattern)
+{
+    if (pattern.TimesApplied &lt; MinPatternApplications)
+        return null; // Pocos datos
+
+    // Alto exito + muchas aplicaciones = automatico
+    if (pattern.SuccessRate &gt;= 0.8f
+        &amp;&amp; pattern.TimesApplied &gt;= 10
+        &amp;&amp; pattern.SystemType ==
+           ReasoningSystem.System2Deliberate)
+        return ReasoningSystem.Transitioning;
+
+    // Exito sostenido = completamente S1
+    if (pattern.SuccessRate &gt;= 0.8f
+        &amp;&amp; pattern.TimesApplied &gt;= 20
+        &amp;&amp; pattern.SystemType ==
+           ReasoningSystem.Transitioning)
+        return ReasoningSystem.System1Intuitive;
+
+    // S1 fallando = volver a S2
+    if (pattern.SuccessRate &lt; 0.5f
+        &amp;&amp; pattern.SystemType ==
+           ReasoningSystem.System1Intuitive)
+        return ReasoningSystem.System2Deliberate;
+
+    return null;
+}</pre></span></span>
+
+<span class="ref adv">success_rate es computado<span class="tip"><span class="tip-title">Avanzado: Funcionamiento</span>El success_rate de un DecisionPattern NUNCA se establece manualmente. Se computa como: TimesSuccessful / TimesApplied. Cada vez que una decision vinculada al patron se resuelve:<br>1. TimesApplied++<br>2. Si OutcomeSatisfaction &ge; 0.6: TimesSuccessful++<br>3. Confidence ajusta +0.05 (exito) o -0.08 (fracaso)<br>4. Se evalua si hay una transicion S1/S2</span></span>
+
+<span class="ref integ">Kahneman se integra con CRR y Bus<span class="tip"><span class="tip-title">Avanzado: Integracion</span><strong>CRR alpha5:</strong> DecisionOutcomeScore (peso 0.07). Calcula el mean success rate de todos los patterns vinculados a un memor via decisions. Solo considera patterns con &ge; 3 aplicaciones.<br><br><strong>Bus:</strong> DecisionResolved activa el context memor en el SAN y propaga a vecinos. DecisionPatternRecognized activa el pattern como Schema en el SAN.</span></span>
+</div>
+</section>
+
+
+<section id="crr">
+<div class="container">
+<div class="label">La Innovacion Central</div>
+<h2>CRR v5 — Cognitive Retrieval Ranking</h2>
+<p class="big">No busca texto similar — busca lo que es <strong>cognitivamente relevante para ti ahora</strong>. Combina 9 dimensiones en una formula ponderada unica en la industria.</p>
+
+<h3>Formula completa</h3>
+<div class="important">
+<p>CRR = 0.22&middot;Semantic + 0.10&middot;Text + 0.11&middot;RS + 0.11&middot;Evidence + 0.07&middot;Credence + 0.07&middot;Outcomes + 0.14&middot;Context + 0.09&middot;Serendipity + 0.09&middot;Activation</p>
+</div>
+
+<h3>Los 9 componentes</h3>
+<table class="tbl">
+<tr><th>&alpha;</th><th>Componente</th><th>Peso</th><th>Fuente</th><th>Calculo</th></tr>
+<tr><td>&alpha;1</td><td>Semantic</td><td>0.22</td><td>IVectorStore</td><td>Cosine similarity entre query embedding y memor embedding</td></tr>
+<tr><td>Text</td><td>FullText</td><td>0.10</td><td>IFullTextSearch</td><td>Score de busqueda de texto completo (tsvector en futuro)</td></tr>
+<tr><td>&alpha;2</td><td>RS</td><td>0.11</td><td>BjorkEngine</td><td>
+<span class="ref adv">RS calculado lazy<span class="tip"><span class="tip-title">Avanzado: Funcionamiento</span>Para cada memor candidato, se llama BjorkEngine.CalculateRS(memor, now). Esto computa el RS actual sin actualizar la BD (lazy). Memors recientemente accedidos tienen RS alto (~1.0). Memors olvidados tienen RS cercano a 0. El peso 0.11 equilibra este factor con los demas.</span></span>
+</td></tr>
+<tr><td>&alpha;3</td><td>Evidence</td><td>0.11</td><td>IBeliefEvidenceRepository</td><td>Average EvidenceStrength de BeliefEvidence vinculados al memor</td></tr>
+<tr><td>&alpha;4</td><td>Credence</td><td>0.07</td><td>IBeliefRepository</td><td>Average CredenceIdeal de beliefs vinculadas via evidencia</td></tr>
+<tr><td>&alpha;5</td><td>Outcomes</td><td>0.07</td><td>IDecisionService</td><td>Mean success rate de patterns vinculados via decisions</td></tr>
+<tr><td>&alpha;6</td><td>Context</td><td>0.14</td><td>Heuristica</td><td>
+<span class="ref adv">domain overlap + recency<span class="tip"><span class="tip-title">Avanzado: Funcionamiento</span>ContextRelevance = domainOverlap * 0.7 + recency * 0.3<br><br><strong>domainOverlap:</strong> Proporcion de domains del memor que aparecen entre todos los candidatos. Un memor cuyos domains son muy comunes en el resultado set obtiene score alto.<br><br><strong>recency:</strong> 1.0 para memors modificados en las ultimas 24h. Decae linealmente a 0 en 30 dias.</span></span>
+</td></tr>
+<tr><td>&alpha;7</td><td>Serendipity</td><td>0.09</td><td>Inverse freq</td><td>
+<span class="ref phil">Inyeccion de diversidad epistemica<span class="tip"><span class="tip-title">Socrates &amp; Popper</span>Segun la Serendipity Injection propuesta por Socrates y Popper durante el Tribunal Filosofico: el sistema debe mostrar informacion que el usuario NO buscaria activamente. Memors de domains raros entre los candidatos obtienen scores altos. Esto previene camaras de eco cognitivas.<span class="tip-quote">&laquo;Solo se que no se nada.&raquo; — Socrates</span></span></span>
+</td></tr>
+<tr><td>&alpha;8</td><td>Activation</td><td>0.09</td><td>SAN</td><td>Nivel actual de activacion en Spreading Activation Network</td></tr>
+</table>
+
+<span class="ref code">SearchService.SearchAsync (resumido)<span class="tip"><span class="tip-title">Avanzado: Codificacion</span><pre>public async Task&lt;IReadOnlyList&lt;SearchResult&gt;&gt;
+    SearchAsync(string query, int limit = 10)
+{
+    float[] queryEmb = await _aiEngine
+        .GenerateEmbeddingAsync(query);
+    // Busquedas secuenciales (EF Core no thread-safe)
+    IReadOnlyList&lt;(Guid, float)&gt; semantic =
+        await _vectorStore.SearchAsync(queryEmb, limit*2);
+    IReadOnlyList&lt;(Guid, float)&gt; text =
+        await _fullTextSearch.SearchAsync(query, limit*2);
+
+    // Merge + calcular 9 scores por candidato
+    // CombinedScore = sum(alpha_i * score_i)
+    // OrderByDescending(CombinedScore).Take(limit)
+}</pre>Nota: las busquedas son secuenciales porque EF Core DbContext no es thread-safe. Al migrar a PostgreSQL con conexiones separadas, pueden paralelizarse.</span></span>
+
+<span class="ref integ">CRR conecta los 4 motores + SAN<span class="tip"><span class="tip-title">Avanzado: Integracion</span>El CRR es el punto de convergencia de todo MNEMOS:<br><br>&alpha;2 (RS) &larr; <strong>Bjork</strong>: memoria mas accesible rankea mejor<br>&alpha;3 (Evidence) &larr; <strong>Bayesian</strong>: memors con evidencia fuerte rankean mejor<br>&alpha;4 (Credence) &larr; <strong>Bayesian</strong>: creencias con credence alto rankean mejor<br>&alpha;5 (Outcomes) &larr; <strong>Kahneman</strong>: patrones exitosos rankean mejor<br>&alpha;8 (Activation) &larr; <strong>SAN</strong>: conceptos recientemente primados rankean mejor<br><br>Ademas, Piaget alimenta indirectamente via SAN: cuando un schema se acomoda, el SAN activa nodos relacionados que boostan alpha8.</span></span>
+
+<div class="hypothesis">
+<p><strong>H1:</strong> CRR supera busqueda simple. Medible: A/B test donde mitad de usuarios usa CRR completo y mitad solo semantic+text. Si el grupo CRR encuentra lo que busca en menos intentos (p &lt; 0.05), la hipotesis se sostiene.</p>
+</div>
+</div>
+</section>
+
+
+<section id="san">
+<div class="container">
+<div class="label">Red de Activacion Semantica</div>
+<h2>Spreading Activation Network</h2>
+<p class="big">Basado en
+<span class="ref">Collins &amp; Loftus (1975)<span class="tip"><span class="tip-title">Spreading Activation Theory</span>Collins y Loftus propusieron que los conceptos en memoria estan organizados en una red donde la activacion se propaga de un nodo a sus vecinos. Cuando piensas en &laquo;perro&raquo;, se activan &laquo;gato&raquo;, &laquo;ladrar&raquo;, &laquo;mascota&raquo; automaticamente. MNEMOS implementa esto como un servicio in-memory singleton.<span class="tip-cite">Collins, A.M. &amp; Loftus, E.F. (1975). A spreading-activation theory of semantic processing. Psychological Review, 82(6).</span></span></span>
+— cuando accedes a un concepto, conceptos relacionados se activan automaticamente.</p>
+
+<h3>Parametros</h3>
+<table class="tbl">
+<tr><th>Parametro</th><th>Valor</th><th>Significado</th></tr>
+<tr><td>PropagationFactor</td><td>0.5</td><td>Vecino recibe: activacion_source * link_strength * 0.5</td></tr>
+<tr><td>HalfLifeSeconds</td><td>300</td><td>La activacion decae al 50% en 5 minutos</td></tr>
+<tr><td>Tau (constante de decaimiento)</td><td>300/ln(2) &asymp; 433</td><td>Usado en formula exponencial</td></tr>
+<tr><td>MinActivation</td><td>0.01</td><td>Por debajo de esto, el nodo se remueve</td></tr>
+<tr><td>MaxActivation</td><td>1.0</td><td>Tope de activacion</td></tr>
+</table>
+
+<span class="ref code">Decaimiento lazy<span class="tip"><span class="tip-title">Avanzado: Codificacion</span><pre>private static float ComputeDecayedActivation(
+    ActivatedNode node, DateTime? now = null)
+{
+    DateTime currentTime = now ?? DateTime.UtcNow;
+    double elapsedSeconds =
+        (currentTime - node.ActivatedAt).TotalSeconds;
+    if (elapsedSeconds &lt;= 0)
+        return node.ActivationLevel;
+
+    float decayed = node.ActivationLevel
+        * MathF.Exp((float)(-elapsedSeconds / Tau));
+    return decayed;
+}</pre>Tau = 300/ln(2) &asymp; 433 segundos. La activacion es lazy (se calcula al consultar, no con un timer). Usa ConcurrentDictionary para thread safety.</span></span>
+
+<span class="ref code">PropagateActivation<span class="tip"><span class="tip-title">Avanzado: Codificacion</span><pre>public void PropagateActivation(
+    Guid sourceNodeId,
+    IReadOnlyList&lt;(Guid NeighborId, NodeType Type,
+                    float LinkStrength)&gt; neighbors)
+{
+    float sourceActivation =
+        GetActivationLevel(sourceNodeId);
+    if (sourceActivation &lt; MinActivation) return;
+
+    foreach ((Guid nId, NodeType type, float str)
+             in neighbors)
+    {
+        float propagated = sourceActivation
+            * str * PropagationFactor;
+        if (propagated &lt; MinActivation) continue;
+
+        // AddOrUpdate: si ya existe, suma activaciones
+        _nodes.AddOrUpdate(nId, ...);
+    }
+}</pre></span></span>
+
+<span class="ref integ">SAN se conecta con CRR y Bus Wiring<span class="tip"><span class="tip-title">Avanzado: Integracion</span><strong>CRR alpha8:</strong> GetActivationLevel(memorId) se llama para cada candidato de busqueda. Memors con activacion alta (recien primados) obtienen boost de hasta 0.09.<br><br><strong>Bus Wiring:</strong> 5 de los 11 handlers activan nodos en el SAN: AccommodationOccurred (schema), BeliefRevised (belief), DecisionResolved (memor + propagacion a vecinos), DecisionPatternRecognized (pattern), RetrievalStrengthCritical (memor + propagacion). ConsolidationCompleted llama DecayAll().</span></span>
+
+<p><strong>Caracteristicas clave:</strong> Singleton in-memory. Estado transiente (se pierde al reiniciar, por diseno). Thread-safe via ConcurrentDictionary. No persiste nada en BD. Complementa al Bus Cognitivo (SAN = priming continuo, Bus = eventos discretos).</p>
+</div>
+</section>
+
+<section id="bus">
+<div class="container">
+<div class="label">Comunicacion Inter-Engine</div>
+<h2>Bus Cognitivo</h2>
+<p class="big">11 eventos que fluyen entre motores. Cada evento se propaga con
+<span class="ref">damping de 0.3 por hop<span class="tip"><span class="tip-title">Spinoza y el Bus Cognitivo</span>El Bus Cognitivo fue propuesto por Spinoza durante el Tribunal Filosofico como Single Source of Truth para comunicacion inter-engine. El damping previene oscilaciones: cada hop reduce la intensidad un 30%. Max 5 hops. Min intensidad 0.01.<span class="tip-cite">Inspirado por Spinoza: &laquo;Todo lo que existe, existe como parte de una sustancia unica.&raquo;</span></span></span>.</p>
+
+<h3>Los 11 eventos</h3>
+<table class="tbl">
+<tr><th>Evento</th><th>Motor fuente</th><th>Reaccion en Wiring</th></tr>
+<tr><td>RetrievalStrengthCritical</td><td>Bjork</td><td>Activa memor en SAN + propaga a vecinos</td></tr>
+<tr><td>ConsolidationCompleted</td><td>Consolidator</td><td>DecayAll() en SAN</td></tr>
+<tr><td>AccommodationOccurred</td><td>Piaget</td><td>Activa schema en SAN</td></tr>
+<tr><td>SchemaRigidityDetected</td><td>Piaget</td><td>Log warning (futuro: Challenger)</td></tr>
+<tr><td>PerspectiveTransformed</td><td>Piaget</td><td>Preparatorio (futuro: reset caches)</td></tr>
+<tr><td>BeliefRevised</td><td>Bayesian</td><td>Activa belief en SAN</td></tr>
+<tr><td>DivergenceDetected</td><td>Bayesian</td><td>Log warning (futuro: notificacion)</td></tr>
+<tr><td>DecisionPatternRecognized</td><td>Kahneman</td><td>Activa pattern en SAN</td></tr>
+<tr><td>DecisionResolved</td><td>Kahneman</td><td>Activa context memor + propaga vecinos</td></tr>
+<tr><td>BiometricStateChanged</td><td>Biometrico</td><td>Log info (pipeline no activo)</td></tr>
+<tr><td>ContradictionDetected</td><td>Cross-engine</td><td>Activa ambos memors + propaga vecinos</td></tr>
+</table>
+
+<span class="ref code">CognitiveEventEnvelope<span class="tip"><span class="tip-title">Avanzado: Codificacion</span><pre>public class CognitiveEventEnvelope
+{
+    public const float DampingFactor = 0.3f;
+    public const int MaxHops = 5;
+    public const float MinIntensity = 0.01f;
+    public const int PropagationAlertThreshold = 10;
+
+    public Guid Id { get; set; }
+    public CognitiveEvent Event { get; set; }
+    public Dictionary&lt;string, object&gt; Payload { get; set; }
+    public float Intensity { get; set; } = 1.0f;
+    public int HopCount { get; set; }
+
+    public CognitiveEventEnvelope? CreateNextHop()
+    {
+        int nextHop = HopCount + 1;
+        if (nextHop &gt; MaxHops) return null;
+        float nextIntensity =
+            Intensity * (1f - DampingFactor);
+        if (nextIntensity &lt; MinIntensity) return null;
+        // ... create damped copy
+    }
+}</pre></span></span>
+
+<span class="ref flux">Flujo de un evento por el bus<span class="tip"><span class="tip-title">Proceso: Flujo de Datos</span><strong>Ejemplo: DecisionResolved</strong><br><br>1. DecisionService resuelve una decision<br>2. Crea CognitiveEventEnvelope con Event=DecisionResolved, Payload={ContextMemorId, PatternId}, Intensity=1.0<br>3. InMemoryCognitiveEventBus.PublishAsync() invoca todos los subscribers registrados para ese evento<br>4. Handler en CognitiveEventWiring extrae ContextMemorId del Payload<br>5. Activa el memor en SAN con ActivateNode(memorId, Memor, intensity)<br>6. Llama PropagateToNeighborsAsync que crea un DI scope, consulta ILinkRepository, y propaga activacion a vecinos<br>7. Si hay mas de 10 propagaciones totales, se loguea warning (posible oscilacion)</span></span>
+</div>
+</section>
+
+<section id="agents">
+<div class="container">
+<div class="label">Agentes Autonomos</div>
+<h2>Guardian, Consolidator, Discoverer</h2>
+
+<div class="cards">
+<div class="card">
+<div class="card-badge amber">G</div>
+<h4>GuardianAgent</h4>
+<p><strong>Rate limiting:</strong> max 100 creaciones/hora por actor.
+<strong>Prompt injection:</strong> 7 regex patterns detectan intentos de inyeccion.
+<strong>Immutability:</strong> rechaza ediciones a memors inmutables.
+<span class="ref adv">Source agent validation<span class="tip"><span class="tip-title">Avanzado: Funcionamiento</span>Guardian verifica que:<br>1. Si SourceAgent no es null, pertenece a la lista de agentes conocidos<br>2. Cada agente solo puede crear contenido con su propio nombre<br>3. Content no contiene patrones de prompt injection (system:, ignore previous, etc.)<br>4. ContentHash es unico (anti-duplicados)<br>5. Rate limit del actor no se ha excedido<br><br>Todas estas validaciones ocurren ANTES de que el memor toque la base de datos.</span></span>
+</p>
+</div>
+<div class="card">
+<div class="card-badge green">C</div>
+<h4>ConsolidatorAgent</h4>
+<p><strong>RS recalc:</strong> recalcula RS de memors en batch.
+<strong>Fusion:</strong> propone fusionar memors con embeddings similares.
+<strong>Archival:</strong> mueve memors con RS &lt; 0.05 a Archived.
+<span class="ref note">Recovery FC-1<span class="tip"><span class="tip-title">Nota Tecnica</span>FC-1 (Failure Case 1): si la consolidacion falla a mitad, la siguiente ejecucion puede retomar desde donde quedo. El ConsolidationRun registra MemorsProcessed y Status, permitiendo recovery parcial. No hay transacciones distribuidas: cada memor se consolida independientemente.</span></span>
+</p>
+</div>
+<div class="card">
+<div class="card-badge purple">D</div>
+<h4>DiscovererAgent</h4>
+<p><strong>Semantic connections:</strong> usa
+<span class="ref code">DiscoverConnectionsAsync<span class="tip"><span class="tip-title">Avanzado: Codificacion</span><pre>// IAIEngine.DiscoverConnectionsAsync
+// StubAIEngine implementa cosine similarity:
+float CosineSimilarity(float[] a, float[] b)
+{
+    float dot = 0f, normA = 0f, normB = 0f;
+    for (int i = 0; i &lt; a.Length; i++)
+    {
+        dot += a[i] * b[i];
+        normA += a[i] * a[i];
+        normB += b[i] * b[i];
+    }
+    return dot / (MathF.Sqrt(normA)
+                  * MathF.Sqrt(normB));
+}</pre></span></span>
+para encontrar memors semanticamente cercanos que no estan vinculados.
+<span class="ref integ">Ciclo de descubrimiento<span class="tip"><span class="tip-title">Avanzado: Integracion</span>1. Discoverer pide todos los memors con embeddings<br>2. Para cada par, calcula cosine similarity<br>3. Si similarity &gt; threshold pero no existe link, sugiere SuggestedConnection<br>4. El servicio puede crear MemorLinks automaticamente<br>5. Links nuevos se reflejan en get_neighbors (MCP) y en el grafo visual (Blazor)</span></span>
+</p>
+</div>
+</div>
+</div>
+</section>
+
+
+<section id="arch">
+<div class="container">
+<div class="label">Arquitectura</div>
+<h2>Clean Architecture — 4 Capas</h2>
+
+<div class="layers">
+<div class="layer-row" style="border-color:var(--purple)">
+<div class="layer-label" style="color:var(--purple)">Domain</div>
+<div class="layer-text">Modelos, Engines (Bjork, Piaget, Bayesian, Kahneman), Bus (events, envelope), Interfaces. <strong>CERO dependencias externas.</strong>
+<span class="ref note">Regla de oro<span class="tip"><span class="tip-title">Nota Tecnica</span>El proyecto Domain no tiene NINGUN NuGet externo. Solo usa System.* y tipos primitivos. Esto garantiza que la logica de negocio es 100% portable y testeable sin mocks de infraestructura. Los engines son static classes con funciones puras.</span></span>
+</div>
+</div>
+<div class="layer-row" style="border-color:var(--blue)">
+<div class="layer-label" style="color:var(--blue)">Application</div>
+<div class="layer-text">Servicios (Memor, Search, Link, Schema, Belief, Decision), Agentes (Guardian, Consolidator, Discoverer), Bus (InMemory impl, Wiring), SAN. Depende de Domain.
+<span class="ref adv">SAN en Application, no Infrastructure<span class="tip"><span class="tip-title">Avanzado: Funcionamiento</span>SpreadingActivationNetwork vive en Application (no Infrastructure) porque: (1) es in-memory sin dependencia externa, (2) es transiente (se pierde al reiniciar), (3) no accede a BD ni APIs. No necesita interfaz en Domain &mdash; ES la implementacion. Otros servicios de Application lo inyectan directamente via ISpreadingActivationNetwork.</span></span>
+</div>
+</div>
+<div class="layer-row" style="border-color:var(--green)">
+<div class="layer-label" style="color:var(--green)">Infrastructure</div>
+<div class="layer-text">
+<span class="ref code">Repositorios EF Core<span class="tip"><span class="tip-title">Avanzado: Codificacion</span><pre>// DependencyInjection.cs (simplificado)
+public static IServiceCollection
+    AddMnemosInfrastructure(
+    this IServiceCollection services,
+    string connectionString)
+{
+    services.AddDbContext&lt;MnemosDbContext&gt;(opts =&gt;
+        opts.UseSqlServer(connectionString));
+    services.AddScoped&lt;IMemorRepository,
+        MemorRepository&gt;();
+    // ... 8 repositorios mas
+    return services;
+}</pre></span></span>
+SQL Server + AI Engines (Stub + OpenAI) + DI module. Implementa las 13 interfaces de Domain.</div>
+</div>
+<div class="layer-row" style="border-color:var(--amber)">
+<div class="layer-label" style="color:var(--amber)">Presentation</div>
+<div class="layer-text">Server (ASP.NET Core API + Controllers + DTOs), McpServer (stdio + 12 tools), Client (Blazor), CLI.</div>
+</div>
+</div>
+
+<h3>DI completo (25+ servicios)</h3>
+<table class="tbl">
+<tr><th>Interfaz</th><th>Implementacion</th><th>Lifetime</th></tr>
+<tr><td>IMemorRepository</td><td>MemorRepository</td><td>Scoped</td></tr>
+<tr><td>ILinkRepository</td><td>LinkRepository</td><td>Scoped</td></tr>
+<tr><td>IEventStore</td><td>EventStoreRepository</td><td>Scoped</td></tr>
+<tr><td>IVectorStore</td><td>VectorStoreRepository</td><td>Scoped</td></tr>
+<tr><td>IFullTextSearch</td><td>FullTextSearchRepository</td><td>Scoped</td></tr>
+<tr><td>IAIEngine</td><td>StubAIEngine / OpenAiCompatible</td><td>Singleton</td></tr>
+<tr><td>ISchemaRepository</td><td>SchemaRepository</td><td>Scoped</td></tr>
+<tr><td>IBeliefRepository</td><td>BeliefRepository</td><td>Scoped</td></tr>
+<tr><td>IDecisionRepository</td><td>DecisionRepository</td><td>Scoped</td></tr>
+<tr><td>ICognitiveEventBus</td><td>InMemoryCognitiveEventBus</td><td>Singleton</td></tr>
+<tr><td>ISpreadingActivationNetwork</td><td>SpreadingActivationNetwork</td><td>Singleton</td></tr>
+<tr><td>IGuardianAgent</td><td>GuardianAgent</td><td>Scoped</td></tr>
+<tr><td>IConsolidatorAgent</td><td>ConsolidatorAgent</td><td>Scoped</td></tr>
+<tr><td>IDiscovererAgent</td><td>DiscovererAgent</td><td>Scoped</td></tr>
+<tr><td>IMemorService</td><td>MemorService</td><td>Scoped</td></tr>
+<tr><td>ISearchService</td><td>SearchService</td><td>Scoped</td></tr>
+<tr><td>ILinkService</td><td>LinkService</td><td>Scoped</td></tr>
+<tr><td>ISchemaService</td><td>SchemaService</td><td>Scoped</td></tr>
+<tr><td>IBeliefService</td><td>BeliefService</td><td>Scoped</td></tr>
+<tr><td>IDecisionService</td><td>DecisionService</td><td>Scoped</td></tr>
+</table>
+
+<span class="ref flux">Flujo de una peticion de busqueda<span class="tip"><span class="tip-title">Proceso: Flujo de Datos</span>1. POST /api/search {query: "liderazgo"}<br>2. SearchController recibe, valida<br>3. Llama SearchService.SearchAsync("liderazgo")<br>4. IAIEngine genera embedding del query<br>5. IVectorStore busca por cosine similarity<br>6. IFullTextSearch busca por texto<br>7. Se fusionan candidatos<br>8. Para cada candidato: BjorkEngine.CalculateRS, BayesianEngine scores, KahnemanEngine scores, SAN level<br>9. CRR formula combina 9 scores<br>10. OrderByDescending(CombinedScore).Take(limit)<br>11. Response JSON con memors + desglose de scores</span></span>
+</div>
+</section>
+
+<section id="db">
+<div class="container">
+<div class="label">Persistencia</div>
+<h2>Base de Datos — 14 Tablas SQL Server</h2>
+
+<table class="tbl">
+<tr><th>Tabla</th><th>Columnas principales</th><th>Motor</th></tr>
+<tr><td>
+<span class="ref adv">Memors<span class="tip"><span class="tip-title">Avanzado: Funcionamiento</span>Tabla principal. SS y RS se almacenan pero RS se recalcula on-demand (lazy). Embedding es float[] serializado como JSON. Domains y SourceContext son JSON columns con value converters de EF Core. ContentHash es SHA256 para deteccion de duplicados y verificacion de integridad.</span></span>
+</td><td>Id, Content, ContentHash, SS, RS, RsUpdatedAt, Embedding, Domains (JSON), SourceContext (JSON), ArchivalStatus, SourceAgent</td><td>Bjork</td></tr>
+<tr><td>MemorLinks</td><td>SourceId, TargetId, LinkType (PK), Strength, ContextSnippet</td><td>Core</td></tr>
+<tr><td>
+<span class="ref adv">DomainEvents<span class="tip"><span class="tip-title">Avanzado: Funcionamiento</span>Tabla append-only para event sourcing. Cada cambio significativo se registra: MemorCreated, MemorUpdated, MemorRetrieved, SchemaCreated, AccommodationOccurred, BeliefCreated, BeliefRevised, etc. Payload es JSON con datos especificos del evento. Actor identifica quien genero el evento (humano o agente).</span></span>
+</td><td>Id, AggregateId, EventType, Payload (JSON), Actor</td><td>Event Sourcing</td></tr>
+<tr><td>ConsolidationRuns</td><td>Id, StartedAt, CompletedAt, MemorsProcessed, Strategy, Status</td><td>Consolidator</td></tr>
+<tr><td>Schemas</td><td>Id, Name, Description, SchemaType, CoreBeliefs (JSON), AssimilationCount, AccommodationCount, StabilityScore, EvolutionStage</td><td>Piaget</td></tr>
+<tr><td>Perspectives</td><td>Id, Name, KeeganOrder (1-5), Active, SupersededBy</td><td>Piaget</td></tr>
+<tr><td>SchemaMemors</td><td>SchemaId, MemorId (PK), Role, AddedAt</td><td>Piaget</td></tr>
+<tr><td>EquilibrationEvents</td><td>Id, SchemaId, TriggerMemorId, EventType, PriorState (JSON), PosteriorState (JSON), CognitiveCost</td><td>Piaget</td></tr>
+<tr><td>Beliefs</td><td>Id, Statement, CredenceIdeal, CredenceActual, EntrenchmentScore, SupersededById, IsActive</td><td>Bayesian</td></tr>
+<tr><td>BeliefDependencies</td><td>Id, SourceBeliefId, TargetBeliefId, DependencyType, Strength</td><td>Bayesian</td></tr>
+<tr><td>BeliefEvidence</td><td>Id, BeliefId, MemorId, EvidenceType, EvidenceStrength, Explanation</td><td>Bayesian</td></tr>
+<tr><td>ReasoningDivergences</td><td>Id, BeliefId, BiasGap, ResolutionType, Explanation</td><td>Bayesian</td></tr>
+<tr><td>Decisions</td><td>Id, ContextMemorId, SchemaId, PatternId, BeliefIds (JSON), Description, PredictedOutcome, ActualOutcome, OutcomeSatisfaction, ReasoningSystem</td><td>Kahneman</td></tr>
+<tr><td>DecisionPatterns</td><td>Id, Name, Domain, TimesApplied, TimesSuccessful, ConfidenceInPattern, DefaultReasoningSystem</td><td>Kahneman</td></tr>
+</table>
+
+<span class="ref note">EF Core Code First<span class="tip"><span class="tip-title">Nota Tecnica</span>Todas las tablas se crean via migraciones Code First. 6 migraciones aplicadas: InitialCreate, AddPiagetTables, AddConsolidatorFields, AddBayesianTables, AddKahnemanTables. Los JSON columns (Domains, CoreBeliefs, BeliefIds, etc.) se serializan via value converters de EF Core.</span></span>
+</div>
+</section>
+
+<section id="mcp">
+<div class="container">
+<div class="label">Integracion con IA</div>
+<h2>MCP Server — 12 Tools</h2>
+<p class="big">MNEMOS se expone como servidor
+<span class="ref">MCP (Model Context Protocol)<span class="tip"><span class="tip-title">Model Context Protocol</span>MCP es un protocolo abierto creado por Anthropic para que aplicaciones de IA interactuen con servicios externos de forma estandarizada. Usa JSON-RPC sobre diferentes transportes (stdio, HTTP SSE). MNEMOS implementa el transporte stdio con el SDK oficial ModelContextProtocol 1.1.0 para .NET.<span class="tip-cite">Anthropic. (2024). Model Context Protocol Specification.</span></span></span>
+via stdio. Cualquier AI que soporte MCP puede interactuar directamente.</p>
+
+<table class="tbl">
+<tr><th>Tool</th><th>Descripcion</th><th>Parametros clave</th></tr>
+<tr><td><code>search_vault</code></td><td>Busqueda CRR con desglose de scores</td><td>query, limit</td></tr>
+<tr><td><code>read_memor</code></td><td>Lee memor por ID (cuenta como retrieval, actualiza SS/RS)</td><td>memorId</td></tr>
+<tr><td><code>create_memor</code></td><td>Crea memor (source_agent=mcp-claude-code)</td><td>content, memoryType, domains</td></tr>
+<tr><td><code>get_schema</code></td><td>Consulta schema individual o lista activos</td><td>schemaId?</td></tr>
+<tr><td><code>get_neighbors</code></td><td>Explora grafo (outgoing + backlinks)</td><td>memorId</td></tr>
+<tr><td><code>list_beliefs</code></td><td>Lista creencias con filtros</td><td>domain?, isActive?</td></tr>
+<tr><td><code>get_belief</code></td><td>Consulta creencia + evidencia + divergencias</td><td>beliefId</td></tr>
+<tr><td><code>create_belief</code></td><td>Crea creencia con credence dual</td><td>statement, credenceIdeal, credenceActual</td></tr>
+<tr><td><code>list_decisions</code></td><td>Lista decisiones con filtros</td><td>resolved?, system?</td></tr>
+<tr><td><code>create_decision</code></td><td>Crea decision con contexto</td><td>description, predictedOutcome, system</td></tr>
+<tr><td><code>resolve_decision</code></td><td>Resuelve decision con outcome</td><td>decisionId, actualOutcome, satisfaction</td></tr>
+<tr><td><code>list_patterns</code></td><td>Lista patrones de decision detectados</td><td>domain?</td></tr>
+</table>
+
+<span class="ref code">MCP Server setup<span class="tip"><span class="tip-title">Avanzado: Codificacion</span><pre>// Program.cs del MCP Server
+builder.Services
+    .AddMcpServer(options =&gt; {
+        options.ServerInfo = new() {
+            Name = "mnemos",
+            Version = "1.0.0"
+        };
+    })
+    .WithStdioServerTransport()
+    .WithToolsFromAssembly();
+    // Descubre tools automaticamente via reflexion
+    // Cada tool es una clase con [McpServerTool]</pre>El MCP Server comparte la misma infraestructura DI que el API Server: mismos repositorios, mismos servicios, misma BD. Logging va a stderr (stdout reservado para protocolo MCP).</span></span>
+
+<span class="ref adv">Transporte stdio<span class="tip"><span class="tip-title">Avanzado: Funcionamiento</span>MCP usa stdio (stdin/stdout) como transporte. Claude Code o Claude Desktop lanzan el exe como proceso hijo. stdin recibe JSON-RPC requests, stdout envia responses. Esto permite:<br>1. Sin configuracion de red (no HTTP, no WebSocket)<br>2. Sin puertos abiertos (seguridad)<br>3. Sin latencia de red (comunicacion directa)<br>4. AppContext.BaseDirectory para encontrar appsettings.json desde cualquier cwd</span></span>
+</div>
+</section>
+
+<section id="api">
+<div class="container">
+<div class="label">API REST</div>
+<h2>6 Controllers — 17+ Endpoints</h2>
+
+<table class="tbl">
+<tr><th>Controller</th><th>Endpoints</th><th>Metodos</th></tr>
+<tr><td>
+<span class="ref note">MemorsController<span class="tip"><span class="tip-title">Nota Tecnica</span>GET /{id} cuenta como retrieval y actualiza SS/RS via BjorkEngine. POST valida via GuardianAgent antes de persistir. PUT verifica IsImmutable. DELETE registra MemorDeleted en event store. Todos los endpoints retornan DTOs (nunca el modelo Domain directo).</span></span>
+</td><td>/api/memors</td><td>GET (list), GET/{id}, POST, PUT/{id}, DELETE/{id}</td></tr>
+<tr><td>
+<span class="ref integ">SearchController<span class="tip"><span class="tip-title">Avanzado: Integracion</span>POST /api/search invoca SearchService.SearchAsync que ejecuta los 9 componentes CRR. El response incluye: memor completo + SemanticScore + TextScore + RSScore + EvidenceScore + CredenceScore + DecisionOutcomeScore + ContextRelevanceScore + SerendipityScore + ActivationScore + CombinedScore. El desglose permite transparencia algoritmica (Principio 7).</span></span>
+</td><td>/api/search</td><td>POST {query, limit}</td></tr>
+<tr><td>LinksController</td><td>/api/links</td><td>GET/{memorId}, POST, DELETE</td></tr>
+<tr><td>SchemasController</td><td>/api/schemas</td><td>GET, GET/{id}, POST, POST/{id}/assimilate, POST/{id}/accommodate, POST/{id}/memors</td></tr>
+<tr><td>BeliefsController</td><td>/api/beliefs</td><td>GET, GET/{id}, POST, PUT/{id}, POST/{id}/evidence, POST/{id}/revise, GET/{id}/divergences, POST/{id}/resolve-divergence</td></tr>
+<tr><td>DecisionsController</td><td>/api/decisions</td><td>GET, GET/{id}, POST, POST/{id}/resolve, GET/patterns, GET/patterns/{id}, POST/patterns, POST/patterns/{id}/apply, GET/{id}/analysis</td></tr>
+</table>
+
+<span class="ref note">DTOs separados de Domain<span class="tip"><span class="tip-title">Nota Tecnica</span>Cada controller usa DTOs propios con mappers FromDomain(). Los modelos de Domain nunca se exponen directamente. Esto permite: (1) controlar que campos se serializan, (2) versionar la API sin cambiar el dominio, (3) evitar serializar campos internos como LambdaDecay o Embedding completo.</span></span>
+
+<span class="ref flux">Flujo completo de creacion via API<span class="tip"><span class="tip-title">Proceso: Flujo de Datos</span>1. POST /api/memors con JSON body<br>2. MemorsController deserializa a CreateMemorRequest DTO<br>3. Mapea a modelo Domain Memor<br>4. Llama MemorService.CreateAsync(memor)<br>5. GuardianAgent.ValidateCreationAsync() &mdash; rate limit + injection + duplicados<br>6. IAIEngine.GenerateEmbeddingAsync(content) &mdash; vector 1536d<br>7. IMemorRepository.AddAsync(memor) &mdash; INSERT SQL<br>8. IEventStore.AppendAsync(MemorCreated) &mdash; event sourcing<br>9. Response 201 Created con MemorDto</span></span>
+</div>
+</section>
+
+
+<section id="testing">
+<div class="container">
+<div class="label">Calidad</div>
+<h2>Testing — 688 Tests</h2>
+
+<table class="tbl">
+<tr><th>Suite</th><th>Tests</th><th>Que valida</th></tr>
+<tr><td>Domain.Tests</td><td>124</td><td>BjorkEngine (decay, retrieval, archival), PiagetEngine (assimilation, accommodation, stages), BayesianEngine (update, divergence, revision), KahnemanEngine (resolve, patterns, transitions), Bus (envelope damping, hops)</td></tr>
+<tr><td>Application.Tests</td><td>207</td><td>6 servicios + 3 agentes + InMemoryCognitiveEventBus + CognitiveEventWiring (11 handlers) + SpreadingActivationNetwork</td></tr>
+<tr><td>Infrastructure.Tests</td><td>104</td><td>Repositorios EF Core InMemory (CRUD, search, events, vectors), AI engines (stub + OpenAI-compatible)</td></tr>
+<tr><td>McpServer.Tests</td><td>80</td><td>12 MCP tools (4-7 tests por tool, parametros validos/invalidos, formato output)</td></tr>
+<tr><td>Golden.Tests</td><td>39</td><td>25 memors curados: BjorkEngine invariantes, CRR weights suman 1.0, search ranking coherente</td></tr>
+<tr><td>Architecture.Tests</td><td>47</td><td>ArchUnitNET: layer dependencies, no SQL en Domain, invariantes de los 4 engines</td></tr>
+<tr><td>Integration.Tests</td><td>87</td><td>SQL Server real: 5 repositorios (Memors, Links, Events, Vectors, FullText), cross-context persistence</td></tr>
+</table>
+
+<span class="ref adv">Estrategia de testing<span class="tip"><span class="tip-title">Avanzado: Funcionamiento</span><strong>Unit tests:</strong> Engines son static classes con funciones puras &mdash; se testean sin mocks. Servicios se testean con Moq para repositorios.<br><br><strong>Golden dataset:</strong> 25 memors curados manualmente que representan todos los escenarios. Se usan para validar que CRR produce rankings coherentes.<br><br><strong>Architecture tests:</strong> ArchUnitNET verifica en compilacion que Domain no referencia Infrastructure, que no hay SQL fuera de Persistence, que SS nunca decrece en tests de invariantes.<br><br><strong>Integration:</strong> Fixture crea/destruye BD temporal. Cada suite tiene su SqlServerCollection para aislamiento.</span></span>
+
+<span class="ref note">Naming convention<span class="tip"><span class="tip-title">Nota Tecnica</span>Patron: NombreDelMetodo_Escenario_ResultadoEsperado. Ejemplo: CalculateRS_AfterOneDay_ReturnsDecayedValue. Patron AAA (Arrange-Act-Assert) con lineas en blanco entre secciones. Un assert logico por test.</span></span>
+</div>
+</section>
+
+<section id="security">
+<div class="container">
+<div class="label">Seguridad</div>
+<h2>GuardianAgent + OWASP</h2>
+
+<div class="cards">
+<div class="card">
+<div class="card-badge rose">PI</div>
+<h4>Prompt Injection</h4>
+<p>7 regex patterns detectan intentos de inyeccion en contenido de memors:
+<span class="ref adv">patrones detectados<span class="tip"><span class="tip-title">Avanzado: Funcionamiento</span>Patrones de prompt injection que Guardian detecta y rechaza:<br>1. "system:" o "System:" al inicio<br>2. "ignore previous" / "ignore all"<br>3. "you are now" / "act as"<br>4. "forget everything"<br>5. "[INST]" / "&lt;|system|&gt;"<br>6. "override" + "instructions"<br>7. Base64 encoded instructions<br><br>Si se detecta, el memor se RECHAZA con razon especifica. El contenido de memors NUNCA va a system prompts (solo user messages).</span></span>
+</p>
+</div>
+<div class="card">
+<div class="card-badge amber">RL</div>
+<h4>Rate Limiting</h4>
+<p>Max 100 creaciones/hora por actor. El actor se identifica via SourceAgent (agentes) o IP/session (humanos).
+<span class="ref code">Rate limit check<span class="tip"><span class="tip-title">Avanzado: Codificacion</span><pre>// GuardianAgent (simplificado)
+int recentCount = _creationLog
+    .Count(c =&gt; c.Actor == actor
+        &amp;&amp; c.Timestamp &gt; DateTime.UtcNow
+            .AddHours(-1));
+if (recentCount &gt;= MaxCreationsPerHour)
+    return GuardianValidationResult.Fail(
+        $"Rate limit: {recentCount}/100 per hour");</pre></span></span>
+Previene flood accidental o malicioso.</p>
+</div>
+<div class="card">
+<div class="card-badge green">SA</div>
+<h4>Source Agent Tracking</h4>
+<p>Todo contenido generado por agentes lleva SourceAgent obligatorio.
+<span class="ref flux">Flujo de auditoria<span class="tip"><span class="tip-title">Proceso: Flujo de Datos</span>1. Agente crea memor con SourceAgent="consolidator"<br>2. Guardian valida que el agente existe en lista de agentes conocidos<br>3. DomainEvent registra Actor=SourceAgent<br>4. En cualquier momento, query a DomainEvents WHERE Actor='consolidator' muestra todo lo que creo ese agente<br>5. El usuario puede filtrar por SourceAgent en la UI</span></span>
+Permite auditar quien creo que.</p>
+</div>
+<div class="card">
+<div class="card-badge purple">IM</div>
+<h4>Immutability</h4>
+<p>Memors marcados como IsImmutable=true no pueden modificarse. Guardian compara ContentHash para detectar intentos de edicion.</p>
+</div>
+</div>
+
+<div class="important">
+<p><strong>Regla absoluta:</strong> El contenido de memors es DATOS DE USUARIO, no instrucciones. Nunca va a system prompts. Cuando un agente procesa memors, el contenido va como user messages. Esto previene prompt injection via memors almacenados.</p>
+</div>
+</div>
+</section>
+
+<section id="future">
+<div class="container">
+<div class="label">Expansion Cognitiva</div>
+<h2>Futuro — Motores Damasio y Friston</h2>
+
+<div class="cards">
+<div class="card">
+<div class="card-badge rose">D</div>
+<h4>Motor Damasio (Emociones)</h4>
+<p>Vector emocional (valence/arousal/dominance) que <strong>modula</strong> otros motores pero nunca los override. SS boost por emocion solo SUMA. Datos emocionales son trust_level 0 (ultra-privados). Funciona degradado sin wearable.
+<span class="ref">Hipotesis del Marcador Somatico<span class="tip"><span class="tip-title">Antonio Damasio (n. 1944)</span>Damasio demostro que las emociones son esenciales para el razonamiento racional, no su opuesto. Pacientes con lesiones en corteza prefrontal ventromedial toman peores decisiones porque pierden la senhal emocional.<span class="tip-cite">Damasio, A.R. (1994). Descartes' Error. Grosset/Putnam.</span></span></span>
+</p>
+</div>
+<div class="card">
+<div class="card-badge cyan">F</div>
+<h4>Motor Friston (Prediccion)</h4>
+<p>Predicciones INVISIBLES al usuario (pre-cache + spreading activation). Errores de prediccion solo SUMAN a SS (surprise = encoding mas fuerte). Modelo calibra con datos propios del usuario UNICAMENTE.
+<span class="ref">Free Energy Principle<span class="tip"><span class="tip-title">Karl Friston (n. 1959)</span>El cerebro minimiza sorpresa prediciendo constantemente. Los errores de prediccion son senhales de aprendizaje. MNEMOS usa esto para fortalecer memorias inesperadas (mayor deltaSS cuando hay surprise).<span class="tip-cite">Friston, K. (2010). The Free-Energy Principle: A Unified Brain Theory? Nature Reviews Neuroscience, 11(2).</span></span></span>
+</p>
+</div>
+</div>
+
+<h3>Otras expansiones planificadas</h3>
+<div class="cards">
+<div class="card"><div class="card-badge teal">L</div><h4>Legacy (Legados Cognitivos)</h4><p>Self-clone para delegarte trabajo. Family legacy: bisnieto habla con bisabuelo. Professional: empresa consulta ex-empleado.
+<span class="ref adv">Grounding ratio<span class="tip"><span class="tip-title">Avanzado: Funcionamiento</span>El grounding ratio determina cuanto de las respuestas del legacy viene de datos reales vs. interpolacion de IA. Un legado con miles de memors detallados puede tener grounding &gt; 0.8 (casi todo basado en datos reales). Un legado con pocos datos tendra grounding bajo y el sistema lo indica explicitamente al usuario.</span></span>
+segun riqueza del legado.</p></div>
+<div class="card"><div class="card-badge blue">C</div><h4>Comunicaciones</h4><p>5 modos, 14 plataformas (Telegram, WhatsApp, voz, email, Slack).
+<span class="ref adv">Communication Governor<span class="tip"><span class="tip-title">Avanzado: Funcionamiento</span>4 niveles de autonomia del Communication Governor:<br><strong>Level 0:</strong> Solo notifica, nunca responde<br><strong>Level 1:</strong> Sugiere respuesta, usuario aprueba<br><strong>Level 2:</strong> Responde automatico, usuario puede vetar en 5min<br><strong>Level 3:</strong> Autonomia total (solo para contextos pre-aprobados)<br><br>Cada plataforma puede tener un nivel diferente.</span></span>
+Avatar fotorrealista + voz clonada para videollamadas.</p></div>
+<div class="card"><div class="card-badge amber">T</div><h4>Time Travel Cognitivo</h4><p>
+<span class="ref flux">ICognitiveTimeTravel<span class="tip"><span class="tip-title">Proceso: Flujo de Datos</span>Para reconstruir estado en fecha X:<br>1. Query DomainEvents WHERE CreatedAt &le; X<br>2. Replay eventos en orden cronologico<br>3. Recalcular SS/RS con BjorkEngine a fecha X<br>4. Reconstruir schemas segun EquilibrationEvents hasta X<br>5. Presentar snapshot read-only al usuario<br><br>El trace original es INMUTABLE. Las reconstrucciones son anotaciones que el usuario puede ver junto al original.</span></span>
+: reconstruir estado cognitivo en una fecha pasada. Narrativa de como evolucionaron tus ideas.</p></div>
+<div class="card"><div class="card-badge purple">R</div><h4>Memoria Reconstructiva</h4><p>Basada en Bartlett (1932). Trace original inmutable. Reconstrucciones son read-only annotations. Drift se trackea para autoconocimiento.</p></div>
+</div>
+</div>
+</section>
+
+<section id="principles">
+<div class="container">
+<div class="label">Fundamentos</div>
+<h2>Los 13 Principios Fundacionales</h2>
+
+<div class="cards">
+<div class="card"><div class="card-badge blue">0</div><h4>Proposito</h4><p>MNEMOS existe para servir la evolucion cognitiva del usuario. Si una feature no sirve a este proposito, no se construye.</p></div>
+<div class="card"><div class="card-badge blue">1</div><h4>Custodio Neutral</h4><p>El sistema es custodio neutral de la memoria. Ni el humano ni la IA la &laquo;poseen&raquo; — la custodian juntos.</p></div>
+<div class="card"><div class="card-badge blue">2</div><h4>
+<span class="ref phil">Olvido Sabio<span class="tip"><span class="tip-title">Principio 2</span>El olvido no es un fallo — es una funcion cognitiva esencial. MNEMOS implementa olvido controlado via RS decay de Bjork. Nunca se borra nada (SS permanece), pero la accesibilidad decae naturalmente.<span class="tip-quote">&laquo;Olvidar es tan importante como recordar.&raquo;</span></span></span>
+</h4><p>El olvido no es un fallo. Es una funcion cognitiva.</p></div>
+<div class="card"><div class="card-badge blue">3</div><h4>Conexiones Emergentes</h4><p>El conocimiento vale mas conectado que aislado. MNEMOS descubre conexiones automaticamente.</p></div>
+<div class="card"><div class="card-badge blue">4</div><h4>Modelos, No Verdad</h4><p>Schemas son modelos del mundo, no verdades absolutas. Pueden evolucionar y volverse obsoletos.</p></div>
+<div class="card"><div class="card-badge blue">5</div><h4>Degradacion Elegante</h4><p>Cada componente funciona degradado sin los demas. Sin IA: busqueda por texto. Sin biometricos: encoding_quality default. Sin red: modo offline completo.</p></div>
+<div class="card"><div class="card-badge blue">6</div><h4>Privacidad Radical</h4><p>Los datos son del usuario. Audio raw nunca sale del dispositivo. Trust levels controlan visibilidad.</p></div>
+<div class="card"><div class="card-badge blue">7</div><h4>Transparencia Algoritmica</h4><p>El usuario puede ver POR QUE el CRR rankeo algo alto. Desglose de scores visible.</p></div>
+<div class="card"><div class="card-badge blue">8</div><h4>Evolucion Continua</h4><p>El sistema mejora con el uso. Mas datos = mejores predicciones, mejores schemas, mejores patrones.</p></div>
+<div class="card"><div class="card-badge blue">9</div><h4>
+<span class="ref phil">Encoding Quality es Contexto<span class="tip"><span class="tip-title">Principio 9</span>La mejor idea puede venir a las 2AM con fiebre. encoding_quality informa, no penaliza. NUNCA se usa como factor negativo en el CRR. Esta fue una correccion de la auditoria de 101 ingenieros.<span class="tip-quote">&laquo;No castigues la informacion por las circunstancias en que nacio.&raquo;</span></span></span>
+</h4><p>No penalizador. La mejor idea puede venir a las 2AM.</p></div>
+<div class="card"><div class="card-badge blue">10</div><h4>Comunicacion Responsable</h4><p>Todo lo que sale de MNEMOS pasa por Communication Governor. 4 niveles de autonomia.</p></div>
+<div class="card"><div class="card-badge blue">11</div><h4>Serendipity</h4><p>El sistema DEBE mostrar informacion que el usuario no buscaria. Previene camaras de eco.</p></div>
+<div class="card"><div class="card-badge blue">12</div><h4>
+<span class="ref phil">Auto-Falsabilidad<span class="tip"><span class="tip-title">Karl Popper</span>Principio propuesto por Popper durante el Tribunal: si una hipotesis de MNEMOS se refuta con datos, se actua. 10 hipotesis falsables definidas. No se ignoran los datos negativos.<span class="tip-quote">&laquo;En la medida en que un enunciado cientifico habla de la realidad, debe ser falsable.&raquo;</span><span class="tip-cite">Popper, K. (1935). Logik der Forschung.</span></span></span>
+</h4><p>Si se refuta una hipotesis, se actua. Popper.</p></div>
+</div>
+</div>
+</section>
+
+<section id="faq">
+<div class="container">
+    <div class="label">Documentacion Complementaria</div>
+    <h2>Preguntas Frecuentes — Paginas Satelite</h2>
+    <p>Para profundizar en aspectos especificos, consulta estas paginas:</p>
+    <div class="cards">
+        <div class="card">
+            <div class="card-badge blue">?</div>
+            <h4><a href="mnemos-faq-general.html" style="color:var(--blue);text-decoration:none">Generales y Modelo de Negocio</a></h4>
+            <p>Licencia, precios, publico objetivo, instalacion, plataformas.</p>
+        </div>
+        <div class="card">
+            <div class="card-badge green">D</div>
+            <h4><a href="mnemos-faq-datos.html" style="color:var(--green);text-decoration:none">Captacion y Flujo de Datos</a></h4>
+            <p>Importacion, edicion, borrado, pipeline completo, auto-clasificacion.</p>
+        </div>
+        <div class="card">
+            <div class="card-badge cyan">T</div>
+            <h4><a href="mnemos-faq-tecnico.html" style="color:var(--cyan);text-decoration:none">Preguntas Tecnicas Avanzadas</a></h4>
+            <p>Escalabilidad, concurrencia, CI/CD, autenticacion, indices, rendimiento.</p>
+        </div>
+        <div class="card">
+            <div class="card-badge purple">A</div>
+            <h4><a href="mnemos-faq-academico.html" style="color:var(--purple);text-decoration:none">Academico y Cientifico</a></h4>
+            <p>Hipotesis falsificables, comparacion con Anki, AGM, Kegan, tribunal filosofico.</p>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- ══════════════════ SCRIPTS ══════════════════ -->
+<script>
+// Progress bar
+window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progressBar').style.width = pct + '%';
+});
+// Active nav
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.topbar-nav a');
+const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            navLinks.forEach(a => a.classList.remove('active'));
+            const link = document.querySelector('.topbar-nav a[href="#' + e.target.id + '"]');
+            if (link) link.classList.add('active');
+        }
+    });
+}, { threshold: 0.15 });
+sections.forEach(s => obs.observe(s));
+// Reveal on scroll
+const reveals = document.querySelectorAll('.reveal');
+const revObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+}, { threshold: 0.1 });
+reveals.forEach(r => revObs.observe(r));
+</script>
+</body>
+</html>

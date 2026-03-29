@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MNEMOS — Preguntas Generales y Modelo de Negocio</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0b1120;--bg2:#111b2e;--bg3:#162035;--bg4:#1c2844;--text:#e8edf5;--text2:#9aa5b8;--text3:#6b7a90;--blue:#4d8ef7;--purple:#9775fa;--green:#40c78e;--amber:#f7b955;--rose:#f06595;--cyan:#22d3ee;--teal:#2dd4bf;--border:#1e2d45;--glow-blue:rgba(77,142,247,.12);--glow-purple:rgba(151,117,250,.12);--glow-green:rgba(64,199,142,.12);--glow-amber:rgba(247,185,85,.12);--glow-rose:rgba(240,101,149,.12);--glow-cyan:rgba(34,211,238,.12);--glow-teal:rgba(45,212,191,.12);--radius:14px;--ease:.35s cubic-bezier(.4,0,.2,1)}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(11,17,32,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem}
+.topbar-logo{font-weight:800;font-size:1.1rem;letter-spacing:.12em;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.topbar-nav{display:flex;gap:.15rem;overflow-x:auto}
+.topbar-nav a{color:var(--text3);text-decoration:none;padding:.4rem .55rem;border-radius:8px;font-size:.72rem;white-space:nowrap;transition:var(--ease)}
+.topbar-nav a:hover,.topbar-nav a.active{color:var(--text);background:var(--glow-blue)}
+.progress-bar{position:fixed;top:56px;left:0;height:3px;z-index:101;background:linear-gradient(90deg,var(--blue),var(--purple),var(--green));width:0%;transition:width .15s linear}
+.container{max-width:860px;margin:0 auto;padding:0 1.5rem}
+section{padding:5rem 0}section:first-of-type{padding-top:6rem}
+.label{font-size:.7rem;text-transform:uppercase;letter-spacing:.2em;color:var(--blue);margin-bottom:.75rem;font-weight:600}
+h1{font-size:clamp(2.2rem,4.5vw,3.5rem);font-weight:800;line-height:1.15;margin-bottom:1.5rem}
+h2{font-size:clamp(1.6rem,3vw,2rem);font-weight:700;line-height:1.25;margin-bottom:1rem;margin-top:3rem}
+h2:first-child{margin-top:0}
+h3{font-size:1.15rem;font-weight:600;margin-bottom:.6rem;margin-top:2rem;color:var(--text)}
+p{color:var(--text2);margin-bottom:1.2rem;font-size:1.02rem}
+.big{font-size:1.15rem;color:var(--text)}
+strong{color:var(--text);font-weight:600}
+em.concept{color:var(--amber);font-style:normal;font-weight:600}
+code{background:var(--bg3);padding:.15rem .4rem;border-radius:4px;font-size:.88rem;color:var(--cyan);font-family:'Cascadia Code','Fira Code',monospace}
+pre{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin:1.2rem 0;overflow-x:auto;font-size:.8rem;line-height:1.6;color:var(--text2);font-family:'Cascadia Code','Fira Code',monospace}
+/* Tooltip base */
+.ref{border-bottom:1.5px dotted var(--purple);cursor:help;position:relative;color:var(--text);transition:color .2s}
+.ref:hover{color:var(--purple)}
+.ref .tip{display:none;position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);width:400px;max-width:90vw;background:var(--bg4);border:1px solid var(--purple);border-radius:var(--radius);padding:1rem 1.2rem;z-index:200;font-size:.82rem;line-height:1.55;color:var(--text2);box-shadow:0 8px 32px rgba(0,0,0,.5);pointer-events:none}
+.ref .tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--purple)}
+.ref:hover .tip,.ref:focus .tip{display:block;pointer-events:auto}
+.ref .tip .tip-title{font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem;color:var(--purple)}
+.ref .tip .tip-cite{color:var(--text3);font-style:italic;font-size:.78rem;margin-top:.5rem;padding-top:.4rem;border-top:1px solid var(--border)}
+.ref .tip .tip-quote{color:var(--amber);font-style:italic;margin:.4rem 0}
+.ref .tip pre{font-size:.72rem;margin:.5rem 0;padding:.6rem}
+/* Tooltip: cientifica (purpura - default) */
+/* Tooltip: filosofica (dorado) */
+.ref.phil{border-bottom-color:var(--amber)}.ref.phil:hover{color:var(--amber)}.ref.phil .tip{border-color:var(--amber)}.ref.phil .tip::after{border-top-color:var(--amber)}.ref.phil .tip .tip-title{color:var(--amber)}
+/* Tooltip: tecnica (verde) */
+.ref.note{border-bottom-color:var(--green)}.ref.note:hover{color:var(--green)}.ref.note .tip{border-color:var(--green)}.ref.note .tip::after{border-top-color:var(--green)}.ref.note .tip .tip-title{color:var(--green)}
+/* Tooltip: Avanzado Funcionamiento (cyan) */
+.ref.adv{border-bottom-color:var(--cyan)}.ref.adv:hover{color:var(--cyan)}.ref.adv .tip{border-color:var(--cyan)}.ref.adv .tip::after{border-top-color:var(--cyan)}.ref.adv .tip .tip-title{color:var(--cyan)}
+/* Tooltip: Avanzado Codificacion (teal) */
+.ref.code{border-bottom-color:var(--teal)}.ref.code:hover{color:var(--teal)}.ref.code .tip{border-color:var(--teal);width:500px}.ref.code .tip::after{border-top-color:var(--teal)}.ref.code .tip .tip-title{color:var(--teal)}
+/* Tooltip: Integracion (rose) */
+.ref.integ{border-bottom-color:var(--rose)}.ref.integ:hover{color:var(--rose)}.ref.integ .tip{border-color:var(--rose)}.ref.integ .tip::after{border-top-color:var(--rose)}.ref.integ .tip .tip-title{color:var(--rose)}
+/* Tooltip: Flujo de datos (azul) */
+.ref.flux{border-bottom-color:var(--blue)}.ref.flux:hover{color:var(--blue)}.ref.flux .tip{border-color:var(--blue)}.ref.flux .tip::after{border-top-color:var(--blue)}.ref.flux .tip .tip-title{color:var(--blue)}
+/* Boxes */
+.analogy{background:var(--glow-blue);border:1px solid rgba(77,142,247,.25);border-radius:var(--radius);padding:1.5rem 1.75rem;margin:1.5rem 0;position:relative}
+.analogy::before{content:'Analogia';position:absolute;top:-10px;left:16px;background:var(--bg);padding:0 8px;font-size:.7rem;color:var(--blue);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.analogy p{color:var(--text);margin-bottom:0;font-size:.95rem}
+.important{background:var(--glow-amber);border:1px solid rgba(247,185,85,.25);border-radius:var(--radius);padding:1.5rem 1.75rem;margin:1.5rem 0;position:relative}
+.important::before{content:'Clave';position:absolute;top:-10px;left:16px;background:var(--bg);padding:0 8px;font-size:.7rem;color:var(--amber);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.important p{color:var(--text);margin-bottom:0;font-size:.95rem}
+blockquote{border-left:3px solid var(--purple);padding:1.25rem 1.5rem;margin:1.5rem 0;background:var(--glow-purple);border-radius:0 var(--radius) var(--radius) 0}
+blockquote p{color:var(--text);font-style:italic;margin-bottom:.3rem;font-size:1.05rem}
+blockquote cite{color:var(--text3);font-style:normal;font-size:.85rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;margin:1.75rem 0}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;transition:var(--ease)}
+.card:hover{border-color:var(--blue);transform:translateY(-2px)}
+.card-badge{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:10px;font-size:1rem;font-weight:800;margin-bottom:.75rem}
+.card-badge.blue{background:var(--glow-blue);color:var(--blue)}.card-badge.purple{background:var(--glow-purple);color:var(--purple)}.card-badge.green{background:var(--glow-green);color:var(--green)}.card-badge.amber{background:var(--glow-amber);color:var(--amber)}.card-badge.rose{background:var(--glow-rose);color:var(--rose)}.card-badge.cyan{background:var(--glow-cyan);color:var(--cyan)}.card-badge.teal{background:var(--glow-teal);color:var(--teal)}
+.card h4{font-size:1rem;font-weight:600;margin-bottom:.4rem;color:var(--text)}.card p{font-size:.88rem;margin-bottom:0;color:var(--text2)}
+.flow{display:flex;align-items:center;justify-content:center;gap:.4rem;flex-wrap:wrap;margin:1.5rem 0}
+.flow-box{padding:.65rem 1.1rem;border-radius:10px;font-size:.82rem;font-weight:600;text-align:center;min-width:90px}
+.flow-arr{color:var(--text3);font-size:1.1rem}
+.layers{margin:1.5rem 0;display:flex;flex-direction:column;gap:.4rem}
+.layer-row{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;border-radius:var(--radius);background:var(--bg3);border:1px solid var(--border);transition:var(--ease)}
+.layer-row:hover{border-color:var(--blue)}
+.layer-label{font-weight:700;min-width:140px;font-size:.9rem}.layer-text{font-size:.85rem;color:var(--text2)}
+.tbl{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:.88rem}
+.tbl th{text-align:left;padding:.6rem .8rem;background:var(--bg3);color:var(--text);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--border)}
+.tbl td{padding:.6rem .8rem;border-bottom:1px solid var(--border);color:var(--text2)}.tbl tr:hover td{background:rgba(77,142,247,.04)}
+hr.sep{border:none;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:3rem 0}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .5s ease,transform .5s ease}.reveal.on{opacity:1;transform:translateY(0)}
+.hypothesis{background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.2);border-radius:var(--radius);padding:1.5rem 1.75rem;margin:1.5rem 0;position:relative}
+.hypothesis::before{content:'Hipotesis Falsificable';position:absolute;top:-10px;left:16px;background:var(--bg);padding:0 8px;font-size:.7rem;color:var(--cyan);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.hypothesis p{color:var(--text);margin-bottom:0;font-size:.92rem}
+.legend{display:flex;flex-wrap:wrap;gap:1rem;margin:1.5rem 0;padding:1rem 1.25rem;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)}
+.legend-item{display:flex;align-items:center;gap:.4rem;font-size:.8rem}.legend-dot{width:10px;height:10px;border-radius:50%}
+@media(max-width:700px){.topbar-nav{display:none}.cards{grid-template-columns:1fr}.flow{flex-direction:column}.flow-arr{transform:rotate(90deg)}.layer-row{flex-direction:column;gap:.3rem}.layer-label{min-width:auto}.ref .tip{width:280px;left:0;transform:none}.ref .tip::after{left:20px}}
+</style>
+</head>
+<body>
+<div class="topbar">
+<div class="topbar-logo">MNEMOS &middot; FAQ General</div>
+<div class="topbar-nav">
+<a href="mnemos-extendida.html">&larr; Volver a la presentacion principal</a>
+<a href="mnemos-faq-datos.html">Datos</a>
+<a href="mnemos-faq-tecnico.html">Tecnico</a>
+<a href="mnemos-faq-academico.html">Academico</a>
+</div></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<section>
+<div class="container">
+<div class="label">FAQ &mdash; Preguntas Generales y Modelo de Negocio</div>
+<h1>Todo lo que necesitas saber sobre MNEMOS</h1>
+<p class="big">Respuestas directas sobre quien lo usa, cuanto cuesta, donde viven tus datos y como empezar.</p>
+
+<div class="legend">
+<span style="font-weight:600;font-size:.85rem;margin-right:.5rem">Tooltips descubribles:</span>
+<div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>Cita cientifica</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Cita filosofica</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Nota tecnica</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--cyan)"></div>Avanzado: Funcionamiento</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--teal)"></div>Avanzado: Codificacion</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--rose)"></div>Avanzado: Integracion</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Proceso: Flujo de datos</div>
+</div>
+
+<hr class="sep">
+
+<h2>Publico Objetivo</h2>
+
+<h3>Quien usa MNEMOS?</h3>
+<p>MNEMOS esta disenado para cualquier persona cuyo trabajo dependa de <strong>acumular, conectar y recuperar conocimiento</strong> a lo largo del tiempo. No es una app de notas para listas de la compra &mdash; es un sistema para quien necesita que su conocimiento <span class="ref">evolucione con ellos<span class="tip"><span class="tip-title">Ciencia Cognitiva</span>La teoria constructivista de Piaget (1952) establece que el conocimiento no se acumula pasivamente sino que se reorganiza activamente mediante asimilacion y acomodacion. MNEMOS implementa este ciclo directamente en su motor de schemas.<span class="tip-cite">Piaget, J. (1952). The Origins of Intelligence in Children. International Universities Press.</span></span></span>.</p>
+
+<div class="cards">
+<div class="card">
+<div class="card-badge purple">I</div>
+<h4>Investigador</h4>
+<p>Lee cientos de papers, necesita conectar hallazgos entre disciplinas. MNEMOS vincula memors a schemas y detecta conexiones que el investigador no veria manualmente.</p>
+</div>
+<div class="card">
+<div class="card-badge blue">E</div>
+<h4>Ejecutivo</h4>
+<p>Toma decisiones estrategicas basadas en datos dispersos. El motor Kahneman rastrea patrones de decision, outcomes y sesgos cognitivos (System 1 vs System 2).</p>
+</div>
+<div class="card">
+<div class="card-badge green">S</div>
+<h4>Estudiante</h4>
+<p>Necesita retener y conectar conceptos. El motor Bjork modela la curva de olvido real y prioriza lo que necesita refuerzo mediante desirable difficulty.</p>
+</div>
+<div class="card">
+<div class="card-badge cyan">D</div>
+<h4>Desarrollador</h4>
+<p>Acumula decisiones tecnicas, patrones, bugs resueltos. MNEMOS conecta soluciones pasadas con problemas actuales via CRR (busqueda cognitiva, no textual).</p>
+</div>
+<div class="card">
+<div class="card-badge amber">K</div>
+<h4>Knowledge Worker</h4>
+<p>Consultores, abogados, medicos &mdash; cualquiera que necesite recordar precedentes, conectar casos y evolucionar su criterio profesional con el tiempo.</p>
+</div>
+</div>
+
+<hr class="sep">
+
+<h2>Modelo de Negocio y Licencia</h2>
+
+<h3>Cuanto cuesta MNEMOS?</h3>
+<p>MNEMOS usa un modelo <span class="ref note">open core<span class="tip"><span class="tip-title">Nota Tecnica</span>Open core significa que el nucleo es open source y gratuito, mientras que funcionalidades avanzadas tienen licencia comercial. Ejemplos exitosos: GitLab (MIT core + Enterprise), Elastic (Apache 2.0 core + comercial), Grafana (AGPL core + Enterprise).</span></span></span> con 4 capas de licencia. El nucleo completo (4 motores cognitivos, CRR, API, MCP) es gratuito y open source.</p>
+
+<div class="important">
+<p><strong>El 100% de la ciencia cognitiva es gratuita.</strong> Los motores Bjork, Piaget, Bayesian y Kahneman, el CRR con sus 9 dimensiones, el Bus Cognitivo y el SAN estan en la capa Core. No hay funcionalidad cientifica detras de un paywall.</p>
+</div>
+
+<h3>Es open source?</h3>
+<p>Si y no &mdash; depende de que capa. MNEMOS tiene 4 niveles de licencia, cada uno con un proposito especifico:</p>
+
+<table class="tbl">
+<thead>
+<tr><th>Capa</th><th>Licencia</th><th>Que incluye</th><th>Precio</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Core</strong></td>
+<td><span class="ref note">AGPLv3<span class="tip"><span class="tip-title">Nota Tecnica</span>AGPLv3 obliga a publicar el codigo fuente si modificas MNEMOS y lo ofreces como servicio (SaaS). Esto evita que alguien tome el core, lo modifique y lo venda como servicio cerrado sin contribuir de vuelta. Si solo lo usas internamente, no hay obligacion de publicar.</span></span></span></td>
+<td>4 motores cognitivos, CRR, API REST, MCP Server, Bus Cognitivo, SAN, 3 agentes</td>
+<td>Gratis</td>
+</tr>
+<tr>
+<td><strong>SDK</strong></td>
+<td><span class="ref note">Apache 2.0<span class="tip"><span class="tip-title">Nota Tecnica</span>Apache 2.0 es una licencia permisiva que permite uso comercial sin restricciones. Se eligio para el SDK porque queremos que cualquier empresa pueda integrar MNEMOS sin obligacion de abrir su codigo. Maximiza adopcion del ecosistema.</span></span></span></td>
+<td>Librerias cliente, conectores, formato .mnemos, protocolo MCP</td>
+<td>Gratis</td>
+</tr>
+<tr>
+<td><strong>Pro</strong></td>
+<td>Comercial (source available)</td>
+<td>Biometricos avanzados, comunicaciones multi-plataforma, avatares digitales, analytics enterprise</td>
+<td>Suscripcion (por definir)</td>
+</tr>
+<tr>
+<td><strong>Legacy</strong></td>
+<td>Propietario</td>
+<td>Legados cognitivos, self-clone, family Legacy, professional Legacy, Cortex colectivo</td>
+<td>Premium (por definir)</td>
+</tr>
+</tbody>
+</table>
+
+<div class="analogy">
+<p><strong>Analogia:</strong> Piensa en PostgreSQL. El motor de base de datos es gratuito y open source. Empresas como Crunchy Data o Supabase ofrecen servicios gestionados de pago encima. MNEMOS sigue el mismo principio: la ciencia cognitiva es libre, los servicios premium se pagan.</p>
+</div>
+
+<hr class="sep">
+
+<h2>Datos y Privacidad</h2>
+
+<h3>Donde se almacenan mis datos?</h3>
+<p>MNEMOS es <strong>self-hosted por diseno</strong>. Tus datos viven en tu propia base de datos <span class="ref note">SQL Server<span class="tip"><span class="tip-title">Nota Tecnica</span>Actualmente MNEMOS usa SQL Server para desarrollo (disponible en el equipo de trabajo). La migracion a PostgreSQL esta planeada para produccion, donde se aprovecharian pgvector (busqueda vectorial O(log N) con HNSW) y tsvector (full-text search nativo con indices GiST).</span></span></span>, en tu maquina o servidor. No hay telemetria, no hay servidor central, no hay "nube de MNEMOS".</p>
+
+<p>En el futuro se planea una opcion cloud para quienes prefieran no gestionar infraestructura, pero sera <strong>opcional</strong> y con cifrado end-to-end. Tu siempre podras elegir self-hosted.</p>
+
+<div class="important">
+<p><strong>Principio 0 de MNEMOS:</strong> El sistema es custodio neutral de la memoria. No posee tus datos &mdash; tu los posees. Los archivos .md son la fuente de verdad del contenido, legibles con cualquier editor de texto. Sin vendor lock-in.</p>
+</div>
+
+<h3>Quien puede acceder a mis datos?</h3>
+<p>Actualmente MNEMOS es <span class="ref adv">single-user<span class="tip"><span class="tip-title">Funcionamiento Interno</span>En la version actual no hay autenticacion &mdash; es desarrollo local. Para produccion se planea JWT + ASP.NET Identity con soporte multi-tenant. Cada tenant tendra su propio esquema de base de datos con aislamiento completo. Los trust_levels (0-4) controlaran que datos son compartibles.</span></span></span>. Solo tu accedes a tu instancia. Multi-tenant esta planeado para produccion con aislamiento completo por usuario.</p>
+
+<hr class="sep">
+
+<h2>Instalacion y Plataformas</h2>
+
+<h3>Es facil de instalar?</h3>
+<p>Si. MNEMOS es una aplicacion <span class="ref note">.NET 8<span class="tip"><span class="tip-title">Nota Tecnica</span>.NET 8 es un LTS (Long Term Support) de Microsoft con soporte hasta noviembre 2026. Es cross-platform (Windows, Linux, macOS) y tiene un runtime de alto rendimiento. Un solo comando compila y ejecuta el proyecto completo.</span></span></span> estandar. Los requisitos minimos son:</p>
+
+<div class="cards">
+<div class="card">
+<div class="card-badge green">1</div>
+<h4>.NET 8 SDK</h4>
+<p>Descarga gratuita de dotnet.microsoft.com. Incluye compilador, runtime y herramientas CLI.</p>
+</div>
+<div class="card">
+<div class="card-badge blue">2</div>
+<h4>SQL Server</h4>
+<p>SQL Server Express (gratuito) o Developer Edition. Futuro: PostgreSQL 16+ para produccion.</p>
+</div>
+<div class="card">
+<div class="card-badge purple">3</div>
+<h4>Un terminal</h4>
+<p><code>dotnet run --project src/Mnemos.Server</code> y listo. Tambien se puede publicar como .exe standalone.</p>
+</div>
+</div>
+
+<pre>
+# Clonar el repositorio
+git clone https://github.com/fcostales/mnemos.git
+cd mnemos
+
+# Compilar
+dotnet build
+
+# Aplicar migraciones
+dotnet ef database update --project src/Mnemos.Infrastructure
+
+# Ejecutar el servidor (http://localhost:5000)
+dotnet run --project src/Mnemos.Server
+
+# Ejecutar el MCP Server (para Claude Code/Desktop)
+dotnet run --project src/Mnemos.McpServer
+</pre>
+
+<h3>Hay demo disponible?</h3>
+<p>No todavia. MNEMOS esta en fase de <span class="ref flux">MVP activo<span class="tip"><span class="tip-title">Flujo de Datos</span>El MVP (Phase 0) incluye: 4 motores cognitivos operativos, 3 agentes (Guardian, Consolidator, Discoverer), CRR v5 con 9 dimensiones, 12 tools MCP, 6 controllers REST, y 688 tests pasando. Es funcional pero aun no tiene un entorno de demo publico.</span></span></span>. Para probarlo, necesitas clonar el repositorio y ejecutarlo localmente. Una demo interactiva web esta en el roadmap post-MVP.</p>
+
+<h3>Hay app movil?</h3>
+<p>No nativa. El frontend actual es <span class="ref note">Blazor<span class="tip"><span class="tip-title">Nota Tecnica</span>Blazor es el framework de UI de .NET que permite escribir interfaces web interactivas en C# en lugar de JavaScript. El frontend de MNEMOS usa Blazor con un tema oscuro personalizado y 5 paginas (Home, NewMemor, MemorDetail, Search, Graph).</span></span></span> (web), que funciona en el navegador del movil. El plan a futuro es hacer la UI responsive y empaquetar como PWA (Progressive Web App), lo que permitiria instalarlo en el movil sin necesidad de app stores.</p>
+
+<h3>Funciona offline?</h3>
+<p>Si, con limitaciones. MNEMOS tiene un <span class="ref code">StubAIEngine<span class="tip"><span class="tip-title">Codigo C#</span>El StubAIEngine genera embeddings locales usando bag-of-words + feature hashing cuando no hay conexion a APIs externas. Funcional pero con menor precision semantica que OpenAI.<pre>public class StubAIEngine : IAIEngine
+{
+    // Genera embeddings locales sin API
+    // Bag-of-words + feature hashing
+    // Funcional: busqueda por keywords
+    // Limitado: sin comprension semantica
+}</pre></span></span></span> que genera embeddings locales cuando la API de OpenAI no esta disponible. La busqueda funciona (por keywords y similitud basica), los 4 motores cognitivos funcionan, y todas las operaciones CRUD funcionan. Lo que pierdes sin conexion es la precision de los embeddings semanticos de OpenAI.</p>
+
+<hr class="sep">
+
+<h2>Empresa y Sostenibilidad</h2>
+
+<h3>Hay una empresa detras de MNEMOS?</h3>
+<p>No todavia. MNEMOS es un <span class="ref phil">proyecto personal<span class="tip"><span class="tip-title">Contexto</span>MNEMOS nacio de una pregunta simple: "Deberia usar Obsidian con Claude Code?" La investigacion derivo en 303 debates con agentes PhD, 12 filosofos como jurado, 101 ingenieros auditando, y 10.000 usuarios simulados. Lo que empezo como una herramienta personal se convirtio en un sistema cognitivo fundamentado en ciencia.<span class="tip-quote">&laquo;De 'deberia usar Obsidian?' a un sistema operativo cognitivo civilizacional.&raquo;</span></span></span> de Felipe Costales, en fase activa de desarrollo. La vision a largo plazo contempla una fundacion (MNEMOS Foundation) con gobernanza constitucional, pero eso esta en fases futuras.</p>
+
+<h3>Cual es el modelo de sostenibilidad?</h3>
+<p>Open core: el Core es gratuito y siempre lo sera (AGPLv3 lo garantiza legalmente). Los ingresos vendran de las capas Pro y Legacy, que ofrecen funcionalidad avanzada para usuarios que necesitan biometricos, comunicaciones multi-plataforma, avatares digitales o legados cognitivos.</p>
+
+<div class="analogy">
+<p><strong>Analogia:</strong> Como Red Hat con Linux. El kernel es libre. El soporte, la certificacion y las herramientas enterprise se pagan. MNEMOS sigue el mismo modelo: la ciencia es libre, los servicios premium generan sostenibilidad.</p>
+</div>
+
+<h3>Hay soporte?</h3>
+<p>Actualmente via <span class="ref note">GitHub Issues<span class="tip"><span class="tip-title">Nota Tecnica</span>El repositorio de MNEMOS usa GitHub para gestion de codigo, issues y pull requests. Las contribuciones siguen el flujo GitFlow (main + develop + feature branches) con conventional commits en espanol y squash merge a main.</span></span></span> y comunidad. En fases futuras, la capa Pro incluira soporte prioritario con SLAs definidos.</p>
+
+<h3>Self-hosted o cloud?</h3>
+<p>Self-hosted como <strong>primera opcion y opcion por defecto</strong>. Tus datos, tu servidor, tu control total. Cloud sera una opcion futura para quienes no quieran gestionar infraestructura, pero nunca sera el unico camino. MNEMOS respeta el <span class="ref phil">Principio 3: soberania del dato<span class="tip"><span class="tip-title">Principio Filosofico</span>El Principio 3 de MNEMOS establece que el usuario es dueno absoluto de sus datos. El sistema es custodio, no propietario. Formato .mnemos abierto. Exportacion total en cualquier momento. Si MNEMOS desapareciera manana, tus archivos .md seguirian siendo legibles.<span class="tip-quote">&laquo;Tu memoria no deberia depender de que una empresa siga existiendo.&raquo;</span></span></span>.</p>
+
+</div>
+</section>
+
+<script>
+window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progressBar').style.width = pct + '%';
+});
+</script>
+</body>
+</html>

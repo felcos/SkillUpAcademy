@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MNEMOS — Preguntas Academicas y Cientificas</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0b1120;--bg2:#111b2e;--bg3:#162035;--bg4:#1c2844;--text:#e8edf5;--text2:#9aa5b8;--text3:#6b7a90;--blue:#4d8ef7;--purple:#9775fa;--green:#40c78e;--amber:#f7b955;--rose:#f06595;--cyan:#22d3ee;--teal:#2dd4bf;--border:#1e2d45;--glow-blue:rgba(77,142,247,.12);--glow-purple:rgba(151,117,250,.12);--glow-green:rgba(64,199,142,.12);--glow-amber:rgba(247,185,85,.12);--glow-rose:rgba(240,101,149,.12);--glow-cyan:rgba(34,211,238,.12);--glow-teal:rgba(45,212,191,.12);--radius:14px;--ease:.35s cubic-bezier(.4,0,.2,1)}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(11,17,32,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem}
+.topbar-logo{font-weight:800;font-size:1.1rem;letter-spacing:.12em;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.topbar-nav{display:flex;gap:.15rem;overflow-x:auto}
+.topbar-nav a{color:var(--text3);text-decoration:none;padding:.4rem .55rem;border-radius:8px;font-size:.72rem;white-space:nowrap;transition:var(--ease)}
+.topbar-nav a:hover,.topbar-nav a.active{color:var(--text);background:var(--glow-blue)}
+.progress-bar{position:fixed;top:56px;left:0;height:3px;z-index:101;background:linear-gradient(90deg,var(--blue),var(--purple),var(--green));width:0%;transition:width .15s linear}
+.container{max-width:860px;margin:0 auto;padding:0 1.5rem}
+section{padding:5rem 0}section:first-of-type{padding-top:6rem}
+.label{font-size:.7rem;text-transform:uppercase;letter-spacing:.2em;color:var(--blue);margin-bottom:.75rem;font-weight:600}
+h1{font-size:clamp(2.2rem,4.5vw,3.5rem);font-weight:800;line-height:1.15;margin-bottom:1.5rem}
+h2{font-size:clamp(1.6rem,3vw,2rem);font-weight:700;line-height:1.25;margin-bottom:1rem;margin-top:3rem}
+h2:first-child{margin-top:0}
+h3{font-size:1.15rem;font-weight:600;margin-bottom:.6rem;margin-top:2rem;color:var(--text)}
+p{color:var(--text2);margin-bottom:1.2rem;font-size:1.02rem}
+.big{font-size:1.15rem;color:var(--text)}
+strong{color:var(--text);font-weight:600}
+em.concept{color:var(--amber);font-style:normal;font-weight:600}
+code{background:var(--bg3);padding:.15rem .4rem;border-radius:4px;font-size:.88rem;color:var(--cyan);font-family:'Cascadia Code','Fira Code',monospace}
+pre{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin:1.2rem 0;overflow-x:auto;font-size:.8rem;line-height:1.6;color:var(--text2);font-family:'Cascadia Code','Fira Code',monospace}
+.ref{border-bottom:1.5px dotted var(--purple);cursor:help;position:relative;color:var(--text);transition:color .2s}
+.ref:hover{color:var(--purple)}
+.ref .tip{display:none;position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);width:400px;max-width:90vw;background:var(--bg4);border:1px solid var(--purple);border-radius:var(--radius);padding:1rem 1.2rem;z-index:200;font-size:.82rem;line-height:1.55;color:var(--text2);box-shadow:0 8px 32px rgba(0,0,0,.5);pointer-events:none}
+.ref .tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--purple)}
+.ref:hover .tip,.ref:focus .tip{display:block;pointer-events:auto}
+.ref .tip .tip-title{font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem;color:var(--purple)}
+.ref .tip .tip-cite{color:var(--text3);font-style:italic;font-size:.78rem;margin-top:.5rem;padding-top:.4rem;border-top:1px solid var(--border)}
+.ref .tip .tip-quote{color:var(--amber);font-style:italic;margin:.4rem 0}
+.ref .tip pre{font-size:.72rem;margin:.5rem 0;padding:.6rem}
+.ref.phil{border-bottom-color:var(--amber)}.ref.phil:hover{color:var(--amber)}.ref.phil .tip{border-color:var(--amber)}.ref.phil .tip::after{border-top-color:var(--amber)}.ref.phil .tip .tip-title{color:var(--amber)}
+.ref.note{border-bottom-color:var(--green)}.ref.note:hover{color:var(--green)}.ref.note .tip{border-color:var(--green)}.ref.note .tip::after{border-top-color:var(--green)}.ref.note .tip .tip-title{color:var(--green)}
+.ref.adv{border-bottom-color:var(--cyan)}.ref.adv:hover{color:var(--cyan)}.ref.adv .tip{border-color:var(--cyan)}.ref.adv .tip::after{border-top-color:var(--cyan)}.ref.adv .tip .tip-title{color:var(--cyan)}
+.ref.code{border-bottom-color:var(--teal)}.ref.code:hover{color:var(--teal)}.ref.code .tip{border-color:var(--teal);width:500px}.ref.code .tip::after{border-top-color:var(--teal)}.ref.code .tip .tip-title{color:var(--teal)}
+.ref.integ{border-bottom-color:var(--rose)}.ref.integ:hover{color:var(--rose)}.ref.integ .tip{border-color:var(--rose)}.ref.integ .tip::after{border-top-color:var(--rose)}.ref.integ .tip .tip-title{color:var(--rose)}
+.ref.flux{border-bottom-color:var(--blue)}.ref.flux:hover{color:var(--blue)}.ref.flux .tip{border-color:var(--blue)}.ref.flux .tip::after{border-top-color:var(--blue)}.ref.flux .tip .tip-title{color:var(--blue)}
+.analogy{background:var(--glow-blue);border:1px solid rgba(77,142,247,.25);border-radius:var(--radius);padding:1.5rem 1.75rem;margin:1.5rem 0;position:relative}
+.analogy::before{content:'Analogia';position:absolute;top:-10px;left:16px;background:var(--bg);padding:0 8px;font-size:.7rem;color:var(--blue);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.analogy p{color:var(--text);margin-bottom:0;font-size:.95rem}
+.important{background:var(--glow-amber);border:1px solid rgba(247,185,85,.25);border-radius:var(--radius);padding:1.5rem 1.75rem;margin:1.5rem 0;position:relative}
+.important::before{content:'Clave';position:absolute;top:-10px;left:16px;background:var(--bg);padding:0 8px;font-size:.7rem;color:var(--amber);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.important p{color:var(--text);margin-bottom:0;font-size:.95rem}
+blockquote{border-left:3px solid var(--purple);padding:1.25rem 1.5rem;margin:1.5rem 0;background:var(--glow-purple);border-radius:0 var(--radius) var(--radius) 0}
+blockquote p{color:var(--text);font-style:italic;margin-bottom:.3rem;font-size:1.05rem}
+blockquote cite{color:var(--text3);font-style:normal;font-size:.85rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;margin:1.75rem 0}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;transition:var(--ease)}
+.card:hover{border-color:var(--blue);transform:translateY(-2px)}
+.card-badge{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:10px;font-size:1rem;font-weight:800;margin-bottom:.75rem}
+.card-badge.blue{background:var(--glow-blue);color:var(--blue)}.card-badge.purple{background:var(--glow-purple);color:var(--purple)}.card-badge.green{background:var(--glow-green);color:var(--green)}.card-badge.amber{background:var(--glow-amber);color:var(--amber)}.card-badge.rose{background:var(--glow-rose);color:var(--rose)}.card-badge.cyan{background:var(--glow-cyan);color:var(--cyan)}.card-badge.teal{background:var(--glow-teal);color:var(--teal)}
+.card h4{font-size:1rem;font-weight:600;margin-bottom:.4rem;color:var(--text)}.card p{font-size:.88rem;margin-bottom:0;color:var(--text2)}
+.flow{display:flex;align-items:center;justify-content:center;gap:.4rem;flex-wrap:wrap;margin:1.5rem 0}
+.flow-box{padding:.65rem 1.1rem;border-radius:10px;font-size:.82rem;font-weight:600;text-align:center;min-width:90px}
+.flow-arr{color:var(--text3);font-size:1.1rem}
+.layers{margin:1.5rem 0;display:flex;flex-direction:column;gap:.4rem}
+.layer-row{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;border-radius:var(--radius);background:var(--bg3);border:1px solid var(--border);transition:var(--ease)}
+.layer-row:hover{border-color:var(--blue)}
+.layer-label{font-weight:700;min-width:140px;font-size:.9rem}.layer-text{font-size:.85rem;color:var(--text2)}
+.tbl{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:.88rem}
+.tbl th{text-align:left;padding:.6rem .8rem;background:var(--bg3);color:var(--text);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--border)}
+.tbl td{padding:.6rem .8rem;border-bottom:1px solid var(--border);color:var(--text2)}.tbl tr:hover td{background:rgba(77,142,247,.04)}
+hr.sep{border:none;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:3rem 0}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .5s ease,transform .5s ease}.reveal.on{opacity:1;transform:translateY(0)}
+.hypothesis{background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.2);border-radius:var(--radius);padding:1.5rem 1.75rem;margin:1.5rem 0;position:relative}
+.hypothesis::before{content:'Hipotesis Falsificable';position:absolute;top:-10px;left:16px;background:var(--bg);padding:0 8px;font-size:.7rem;color:var(--cyan);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.hypothesis p{color:var(--text);margin-bottom:0;font-size:.92rem}
+.legend{display:flex;flex-wrap:wrap;gap:1rem;margin:1.5rem 0;padding:1rem 1.25rem;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)}
+.legend-item{display:flex;align-items:center;gap:.4rem;font-size:.8rem}.legend-dot{width:10px;height:10px;border-radius:50%}
+@media(max-width:700px){.topbar-nav{display:none}.cards{grid-template-columns:1fr}.flow{flex-direction:column}.flow-arr{transform:rotate(90deg)}.layer-row{flex-direction:column;gap:.3rem}.layer-label{min-width:auto}.ref .tip{width:280px;left:0;transform:none}.ref .tip::after{left:20px}}
+</style>
+</head>
+<body>
+<div class="topbar">
+<div class="topbar-logo">MNEMOS &middot; FAQ Academico</div>
+<div class="topbar-nav">
+<a href="mnemos-extendida.html">&larr; Volver a la presentacion principal</a>
+<a href="mnemos-faq-general.html">General</a>
+<a href="mnemos-faq-datos.html">Datos</a>
+<a href="mnemos-faq-tecnico.html">Tecnico</a>
+</div></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<section>
+<div class="container">
+<div class="label">FAQ &mdash; Preguntas Academicas y Cientificas</div>
+<h1>Fundamentos cientificos, hipotesis falsificables y tribunal filosofico</h1>
+<p class="big">La ciencia detras de MNEMOS: desde Ebbinghaus (1885) hasta 12 filosofos como jurado.</p>
+
+<div class="legend">
+<span style="font-weight:600;font-size:.85rem;margin-right:.5rem">Tooltips descubribles:</span>
+<div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>Cita cientifica</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Cita filosofica</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Nota tecnica</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--cyan)"></div>Avanzado: Funcionamiento</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--teal)"></div>Avanzado: Codificacion</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--rose)"></div>Avanzado: Integracion</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Proceso: Flujo de datos</div>
+</div>
+
+<hr class="sep">
+
+<h2>Validacion Cientifica</h2>
+
+<h3>Hay articulo academico publicado?</h3>
+<p>No publicado todavia. El diseno esta documentado extensamente en <span class="ref note">CONTEXT.md<span class="tip"><span class="tip-title">Nota Tecnica</span>CONTEXT.md contiene mas de 100 paginas de proceso de diseno: desde la pregunta inicial ("deberia usar Obsidian?") hasta el sistema actual. Incluye los 303 debates con agentes PhD, las correcciones del tribunal filosofico, la auditoria de 101 ingenieros, y las validaciones con 10.000 usuarios simulados. Es la documentacion mas completa del proceso de diseno de MNEMOS.</span></span></span> (100+ paginas de proceso de diseno), pero no se ha sometido a peer review formal. Un articulo academico esta en el roadmap post-MVP, una vez haya datos empiricos de usuarios reales.</p>
+
+<h3>Se ha validado empiricamente?</h3>
+<p>Parcialmente. Se han realizado <span class="ref">simulaciones con 10.000 usuarios<span class="tip"><span class="tip-title">Ciencia Cognitiva</span>Las simulaciones modelaron patrones de uso realistas: frecuencia de creacion de memors, busquedas, revisiones, y creacion de beliefs/decisions. Se midio: precision del CRR, estabilidad de schemas, convergencia del Bayesian engine, y latencia de busqueda. Resultados: CRR supero busqueda por keywords en todos los escenarios. Pero simulaciones no son validacion real &mdash; falta datos de usuarios humanos.<span class="tip-cite">Encuesta simulada 2029 (1K): NPS 52. Encuesta simulada 2031 (10K): NPS 64.</span></span></span> que modelaron patrones de uso realistas. Los resultados son prometedores pero no sustituyen validacion con usuarios humanos reales, que esta pendiente (el proyecto esta en fase MVP).</p>
+
+<hr class="sep">
+
+<h2>Comparacion con Sistemas Existentes</h2>
+
+<h3>En que se diferencia MNEMOS de Anki y SuperMemo?</h3>
+<p>La diferencia fundamental es el modelo cognitivo:</p>
+
+<table class="tbl">
+<thead>
+<tr><th>Aspecto</th><th>Anki / SuperMemo</th><th>MNEMOS</th></tr>
+</thead>
+<tbody>
+<tr><td>Modelo</td><td><span class="ref">Spaced repetition<span class="tip"><span class="tip-title">Ciencia Cognitiva</span>Spaced repetition (Pimsleur 1967, Leitner 1972, Wozniak 1987) programa revisiones a intervalos crecientes basados en rendimiento pasado. Es scheduling: "revisa esta tarjeta en 3 dias". Efectivo para memorizar hechos aislados, pero no modela la estructura del conocimiento ni como las ideas se conectan entre si.<span class="tip-cite">Wozniak, P. (1987). SuperMemo algorithm SM-2.</span></span></span></td><td><span class="ref">Desirable difficulty<span class="tip"><span class="tip-title">Ciencia Cognitiva</span>Bjork (1994) demostro que condiciones que hacen la recuperacion mas dificil (desirable difficulties) mejoran la retencion a largo plazo. MNEMOS implementa esto con la formula: deltaSS = alpha * (1 - RS_actual). Cuando RS es bajo (dificil de recordar), el boost a SS es mayor. No agenda revisiones &mdash; el decay natural + CRR priorizan lo que necesita refuerzo organicamente.<span class="tip-cite">Bjork, R.A. (1994). Memory and Metamemory Considerations in the Training of Human Beings.</span></span></span> + CRR</td></tr>
+<tr><td>Unidad</td><td>Flashcard (pregunta/respuesta)</td><td>Memor (contenido libre con metadata cognitiva)</td></tr>
+<tr><td>Estructura</td><td>Mazos planos</td><td>Schemas jerarquicos (Piaget) + beliefs (Bayes) + decisions (Kahneman)</td></tr>
+<tr><td>Busqueda</td><td>Tags + mazos</td><td>CRR con 9 dimensiones cognitivas</td></tr>
+<tr><td>Scheduling</td><td>Intervalos programados</td><td>Decay natural + priming por uso</td></tr>
+<tr><td>Conexiones</td><td>Ninguna</td><td>Links semanticos, Bus Cognitivo, SAN</td></tr>
+</tbody>
+</table>
+
+<div class="analogy">
+<p><strong>Analogia:</strong> Anki es como una caja de flashcards con un temporizador inteligente. MNEMOS es como un segundo cerebro que modela como piensas, no solo que recuerdas. Anki te dice "revisa esto". MNEMOS te dice "esto es relevante ahora, esta conectado con aquello, y tu creencia sobre este tema ha cambiado desde la ultima vez".</p>
+</div>
+
+<h3>Comparacion con marcos de gestion del conocimiento tradicionales</h3>
+<p>Los <span class="ref phil">KMS tradicionales<span class="tip"><span class="tip-title">Contexto Historico</span>Los Knowledge Management Systems (Nonaka &amp; Takeuchi 1995, Alavi &amp; Leidner 2001) se enfocan en: captura, almacenamiento, y distribucion de conocimiento organizacional. Son estaticos: el conocimiento se deposita y se busca por categorias o keywords. No modelan como el conocimiento evoluciona en la mente del individuo ni como las ideas se conectan emergentemente.<span class="tip-cite">Nonaka, I. &amp; Takeuchi, H. (1995). The Knowledge-Creating Company. Oxford University Press.</span></span></span> (wikis corporativas, bases de conocimiento, SharePoint) tratan el conocimiento como <em class="concept">estatico</em>: se deposita, se categoriza, se busca por keywords. MNEMOS trata el conocimiento como <em class="concept">dinamico</em>: evoluciona (SS/RS), se estructura (schemas), genera certezas (beliefs) e informa decisiones (patterns). La busqueda no es textual sino cognitiva (CRR).</p>
+
+<hr class="sep">
+
+<h2>Las 10 Hipotesis Falsificables</h2>
+
+<div class="important">
+<p><strong>Principio 12 de MNEMOS (Auto-Falsabilidad, propuesto por Popper):</strong> Si una hipotesis se refuta con datos, se actua. No se ignoran datos negativos. Estas 10 hipotesis tienen metricas medibles y criterios de refutacion definidos.</p>
+</div>
+
+<div class="hypothesis">
+<p><strong>H1:</strong> El CRR produce resultados mas relevantes que busqueda simple por keywords. <strong>Metrica:</strong> Usuarios seleccionan resultado CRR sobre keyword search &gt;60% de las veces en test A/B.</p>
+</div>
+
+<div class="hypothesis">
+<p><strong>H2:</strong> El motor Bjork predice correctamente la <span class="ref">accesibilidad de la memoria<span class="tip"><span class="tip-title">Ciencia Cognitiva</span>RS(t) = RS_0 * e^(-(t-t_last)/lambda) donde lambda es proporcional a SS. Si el modelo es correcto, memors con RS predicho bajo deberian ser mas dificiles de recuperar para el usuario (medible via tiempo de reconocimiento en UI). Si no hay correlacion entre RS predicho y dificultad real, H2 se refuta.<span class="tip-cite">Bjork, R.A. &amp; Bjork, E.L. (1992). A New Theory of Disuse and an Old Theory of Stimulus Fluctuation.</span></span></span>. <strong>Metrica:</strong> Correlacion &gt;0.5 entre RS predicho y tiempo de reconocimiento del usuario.</p>
+</div>
+
+<div class="hypothesis">
+<p><strong>H3:</strong> Los schemas de Piaget ayudan al usuario a organizar su conocimiento. <strong>Metrica:</strong> Usuarios con schemas activos encuentran informacion &gt;30% mas rapido que sin schemas.</p>
+</div>
+
+<div class="hypothesis">
+<p><strong>H4:</strong> La auto-inferencia de beliefs mejora el engagement. <strong>Metrica:</strong> Usuarios con beliefs auto-inferidas interactuan &gt;20% mas con el sistema.</p>
+</div>
+
+<div class="hypothesis">
+<p><strong>H5:</strong> encoding_quality correlaciona con calidad real del contenido. <strong>Metrica:</strong> Memors creados con encoding_quality alta son revisitados mas frecuentemente (&gt;15% mas).</p>
+</div>
+
+<div class="hypothesis">
+<p><strong>H6:</strong> Legacy beneficia emocionalmente a los destinatarios. <strong>Metrica:</strong> NPS de Legacy &gt;70 en encuestas post-interaccion.</p>
+</div>
+
+<div class="hypothesis">
+<p><strong>H7:</strong> El Discoverer encuentra conexiones que el usuario valora. <strong>Metrica:</strong> &gt;40% de links sugeridos son aceptados por el usuario.</p>
+</div>
+
+<div class="hypothesis">
+<p><strong>H8:</strong> El Digest mejora la retencion a largo plazo. <strong>Metrica:</strong> Usuarios que leen Digests retienen &gt;25% mas informacion a 30 dias.</p>
+</div>
+
+<div class="hypothesis">
+<p><strong>H9:</strong> El self-clone produce trabajo reconocible por el usuario. <strong>Metrica:</strong> El usuario identifica correctamente output de su clone vs generico &gt;70% de las veces.</p>
+</div>
+
+<div class="hypothesis">
+<p><strong>H10:</strong> MNEMOS reduce onboarding en Enterprise. <strong>Metrica:</strong> Tiempo de onboarding de nuevos empleados se reduce &gt;20% con acceso al Cortex del equipo.</p>
+</div>
+
+<hr class="sep">
+
+<h2>Marcos Teoricos</h2>
+
+<h3>Que es AGM y como lo implementa MNEMOS?</h3>
+<p><span class="ref">AGM<span class="tip"><span class="tip-title">Ciencia Cognitiva</span>Alchourron, Gardenfus y Makinson (1985) formalizaron tres operaciones sobre conjuntos de creencias: <strong>expansion</strong> (anadir nueva creencia sin conflicto), <strong>contraccion</strong> (retirar una creencia), y <strong>revision</strong> (anadir creencia que contradice existente &mdash; requiere resolver conflicto). MNEMOS implementa revision: beliefs nuevas que contradicen existentes crean un ReasoningDivergence que el usuario debe resolver.<span class="tip-cite">Alchourron, C., Gardenfus, P. &amp; Makinson, D. (1985). On the Logic of Theory Change. Journal of Symbolic Logic, 50(2).</span></span></span> (Alchourron-Gardenfus-Makinson, 1985) es el framework formal para revision de creencias. Define tres operaciones: expansion (anadir creencia sin conflicto), contraccion (retirar creencia), y revision (anadir creencia contradictoria). MNEMOS implementa <strong>revision</strong>: cuando una nueva belief contradice una existente, se crea un <code>ReasoningDivergence</code> con el <code>bias_gap</code> (diferencia entre credence_ideal y credence_actual). El usuario elige entre 3 opciones: aceptar la nueva evidencia, mantener su creencia original, o crear una belief revisada que supersede la anterior.</p>
+
+<h3>Que es el modelo de Kegan?</h3>
+<p><span class="ref">Robert Kegan<span class="tip"><span class="tip-title">Ciencia Cognitiva</span>Kegan (1982, 1994) describe 5 ordenes de conciencia que representan niveles progresivos de complejidad cognitiva. Cada orden transforma la relacion sujeto-objeto: lo que era "sujeto" (invisible, parte de ti) se convierte en "objeto" (visible, algo que tienes). MNEMOS rastrea en que orden esta cada Perspective del usuario, permitiendo auto-observacion de la evolucion cognitiva propia.<span class="tip-cite">Kegan, R. (1994). In Over Our Heads: The Mental Demands of Modern Life. Harvard University Press.</span></span></span> (1982, 1994) propuso 5 ordenes de conciencia:</p>
+
+<table class="tbl">
+<thead>
+<tr><th>Orden</th><th>Nombre</th><th>Caracteristica</th><th>En MNEMOS</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>Impulsive</td><td>Gobernado por impulsos inmediatos</td><td>Rastreado en KeeganOrder de Perspective</td></tr>
+<tr><td>2</td><td>Imperial</td><td>Gobernado por propios intereses</td><td>Detectado en patrones de decision</td></tr>
+<tr><td>3</td><td>Socialized</td><td>Gobernado por expectativas externas</td><td>Visible en fuentes de beliefs</td></tr>
+<tr><td>4</td><td>Self-authoring</td><td>Gobernado por sistema de valores propio</td><td>Emergente en schemas estables</td></tr>
+<tr><td>5</td><td>Self-transforming</td><td>Capaz de cuestionar su propio sistema</td><td>Visible en acomodaciones de schemas</td></tr>
+</tbody>
+</table>
+
+<p>MNEMOS rastrea el KeeganOrder en cada <span class="ref code">Perspective<span class="tip"><span class="tip-title">Codigo C#</span>Perspectives son contenedores de schemas que representan visiones del mundo.<pre>public class Perspective
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public string WorldviewDescription { get; set; }
+    public bool Active { get; set; }
+    public Guid? SupersededBy { get; set; }
+    public int KeeganOrder { get; set; } // 1-5
+    public DateTime FormedAt { get; set; }
+    public DateTime? TransformedAt { get; set; }
+}</pre></span></span></span>, permitiendo al usuario observar su propia evolucion cognitiva a lo largo del tiempo.</p>
+
+<h3>Que es el Cortex colectivo?</h3>
+<p>El Cortex es la vision a largo plazo de MNEMOS para <span class="ref phil">conocimiento emergente<span class="tip"><span class="tip-title">Filosofia del Conocimiento</span>El Cortex se inspira en la nocion hegeliana de Geist (espiritu colectivo): conocimiento que emerge de la interaccion entre mentes individuales y trasciende a cualquiera de ellas. No es un promedio ni un consenso &mdash; es sintesis dialectica entre cognitive fingerprints que produce insights que ningun individuo tendria solo.<span class="tip-quote">&laquo;El todo es mas que la suma de sus partes.&raquo; &mdash; Atribuido a Aristoteles</span></span></span>. Opera en 3 capas:</p>
+
+<div class="layers">
+<div class="layer-row">
+<div class="layer-label" style="color:var(--blue)">Capa 1: Curacion</div>
+<div class="layer-text">Cada usuario cura su propio Legacy &mdash; selecciona que conocimiento es valioso para compartir con otros (trust_level 3-4).</div>
+</div>
+<div class="layer-row">
+<div class="layer-label" style="color:var(--purple)">Capa 2: Sintesis</div>
+<div class="layer-text">Los cognitive fingerprints de multiples Legacies "debaten" entre si. Donde hay conflicto, se genera sintesis dialectica. Donde hay acuerdo, se refuerza.</div>
+</div>
+<div class="layer-row">
+<div class="layer-label" style="color:var(--green)">Capa 3: Emergencia</div>
+<div class="layer-text">Conocimiento que no pertenece a ningun individuo emerge de la interaccion. Como un equipo que produce ideas que ningun miembro tendria solo.</div>
+</div>
+</div>
+
+<hr class="sep">
+
+<h2>Desirable Difficulty en Detalle</h2>
+
+<h3>Como implementa MNEMOS el spacing effect?</h3>
+<p>El <span class="ref">spacing effect<span class="tip"><span class="tip-title">Ciencia Cognitiva</span>El meta-analisis de Cepeda et al. (2006) reviso 254 estudios sobre spacing effect y confirmo que distribuir la practica en el tiempo mejora la retencion a largo plazo significativamente. El intervalo optimo depende del intervalo de retencion deseado: para retener 1 mes, el intervalo optimo entre sesiones es ~1 dia. Para 1 ano, ~21 dias.<span class="tip-cite">Cepeda, N.J. et al. (2006). Distributed practice in verbal recall tasks. Review of General Psychology, 10(4), 354-380.</span></span></span> (Cepeda et al. 2006) demuestra que distribuir la practica mejora la retencion. MNEMOS <strong>no agenda revisiones</strong> como Anki. En su lugar:</p>
+
+<div class="layers">
+<div class="layer-row">
+<div class="layer-label" style="color:var(--cyan)">Decay natural</div>
+<div class="layer-text">RS decae exponencialmente con el tiempo: RS(t) = RS_0 * e^(-(t-t_last)/lambda). Esto crea la "necesidad" de recuperacion automaticamente.</div>
+</div>
+<div class="layer-row">
+<div class="layer-label" style="color:var(--purple)">CRR prioriza</div>
+<div class="layer-text">RS es el factor alpha-2 (peso 0.11) del CRR. Memors con RS decayendo aparecen mas en busquedas &mdash; son "lo que necesitas reforzar".</div>
+</div>
+<div class="layer-row">
+<div class="layer-label" style="color:var(--green)">Desirable difficulty</div>
+<div class="layer-text"><span class="ref code">deltaSS = alpha * (1 - RS_actual)<span class="tip"><span class="tip-title">Codigo C#</span>La formula del boost de Storage Strength en el motor Bjork.<pre>// BjorkEngine.cs
+public static double CalculateSsBump(
+    double currentRs,
+    double alpha = 0.3)
+{
+    // RS bajo = dificil de recordar
+    // = mayor boost a SS
+    // RS alto = facil = menor boost
+    return alpha * (1.0 - currentRs);
+}
+// Si RS = 0.2 (dificil): bump = 0.24
+// Si RS = 0.9 (facil):  bump = 0.03</pre></span></span></span>. Cuando RS es bajo (dificil de recordar), el boost a SS es mayor. Cuando RS es alto (facil), el boost es minimo. Esto implementa desirable difficulty de Bjork (1994).</div>
+</div>
+</div>
+
+<div class="important">
+<p><strong>La diferencia clave:</strong> Anki dice "revisa esta tarjeta el jueves". MNEMOS dice "este memor esta decayendo y es relevante para lo que estas buscando ahora &mdash; y cuando lo recuperes, se grabara mas profundo precisamente porque fue dificil recordarlo".</p>
+</div>
+
+<hr class="sep">
+
+<h2>El Tribunal Filosofico</h2>
+
+<h3>Los 12 filosofos y su influencia en MNEMOS</h3>
+<p>Durante el proceso de diseno, 12 filosofos actuaron como <span class="ref phil">jurado adversarial<span class="tip"><span class="tip-title">Proceso de Diseno</span>El tribunal fue una simulacion de debate con 12 agentes representando las perspectivas filosoficas de cada pensador. Se presentaron 7 debates sobre temas criticos del diseno. Cada filosofo argumento desde su tradicion, encontro fallos, y propuso correcciones. El resultado: 4 correcciones fundamentales que cambiaron el diseno de MNEMOS.</span></span></span> del diseno. Cada uno encontro fallos y propuso correcciones:</p>
+
+<table class="tbl">
+<thead>
+<tr><th>Filosofo</th><th>Aportacion a MNEMOS</th></tr>
+</thead>
+<tbody>
+<tr><td><span class="ref phil">Socrates<span class="tip"><span class="tip-title">Contribucion Socratica</span>Socrates cuestiono: "Si el sistema solo muestra lo que el usuario busca, refuerza sus sesgos." Propuso Serendipity Injection (alpha-7 del CRR, peso 0.09): el sistema DEBE mostrar contenido que el usuario NO buscaria. Previene camaras de eco cognitivas. Metodo socrático aplicado al diseno de software.<span class="tip-quote">&laquo;Solo se que no se nada &mdash; y tu sistema deberia recordarte eso.&raquo;</span></span></span></td><td>Serendipity Injection &mdash; prevenir camaras de eco cognitivas</td></tr>
+<tr><td><span class="ref phil">Platon<span class="tip"><span class="tip-title">Contribucion Platonica</span>Platon argumento sobre las Formas ideales: los schemas de MNEMOS deberian aspirar a capturar la esencia abstracta del conocimiento, no solo instancias concretas. Influyo en la jerarquia de schemas (schemas generales contienen sub-schemas) y en la idea de que un schema estable representa un "concepto ideal" destilado de multiples memors.<span class="tip-quote">&laquo;Los schemas son las Formas de tu conocimiento personal.&raquo;</span></span></span></td><td>Jerarquia de schemas como Formas del conocimiento personal</td></tr>
+<tr><td><span class="ref phil">Aristoteles<span class="tip"><span class="tip-title">Contribucion Aristotelica</span>Aristoteles insistio en la praxis: "Basta de theorein. Construid." Tambien influyo en la taxonomia de memor types (su clasificacion del conocimiento) y en la idea de que el conocimiento solo tiene valor cuando se aplica (decisions tracking del motor Kahneman).<span class="tip-quote">&laquo;Es hora de la praxis. Construid y validemos en la realidad.&raquo;</span></span></span></td><td>Priorizar la implementacion. Taxonomia de conocimiento.</td></tr>
+<tr><td><span class="ref phil">Descartes<span class="tip"><span class="tip-title">Contribucion Cartesiana</span>Descartes propuso la duda metodica aplicada al sistema: cada componente debe justificar su existencia. Si un motor o agente no aporta valor demostrable, se elimina. Influyo en el principio de que cada motor debe ser ortogonal &mdash; eliminar uno deja un vacio que los otros no cubren.<span class="tip-quote">&laquo;Dubito, ergo cogito &mdash; cada pieza del sistema debe sobrevivir a la duda.&raquo;</span></span></span></td><td>Duda metodica &mdash; cada componente justifica su existencia</td></tr>
+<tr><td><span class="ref phil">Kant<span class="tip"><span class="tip-title">Contribucion Kantiana</span>Kant corrigio la terminologia: propuso llamar "reasoning_divergences" en lugar de "biases" al gap entre credence_ideal y credence_actual. Los sesgos no son defectos sino divergencias en el razonamiento que pueden tener causas validas. Influyo en que el sistema informe sin juzgar.<span class="tip-quote">&laquo;No son sesgos &mdash; son divergencias del razonamiento que merecen examen, no condena.&raquo;</span></span></span></td><td>Renombrar "biases" a "reasoning_divergences" &mdash; informar sin juzgar</td></tr>
+<tr><td><span class="ref phil">Hegel<span class="tip"><span class="tip-title">Contribucion Hegeliana</span>Hegel influyo en el Cortex colectivo: la dialectica tesis-antitesis-sintesis aplicada a cognitive fingerprints. Cuando dos Legacies tienen beliefs contradictorias, el Cortex no elige uno &mdash; sintetiza una nueva perspectiva que trasciende ambas. El Geist (espiritu colectivo) emerge de la interaccion.<span class="tip-quote">&laquo;La verdad es el todo &mdash; y el todo emerge del dialogo entre partes.&raquo;</span></span></span></td><td>Dialectica en el Cortex colectivo &mdash; sintesis entre Legacies</td></tr>
+<tr><td><span class="ref phil">Hume<span class="tip"><span class="tip-title">Contribucion Humeana</span>Hume advirtio sobre el problema de la induccion: correlacion no implica causalidad. Influyo en que el motor Bayesian sea transparente sobre sus niveles de certeza y en que las ReasoningDivergences muestren la evidencia raw, no solo conclusiones. El usuario siempre ve los datos, no solo la interpretacion.<span class="tip-quote">&laquo;No asumais que porque dos cosas correlacionan, una causa la otra.&raquo;</span></span></span></td><td>Transparencia en evidencia &mdash; mostrar datos, no solo conclusiones</td></tr>
+<tr><td><strong>Wittgenstein</strong></td><td>Limites del lenguaje &mdash; embeddings capturan mas que palabras</td></tr>
+<tr><td><span class="ref phil">Popper<span class="tip"><span class="tip-title">Contribucion Popperiana</span>Popper propuso el Principio 12 de MNEMOS: Auto-Falsabilidad. Exigio 10 hipotesis falsificables con metricas medibles (H1-H10). Si los datos refutan una hipotesis, MNEMOS debe actuar &mdash; modificar el motor, cambiar los pesos del CRR, o eliminar un componente. La ciencia no es dogma.<span class="tip-quote">&laquo;En la medida en que un enunciado cientifico habla de la realidad, debe ser falsable.&raquo;</span><span class="tip-cite">Popper, K. (1935). Logik der Forschung.</span></span></span></td><td>Principio 12: Auto-Falsabilidad. 10 hipotesis con metricas.</td></tr>
+<tr><td><strong>Husserl</strong></td><td>Fenomenologia &mdash; la experiencia subjetiva importa tanto como los datos</td></tr>
+<tr><td><span class="ref phil">Spinoza<span class="tip"><span class="tip-title">Contribucion Spinoziana</span>Spinoza propuso el Cognitive Event Bus: un sistema unificado donde todos los eventos fluyen y se interconectan. Como la Sustancia unica de Spinoza que subyace a todos los atributos, el Bus es el medio comun por el que todos los motores se comunican. Tambien insistio en Single Source of Truth para el estado del sistema.<span class="tip-quote">&laquo;Todo esta conectado en una Sustancia unica &mdash; vuestro Bus Cognitivo ES esa sustancia.&raquo;</span></span></span></td><td>Cognitive Event Bus como sustancia unificadora. Single Source of Truth.</td></tr>
+<tr><td><strong>Leibniz</strong></td><td>Monadas &mdash; cada memor es una unidad autonoma con ventana al todo</td></tr>
+</tbody>
+</table>
+
+<div class="analogy">
+<p><strong>Las 4 correcciones fundamentales del tribunal:</strong> (1) Serendipity Injection de Socrates/Popper, (2) Cognitive Event Bus de 10 eventos de Spinoza, (3) "reasoning_divergences" no "biases" de Kant, (4) Principio de Auto-falsabilidad de Popper. Cada una cambio el diseno de MNEMOS de forma irreversible.</p>
+</div>
+
+</div>
+</section>
+
+<script>
+window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progressBar').style.width = pct + '%';
+});
+</script>
+</body>
+</html>
