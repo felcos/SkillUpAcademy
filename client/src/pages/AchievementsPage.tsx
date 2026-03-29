@@ -25,14 +25,15 @@ export default function AchievementsPage() {
       <p className="text-gray-400 mb-10">{desbloqueados} de {total} desbloqueados</p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {logros?.map((logro: LogroDto) => (
+        {logros?.map((logro: LogroDto, index: number) => (
           <div
             key={logro.id}
-            className={`rounded-2xl p-6 border transition-all ${
+            className={`rounded-2xl p-6 border transition-all duration-200 hover:shadow-lg hover:shadow-yellow-500/5 stagger-item ${
               logro.desbloqueado
                 ? 'bg-[#25254A] border-yellow-500/20'
-                : 'bg-[#25254A]/50 border-white/5 opacity-60'
+                : 'bg-[#25254A]/50 border-white/5 opacity-50 grayscale'
             }`}
+            style={{ animationDelay: `${index * 40}ms` }}
           >
             <div className="flex items-start justify-between mb-3">
               <span className="text-3xl">{logro.icono}</span>

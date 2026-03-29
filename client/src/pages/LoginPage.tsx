@@ -37,7 +37,7 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="bg-[#25254A] rounded-2xl p-8 space-y-5">
           {error && (
-            <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg text-sm">
+            <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg text-sm animate-slide-up">
               {error}
             </div>
           )}
@@ -48,7 +48,7 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-[#1A1A2E] border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:border-[#3498DB] focus:outline-none transition-colors"
+              className="w-full bg-[#1A1A2E] border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:border-[#3498DB] focus:outline-none focus:ring-2 focus:ring-[#3498DB]/20 transition-all"
               placeholder="tu@email.com"
               required
             />
@@ -61,7 +61,7 @@ export default function LoginPage() {
                 type={mostrarContrasena ? 'text' : 'password'}
                 value={contrasena}
                 onChange={(e) => setContrasena(e.target.value)}
-                className="w-full bg-[#1A1A2E] border border-white/10 rounded-lg px-4 py-2.5 pr-11 text-white placeholder-gray-500 focus:border-[#3498DB] focus:outline-none transition-colors"
+                className="w-full bg-[#1A1A2E] border border-white/10 rounded-lg px-4 py-2.5 pr-11 text-white placeholder-gray-500 focus:border-[#3498DB] focus:outline-none focus:ring-2 focus:ring-[#3498DB]/20 transition-all"
                 placeholder="••••••••"
                 required
               />
@@ -79,7 +79,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={cargando}
-            className="w-full bg-[#3498DB] hover:bg-[#2980B9] disabled:opacity-50 text-white font-medium py-2.5 rounded-lg transition-colors"
+            className="w-full bg-[#3498DB] hover:bg-[#2980B9] disabled:opacity-50 text-white font-medium py-2.5 rounded-lg transition-all active:scale-[0.97]"
           >
             {cargando ? 'Entrando...' : 'Iniciar sesión'}
           </button>

@@ -141,7 +141,7 @@ export default function ChatPage() {
               key={opcion.tipo}
               onClick={() => iniciarSesion(opcion.tipo)}
               disabled={iniciando}
-              className="bg-[#25254A] rounded-xl p-6 border border-white/5 hover:border-[#3498DB]/40 hover:bg-[#3498DB]/5 transition-all text-left disabled:opacity-50"
+              className="bg-[#25254A] rounded-xl p-6 border border-white/5 hover:border-[#3498DB]/40 hover:bg-[#3498DB]/5 transition-all duration-200 text-left disabled:opacity-50 active:scale-[0.97]"
             >
               <span className="text-3xl block mb-3">{opcion.icono}</span>
               <h3 className="font-semibold text-sm mb-1">{opcion.titulo}</h3>
@@ -185,9 +185,9 @@ export default function ChatPage() {
             </div>
             <div className="bg-[#25254A] border border-white/5 rounded-2xl px-4 py-3">
               <div className="flex gap-1">
-                <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0ms' }} />
+                <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '200ms' }} />
+                <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '400ms' }} />
               </div>
             </div>
           </div>
@@ -201,7 +201,7 @@ export default function ChatPage() {
             <button
               key={i}
               onClick={() => { setInput(sug); }}
-              className="flex-shrink-0 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-[#3498DB]/10 border border-[#3498DB]/20 text-[#3498DB] hover:bg-[#3498DB]/20 transition-colors"
+              className="flex-shrink-0 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-[#3498DB]/10 border border-[#3498DB]/20 text-[#3498DB] hover:bg-[#3498DB]/20 transition-all active:scale-[0.95]"
             >
               <Sparkles size={12} />
               {sug}
@@ -218,12 +218,12 @@ export default function ChatPage() {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleEnviar()}
           placeholder="Escribe tu mensaje..."
-          className="flex-1 bg-[#25254A] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-[#3498DB] focus:outline-none transition-colors"
+          className="flex-1 bg-[#25254A] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-[#3498DB] focus:outline-none focus:ring-2 focus:ring-[#3498DB]/20 transition-all"
         />
         <button
           onClick={handleEnviar}
           disabled={!input.trim() || enviando}
-          className="px-4 rounded-xl bg-[#3498DB] hover:bg-[#2980B9] text-white disabled:opacity-30 transition-colors"
+          className="px-4 rounded-xl bg-[#3498DB] hover:bg-[#2980B9] text-white disabled:opacity-30 transition-all active:scale-[0.93]"
         >
           <Send size={18} />
         </button>

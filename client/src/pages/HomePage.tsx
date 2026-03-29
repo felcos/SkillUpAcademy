@@ -42,15 +42,15 @@ export default function HomePage() {
           </p>
           <div className="flex justify-center gap-4">
             {estaAutenticado ? (
-              <Link to="/areas" className="bg-[#3498DB] hover:bg-[#2980B9] text-white font-medium px-8 py-3 rounded-xl transition-colors text-lg">
+              <Link to="/areas" className="bg-[#3498DB] hover:bg-[#2980B9] text-white font-medium px-8 py-3 rounded-xl transition-all active:scale-[0.97] text-lg">
                 Ir a mis áreas
               </Link>
             ) : (
               <>
-                <Link to="/registro" className="bg-[#3498DB] hover:bg-[#2980B9] text-white font-medium px-8 py-3 rounded-xl transition-colors text-lg">
+                <Link to="/registro" className="bg-[#3498DB] hover:bg-[#2980B9] text-white font-medium px-8 py-3 rounded-xl transition-all active:scale-[0.97] text-lg">
                   Empezar gratis
                 </Link>
-                <Link to="/login" className="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium px-8 py-3 rounded-xl transition-colors text-lg">
+                <Link to="/login" className="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium px-8 py-3 rounded-xl transition-all active:scale-[0.97] text-lg">
                   Iniciar sesión
                 </Link>
               </>
@@ -63,8 +63,8 @@ export default function HomePage() {
       <section className="max-w-6xl mx-auto px-4 py-16">
         <h2 className="text-3xl font-bold text-center mb-12">12 áreas de habilidades profesionales</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {areas.map((area) => (
-            <div key={area.titulo} className="bg-[#25254A] rounded-2xl p-6 border border-white/5 hover:border-white/10 transition-all hover:transform hover:-translate-y-1">
+          {areas.map((area, index) => (
+            <div key={area.titulo} className="bg-[#25254A] rounded-2xl p-6 border border-white/5 hover:border-white/15 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#3498DB]/5 stagger-item" style={{ animationDelay: `${index * 50}ms` }}>
               <div className="text-4xl mb-4">{area.icono}</div>
               <h3 className="text-lg font-semibold mb-2">{area.titulo}</h3>
               <p className="text-gray-400 text-sm">{area.desc}</p>
@@ -79,21 +79,21 @@ export default function HomePage() {
       {/* Features */}
       <section className="max-w-5xl mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="text-center">
+          <div className="text-center stagger-item" style={{ animationDelay: '0ms' }}>
             <div className="w-14 h-14 rounded-2xl bg-[#3498DB]/10 flex items-center justify-center mx-auto mb-4">
               <BookOpen className="text-[#3498DB]" size={28} />
             </div>
             <h3 className="font-semibold mb-2">Lecciones con Aria</h3>
             <p className="text-gray-400 text-sm">Avatar IA que enseña con presentaciones visuales, diagramas y ejemplos prácticos</p>
           </div>
-          <div className="text-center">
+          <div className="text-center stagger-item" style={{ animationDelay: '60ms' }}>
             <div className="w-14 h-14 rounded-2xl bg-[#9B59B6]/10 flex items-center justify-center mx-auto mb-4">
               <Target className="text-[#9B59B6]" size={28} />
             </div>
             <h3 className="font-semibold mb-2">Escenarios reales</h3>
             <p className="text-gray-400 text-sm">Practica decisiones en situaciones laborales realistas con feedback inmediato</p>
           </div>
-          <div className="text-center">
+          <div className="text-center stagger-item" style={{ animationDelay: '120ms' }}>
             <div className="w-14 h-14 rounded-2xl bg-[#27AE60]/10 flex items-center justify-center mx-auto mb-4">
               <Brain className="text-[#27AE60]" size={28} />
             </div>

@@ -29,9 +29,9 @@ export default function DashboardPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
-        <StatCard icono={<Star size={22} className="text-yellow-400" />} valor={dashboard.puntosTotales} etiqueta="Puntos totales" />
-        <StatCard icono={<Flame size={22} className="text-orange-400" />} valor={dashboard.rachaDias} etiqueta="Días de racha" />
-        <StatCard icono={<BookOpen size={22} className="text-[#3498DB]" />} valor={dashboard.leccionesCompletadas} etiqueta="Lecciones" />
+        <StatCard className="stagger-item" style={{ animationDelay: '0ms' }} icono={<Star size={22} className="text-yellow-400" />} valor={dashboard.puntosTotales} etiqueta="Puntos totales" />
+        <StatCard className="stagger-item" style={{ animationDelay: '60ms' }} icono={<Flame size={22} className="text-orange-400" />} valor={dashboard.rachaDias} etiqueta="Días de racha" />
+        <StatCard className="stagger-item" style={{ animationDelay: '120ms' }} icono={<BookOpen size={22} className="text-[#3498DB]" />} valor={dashboard.leccionesCompletadas} etiqueta="Lecciones" />
       </div>
 
       {/* Progreso general */}
@@ -45,8 +45,8 @@ export default function DashboardPage() {
         </div>
         <div className="h-3 rounded-full bg-white/5">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-[#3498DB] to-[#9B59B6] transition-all duration-700"
-            style={{ width: `${porcentajeGeneral}%` }}
+            className="h-full rounded-full bg-gradient-to-r from-[#3498DB] to-[#9B59B6]"
+            style={{ width: `${porcentajeGeneral}%`, transition: 'width 600ms cubic-bezier(0.23, 1, 0.32, 1)' }}
           />
         </div>
         <p className="text-xs text-gray-500 mt-2">
@@ -57,8 +57,8 @@ export default function DashboardPage() {
       {/* Progreso por área */}
       <h2 className="font-semibold mb-4">Progreso por área</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {dashboard.resumenAreas.map((area) => (
-          <div key={area.slug} className="bg-[#25254A] rounded-xl p-5 border border-white/5">
+        {dashboard.resumenAreas.map((area, index) => (
+          <div key={area.slug} className="bg-[#25254A] rounded-xl p-5 border border-white/5 stagger-item" style={{ animationDelay: `${index * 60}ms` }}>
             <div className="flex items-center gap-3 mb-3">
               <span className="text-2xl">{area.icono}</span>
               <div className="flex-1">
@@ -69,8 +69,8 @@ export default function DashboardPage() {
             </div>
             <div className="h-1.5 rounded-full bg-white/5">
               <div
-                className="h-full rounded-full bg-[#3498DB] transition-all duration-500"
-                style={{ width: `${area.porcentaje}%` }}
+                className="h-full rounded-full bg-[#3498DB]"
+                style={{ width: `${area.porcentaje}%`, transition: 'width 500ms cubic-bezier(0.23, 1, 0.32, 1)' }}
               />
             </div>
           </div>
@@ -80,9 +80,9 @@ export default function DashboardPage() {
   );
 }
 
-function StatCard({ icono, valor, etiqueta }: { icono: React.ReactNode; valor: number; etiqueta: string }) {
+function StatCard({ icono, valor, etiqueta, className = '', style }: { icono: React.ReactNode; valor: number; etiqueta: string; className?: string; style?: React.CSSProperties }) {
   return (
-    <div className="bg-[#25254A] rounded-xl p-4 border border-white/5">
+    <div className={`bg-[#25254A] rounded-xl p-4 border border-white/5 ${className}`} style={style}>
       <div className="mb-2">{icono}</div>
       <p className="text-2xl font-bold">{valor.toLocaleString()}</p>
       <p className="text-xs text-gray-500">{etiqueta}</p>

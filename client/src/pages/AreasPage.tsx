@@ -30,11 +30,12 @@ export default function AreasPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {areas?.map((area: AreaHabilidad) => (
+        {areas?.map((area: AreaHabilidad, index: number) => (
           <Link
             key={area.id}
             to={`/areas/${area.slug}`}
-            className="group bg-[#25254A] rounded-2xl p-6 border border-white/5 hover:border-white/15 transition-all hover:-translate-y-1"
+            className="group bg-[#25254A] rounded-2xl p-6 border border-white/5 hover:border-white/15 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#3498DB]/5 active:scale-[0.98] stagger-item"
+            style={{ animationDelay: `${index * 50}ms` }}
           >
             <div className="flex items-start justify-between mb-4">
               <span className="text-4xl">{area.icono}</span>
@@ -51,8 +52,8 @@ export default function AreasPage() {
                 </div>
                 <div className="h-1.5 rounded-full bg-white/5">
                   <div
-                    className="h-full rounded-full transition-all duration-500"
-                    style={{ width: `${area.progreso.porcentaje}%`, backgroundColor: area.colorPrimario }}
+                    className="h-full rounded-full"
+                    style={{ width: `${area.progreso.porcentaje}%`, backgroundColor: area.colorPrimario, transition: 'width 500ms cubic-bezier(0.23, 1, 0.32, 1)' }}
                   />
                 </div>
               </div>

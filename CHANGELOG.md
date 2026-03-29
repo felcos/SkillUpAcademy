@@ -1,5 +1,39 @@
 # Changelog
 
+## [2026-03-29] — Sesión 9
+
+### feat: rediseño UI según principios Emil Kowalski (Design Engineering)
+- **Custom easing curves** — Variables CSS `--ease-out`, `--ease-in-out`, `--ease-spring` con cubic-bezier optimizadas para UI responsiva
+- **Active states en todos los botones** — `scale(0.97)` en `:active` para feedback táctil en CTAs, navegación, formularios, chat y lecciones
+- **Duraciones reducidas** — Animaciones de 500ms rebajadas a 250-300ms con curvas ease-out fuertes
+- **Stagger animations** — Entrada escalonada (40-60ms entre items) en grids de áreas, logros, dashboard y features
+- **Navbar mejorada** — `backdrop-blur-xl` semi-transparente + indicador visual de ruta activa (`font-medium` + color)
+- **Focus rings** — Inputs con `ring-2 ring-[#3498DB]/20` para mejor feedback visual y accesibilidad
+- **Hover mejorado** — Tarjetas con `shadow-lg shadow-[#3498DB]/5` sutil, duraciones de 200ms
+- **Errores animados** — Mensajes de error entran con `animate-slide-up` en vez de aparecer de golpe
+- **Typing dots** — Cambiado de `bounce` agresivo a `pulse` suave en el chat
+- **Spinner más rápido** — De 1s a 0.6s (percepción de carga más rápida)
+- **Logros bloqueados** — Añadido `grayscale` para distinguir mejor de los desbloqueados
+- **Progress bars** — Transiciones con `cubic-bezier(0.23, 1, 0.32, 1)` para sensación de velocidad
+- **Accesibilidad** — `prefers-reduced-motion: reduce` desactiva animaciones, hover solo en `(hover: hover) and (pointer: fine)`
+- **zoomIn corregido** — De `scale(0.8)` a `scale(0.95)` (nada aparece desde tan pequeño en el mundo real)
+- **slideUp/slideLeft** — Movimiento reducido de 50px/100% a 12px/30px (más sutil y profesional)
+
+### Archivos modificados
+- `client/src/index.css` — Variables easing, reduced-motion, hover queries, press-scale, stagger
+- `client/tailwind.config.js` — Duraciones, curvas, keyframes corregidos
+- `client/src/components/layout/Navbar.tsx` — Backdrop-blur, ruta activa, active states
+- `client/src/pages/HomePage.tsx` — Stagger grid, active CTAs, hover mejorado
+- `client/src/pages/LoginPage.tsx` — Focus rings, error animado, active submit
+- `client/src/pages/RegisterPage.tsx` — Focus rings, error animado, active submit
+- `client/src/pages/DashboardPage.tsx` — Progress bars, stagger, StatCard mejorado
+- `client/src/pages/AreasPage.tsx` — Hover shadow, stagger, active, progress bars
+- `client/src/pages/AchievementsPage.tsx` — Stagger, grayscale, hover shadow
+- `client/src/pages/LessonPage.tsx` — Active buttons, spinner rápido
+- `client/src/pages/ChatPage.tsx` — Typing pulse, active buttons, focus ring input
+
+---
+
 ## [2026-03-24] — Sesión 8
 
 ### feat: 6 nuevas áreas de habilidades (12 áreas totales, 180 lecciones nuevas)

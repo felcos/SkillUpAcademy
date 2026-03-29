@@ -1,10 +1,13 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { BookOpen, LayoutDashboard, Trophy, LogOut, Shield } from 'lucide-react';
 
 export default function Navbar() {
   const { usuario, estaAutenticado, esAdmin, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const esRutaActiva = (ruta: string) => location.pathname === ruta || location.pathname.startsWith(ruta + '/');
 
   const handleLogout = () => {
     logout();
@@ -12,7 +15,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-[#25254A] border-b border-[#3498DB]/20 sticky top-0 z-50">
+    <nav className="bg-[#25254A]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 text-xl font-bold">
           <span className="text-2xl">🚀</span>
@@ -23,15 +26,15 @@ export default function Navbar() {
 
         {estaAutenticado ? (
           <div className="flex items-center gap-6">
-            <Link to="/areas" className="flex items-center gap-1.5 text-gray-300 hover:text-white transition-colors text-sm">
+            <Link to="/areas" className={`flex items-center gap-1.5 text-sm transition-colors ${esRutaActiva('/areas') ? 'text-white font-medium' : 'text-gray-300 hover:text-white'}`}>
               <BookOpen size={18} />
               <span className="hidden sm:inline">Áreas</span>
             </Link>
-            <Link to="/dashboard" className="flex items-center gap-1.5 text-gray-300 hover:text-white transition-colors text-sm">
+            <Link to="/dashboard" className={`flex items-center gap-1.5 text-sm transition-colors ${esRutaActiva('/dashboard') ? 'text-white font-medium' : 'text-gray-300 hover:text-white'}`}>
               <LayoutDashboard size={18} />
               <span className="hidden sm:inline">Dashboard</span>
             </Link>
-            <Link to="/logros" className="flex items-center gap-1.5 text-gray-300 hover:text-white transition-colors text-sm">
+            <Link to="/logros" className={`flex items-center gap-1.5 text-sm transition-colors ${esRutaActiva('/logros') ? 'text-white font-medium' : 'text-gray-300 hover:text-white'}`}>
               <Trophy size={18} />
               <span className="hidden sm:inline">Logros</span>
             </Link>
@@ -50,7 +53,7 @@ export default function Navbar() {
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#3498DB] to-[#9B59B6] flex items-center justify-center text-sm font-bold">
                 {usuario?.nombre?.[0]}
               </div>
-              <button onClick={handleLogout} className="text-gray-400 hover:text-red-400 transition-colors" title="Cerrar sesión">
+              <button onClick={handleLogout} className="text-gray-400 hover:text-red-400 transition-all active:scale-90" title="Cerrar sesión">
                 <LogOut size={18} />
               </button>
             </div>
@@ -60,7 +63,7 @@ export default function Navbar() {
             <Link to="/login" className="text-gray-300 hover:text-white transition-colors text-sm px-3 py-1.5">
               Entrar
             </Link>
-            <Link to="/registro" className="bg-[#3498DB] hover:bg-[#2980B9] text-white text-sm px-4 py-1.5 rounded-lg transition-colors">
+            <Link to="/registro" className="bg-[#3498DB] hover:bg-[#2980B9] text-white text-sm px-4 py-1.5 rounded-lg transition-all active:scale-[0.97]">
               Registrarse
             </Link>
           </div>

@@ -50,7 +50,7 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSubmit} className="bg-[#25254A] rounded-2xl p-8 space-y-4">
           {error && (
-            <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg text-sm">
+            <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg text-sm animate-slide-up">
               {error}
             </div>
           )}
@@ -59,19 +59,19 @@ export default function RegisterPage() {
             <div>
               <label className="block text-sm text-gray-300 mb-1.5">Nombre</label>
               <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)}
-                className="w-full bg-[#1A1A2E] border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-[#3498DB] focus:outline-none transition-colors" required />
+                className="w-full bg-[#1A1A2E] border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-[#3498DB] focus:outline-none focus:ring-2 focus:ring-[#3498DB]/20 transition-all" required />
             </div>
             <div>
               <label className="block text-sm text-gray-300 mb-1.5">Apellidos</label>
               <input type="text" value={apellidos} onChange={(e) => setApellidos(e.target.value)}
-                className="w-full bg-[#1A1A2E] border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-[#3498DB] focus:outline-none transition-colors" required />
+                className="w-full bg-[#1A1A2E] border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-[#3498DB] focus:outline-none focus:ring-2 focus:ring-[#3498DB]/20 transition-all" required />
             </div>
           </div>
 
           <div>
             <label className="block text-sm text-gray-300 mb-1.5">Email</label>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-[#1A1A2E] border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-[#3498DB] focus:outline-none transition-colors" required />
+              className="w-full bg-[#1A1A2E] border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-[#3498DB] focus:outline-none focus:ring-2 focus:ring-[#3498DB]/20 transition-all" required />
           </div>
 
           <div>
@@ -81,7 +81,7 @@ export default function RegisterPage() {
                 type={mostrarContrasena ? 'text' : 'password'}
                 value={contrasena}
                 onChange={(e) => setContrasena(e.target.value)}
-                className="w-full bg-[#1A1A2E] border border-white/10 rounded-lg px-4 py-2.5 pr-11 text-white focus:border-[#3498DB] focus:outline-none transition-colors"
+                className="w-full bg-[#1A1A2E] border border-white/10 rounded-lg px-4 py-2.5 pr-11 text-white focus:border-[#3498DB] focus:outline-none focus:ring-2 focus:ring-[#3498DB]/20 transition-all"
                 placeholder="Mínimo 8 caracteres, mayúscula, número y símbolo"
                 required minLength={8}
               />
@@ -104,7 +104,7 @@ export default function RegisterPage() {
                 type={mostrarContrasena ? 'text' : 'password'}
                 value={confirmarContrasena}
                 onChange={(e) => setConfirmarContrasena(e.target.value)}
-                className="w-full bg-[#1A1A2E] border border-white/10 rounded-lg px-4 py-2.5 pr-11 text-white focus:border-[#3498DB] focus:outline-none transition-colors"
+                className="w-full bg-[#1A1A2E] border border-white/10 rounded-lg px-4 py-2.5 pr-11 text-white focus:border-[#3498DB] focus:outline-none focus:ring-2 focus:ring-[#3498DB]/20 transition-all"
                 required
               />
               <button
@@ -119,7 +119,7 @@ export default function RegisterPage() {
           </div>
 
           <button type="submit" disabled={cargando}
-            className="w-full bg-[#3498DB] hover:bg-[#2980B9] disabled:opacity-50 text-white font-medium py-2.5 rounded-lg transition-colors">
+            className="w-full bg-[#3498DB] hover:bg-[#2980B9] disabled:opacity-50 text-white font-medium py-2.5 rounded-lg transition-all active:scale-[0.97]">
             {cargando ? 'Creando cuenta...' : 'Crear cuenta'}
           </button>
 
