@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { type Escena, ttsApi } from '../lib/api';
+import { limpiarParaTts } from '../lib/ttsUtils';
 import { useLeccion, useEscenas, useIniciarLeccion, useCompletarLeccion } from '../hooks/useLessons';
 import { useConfiguracionTts } from '../hooks/useTts';
 import { ChevronLeft, ChevronRight, Volume2, VolumeX } from 'lucide-react';
@@ -50,19 +51,22 @@ export default function LessonPage() {
     detenerAudio();
 
     const reproducir = async () => {
+      const textoLimpio = limpiarParaTts(escena.guionAria);
+      if (!textoLimpio) return;
+
       const proveedorPreferido = configTts?.proveedorPreferido ?? 'WebSpeechApi';
       const velocidad = configTts?.velocidadVoz ?? 0.95;
 
       // Si el proveedor es WebSpeechApi o no hay config, usar directamente el navegador
       if (proveedorPreferido === 'WebSpeechApi') {
-        reproducirConWebSpeech(escena.guionAria, velocidad, cancelado);
+        reproducirConWebSpeech(textoLimpio, velocidad, cancelado);
         return;
       }
 
       // Intentar sintetizar con el servidor
       try {
         const resultado = await ttsApi.sintetizar(
-          escena.guionAria,
+          textoLimpio,
           configTts?.vozSeleccionada ?? undefined,
           velocidad
         );
@@ -76,16 +80,16 @@ export default function LessonPage() {
           audio.onended = () => { if (!cancelado) setHablando(false); };
           audio.onerror = () => {
             // Fallback a Web Speech si falla la reproducción
-            if (!cancelado) reproducirConWebSpeech(escena.guionAria, velocidad, cancelado);
+            if (!cancelado) reproducirConWebSpeech(textoLimpio, velocidad, cancelado);
           };
           await audio.play();
         } else {
           // Servidor indicó fallback
-          reproducirConWebSpeech(escena.guionAria, velocidad, cancelado);
+          reproducirConWebSpeech(textoLimpio, velocidad, cancelado);
         }
       } catch {
         // Error de red/servidor, fallback a Web Speech
-        if (!cancelado) reproducirConWebSpeech(escena.guionAria, velocidad, cancelado);
+        if (!cancelado) reproducirConWebSpeech(textoLimpio, velocidad, cancelado);
       }
     };
 

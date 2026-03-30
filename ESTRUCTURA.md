@@ -5,7 +5,7 @@
 SkillUpAcademy.Api → Core, Infrastructure
 SkillUpAcademy.Infrastructure → Core
 SkillUpAcademy.Core → (ninguna)
-SkillUpAcademy.UnitTests → Core, Infrastructure
+SkillUpAcademy.UnitTests → Core, Infrastructure, Api
 SkillUpAcademy.IntegrationTests → Api
 client/ → React + TypeScript + Vite + Tailwind
 ```
@@ -49,6 +49,7 @@ client/ → React + TypeScript + Vite + Tailwind
 | IServicioTts | ServicioTts | Scoped (HttpClient) |
 | IServicioAdmin | ServicioAdmin | Scoped |
 | IServicioAdminTts | ServicioAdminTts | Scoped |
+| IServicioNotificaciones | ServicioNotificaciones | Scoped |
 
 ## Repositorios
 | Interfaz | Implementacion |
@@ -72,6 +73,7 @@ client/ → React + TypeScript + Vite + Tailwind
 | AiChatController | api/v1/ai | session/start, session/{id}/message, session/{id}/message/stream (SSE), history, end | Si |
 | AdminController | api/v1/admin | resumen, usuarios, estadisticas-contenido, usuarios/{id}/alternar-bloqueo-ia, tts/proveedores (CRUD+alternar) | Si (Admin) |
 | TtsController | api/v1/tts | voces, configuracion, preferencias, sintetizar, preview/{proveedor}/{id} | Si |
+| NotificacionesHub | /hubs/notificaciones | SignalR Hub (LogroDesbloqueado, LeccionCompletada, RachaActualizada) | Si (JWT query string) |
 
 ## Frontend — client/src/
 ```
@@ -98,20 +100,23 @@ client/src/
 ├── components/
 │   ├── layout/ (Navbar, Layout, ProtectedRoute, ProtectedAdminRoute)
 │   ├── ui/ (LoadingSpinner, ErrorMessage)
-│   └── avatar/ (AvatarAria — SVG animado con 4 estados)
-├── hooks/ (useSkills, useLessons, useProgress, useChat, useAdmin, useTts)
+│   ├── avatar/ (AvatarAria — SVG animado con 5 estados: idle, hablando, pensando, saludando, celebrando)
+│   └── NotificacionToast.tsx          — Toast notificaciones con auto-dismiss 5s
+├── hooks/ (useSkills, useLessons, useProgress, useChat, useAdmin, useTts, useNotificaciones)
 ├── contexts/ (AuthContext)
-├── lib/ (api.ts — 34 endpoints tipados)
+├── lib/
+│   ├── api.ts                         — 34 endpoints tipados
+│   └── ttsUtils.ts                    — Limpieza markdown para TTS
 └── test/ (setup.ts, utils.tsx)
 ```
 
 ## Tests
 | Proyecto | Archivos | Tests | Framework |
 |----------|----------|-------|-----------|
-| UnitTests | 7 archivos | 72 (71+1 skip) | xUnit + FluentAssertions + Moq + SQLite |
+| UnitTests | 8 archivos | 76 (75+1 skip) | xUnit + FluentAssertions + Moq + SQLite |
 | IntegrationTests | 7 archivos | 37 | xUnit + WebApplicationFactory + InMemory |
 | Frontend | 3 archivos | 21 | Vitest + Testing Library + jsdom |
-| **Total** | **17** | **130** | |
+| **Total** | **18** | **134** | |
 
 ## Features
 - ✅ Estructura Clean Architecture
@@ -125,7 +130,7 @@ client/src/
 - ✅ TTS (Web Speech API)
 - ✅ Frontend React (13 paginas, 6 componentes, 4 hooks)
 - ✅ Contenido educativo (180 lecciones, 24 quizzes, 24 escenarios, 12 áreas)
-- ✅ Testing (130 tests: 72 unit + 37 integration + 21 frontend)
+- ✅ Testing (134 tests: 76 unit + 37 integration + 21 frontend)
 - ✅ CI/CD (GitHub Actions)
 - ✅ Docker (multi-stage + docker-compose)
 - ✅ SPA serving desde .NET
@@ -139,4 +144,7 @@ client/src/
 - ✅ Tests para módulo admin (6 unitarios + 4 integración)
 - ✅ Rate limiting nativo .NET 8 (3 políticas: general, ia, tts)
 - 📋 Despliegue producción con secrets reales
-- 📋 Notificaciones en tiempo real
+- ✅ Notificaciones en tiempo real (SignalR + toast)
+- ✅ Avatar V2 con 5 estados (celebrando con confeti)
+- ✅ Chat IA multi-proveedor + limpieza markdown TTS
+- 📋 Video AI generado para avatar

@@ -2,7 +2,7 @@ using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SkillUpAcademy.Core.DTOs.IA;
 using SkillUpAcademy.Core.Entidades;
@@ -10,22 +10,22 @@ using SkillUpAcademy.Core.Enums;
 using SkillUpAcademy.Core.Excepciones;
 using SkillUpAcademy.Core.Interfaces.Repositorios;
 using SkillUpAcademy.Core.Interfaces.Servicios;
+using SkillUpAcademy.Infrastructure.Datos;
 
 namespace SkillUpAcademy.Infrastructure.Servicios;
 
 /// <summary>
-/// Servicio de chat con la IA (Aria) usando la API de Anthropic.
+/// Servicio de chat con la IA (Aria) usando el proveedor activo configurado en la BD.
+/// Soporta Anthropic, OpenAI y proveedores compatibles con la API de OpenAI (Groq, Mistral).
 /// </summary>
 public class ServicioChatIA : IServicioChatIA
 {
     private readonly IRepositorioChatIA _repositorio;
     private readonly IServicioSeguridadIA _seguridadIA;
-    private readonly IConfiguration _configuracion;
+    private readonly AppDbContext _contexto;
     private readonly ILogger<ServicioChatIA> _logger;
     private readonly HttpClient _httpClient;
 
-    private const string UrlApiAnthropic = "https://api.anthropic.com/v1/messages";
-    private const string VersionApi = "2023-06-01";
     private const int MaxMensajesPorSesion = 50;
 
     private const string PromptSistemaAria = """
@@ -49,22 +49,15 @@ public class ServicioChatIA : IServicioChatIA
     public ServicioChatIA(
         IRepositorioChatIA repositorio,
         IServicioSeguridadIA seguridadIA,
-        IConfiguration configuracion,
+        AppDbContext contexto,
         ILogger<ServicioChatIA> logger,
         HttpClient httpClient)
     {
         _repositorio = repositorio;
         _seguridadIA = seguridadIA;
-        _configuracion = configuracion;
+        _contexto = contexto;
         _logger = logger;
         _httpClient = httpClient;
-
-        string? apiKey = _configuracion["Anthropic:ApiKey"];
-        if (!string.IsNullOrWhiteSpace(apiKey))
-        {
-            _httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
-            _httpClient.DefaultRequestHeaders.Add("anthropic-version", VersionApi);
-        }
     }
 
     /// <inheritdoc />
@@ -190,8 +183,8 @@ public class ServicioChatIA : IServicioChatIA
         // Obtener historial para contexto
         IReadOnlyList<MensajeChatIA> historial = sesion.Mensajes.ToList();
 
-        // Llamar a la API de Anthropic
-        (string respuestaTexto, int tokensUsados) = await LlamarApiAnthropicAsync(historial, peticion.Mensaje);
+        // Llamar a la API del proveedor activo
+        (string respuestaTexto, int tokensUsados) = await LlamarApiAsync(historial, peticion.Mensaje);
 
         // Validar salida de la IA (filtro de datos personales, truncado)
         ResultadoValidacionIA validacionSalida = await _seguridadIA.ValidarSalidaAsync(respuestaTexto);
@@ -338,7 +331,7 @@ public class ServicioChatIA : IServicioChatIA
         StringBuilder respuestaCompleta = new StringBuilder();
         int tokensUsados = 0;
 
-        await foreach (string fragmento in LlamarApiAnthropicStreamAsync(historial, peticion.Mensaje, cancellationToken))
+        await foreach (string fragmento in LlamarApiStreamAsync(historial, peticion.Mensaje, cancellationToken))
         {
             if (fragmento.StartsWith("{\"tokens\":"))
             {
@@ -385,23 +378,97 @@ public class ServicioChatIA : IServicioChatIA
         yield return $"data: {JsonSerializer.Serialize(new { tipo = "fin", fueMarcado, tokensUsados, sugerencias })}\n\n";
     }
 
-    private async IAsyncEnumerable<string> LlamarApiAnthropicStreamAsync(
+    // ======================== OBTENER PROVEEDOR ACTIVO ========================
+
+    /// <summary>
+    /// Obtiene el proveedor de IA activo y habilitado con API key configurada.
+    /// </summary>
+    private async Task<ProveedorIA?> ObtenerProveedorActivoAsync()
+    {
+        ProveedorIA? proveedor = await _contexto.ProveedoresIA
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.EsActivo && p.Habilitado && p.ApiKey != null);
+
+        if (proveedor == null || string.IsNullOrWhiteSpace(proveedor.ApiKey))
+        {
+            _logger.LogWarning("No hay proveedor de IA activo con API key configurada.");
+            return null;
+        }
+
+        return proveedor;
+    }
+
+    /// <summary>
+    /// Determina si un proveedor usa formato de API compatible con OpenAI.
+    /// OpenAI, Groq y Mistral usan el mismo formato de API.
+    /// </summary>
+    private static bool EsFormatoOpenAI(TipoProveedorIA tipo)
+    {
+        return tipo is TipoProveedorIA.OpenAI or TipoProveedorIA.Groq or TipoProveedorIA.Mistral;
+    }
+
+    // ======================== LLAMADA SIN STREAM ========================
+
+    /// <summary>
+    /// Llama a la API del proveedor activo sin streaming.
+    /// </summary>
+    private async Task<(string Respuesta, int TokensUsados)> LlamarApiAsync(
+        IReadOnlyList<MensajeChatIA> historial, string mensajeNuevo)
+    {
+        ProveedorIA? proveedor = await ObtenerProveedorActivoAsync();
+        if (proveedor == null)
+            return (GenerarRespuestaFallback(), 0);
+
+        try
+        {
+            if (EsFormatoOpenAI(proveedor.Tipo))
+                return await LlamarApiOpenAIAsync(proveedor, historial, mensajeNuevo);
+
+            return await LlamarApiAnthropicAsync(proveedor, historial, mensajeNuevo);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al llamar a la API de {Proveedor}", proveedor.Tipo);
+            return (GenerarRespuestaFallback(), 0);
+        }
+    }
+
+    // ======================== LLAMADA CON STREAM ========================
+
+    /// <summary>
+    /// Llama a la API del proveedor activo con streaming.
+    /// </summary>
+    private async IAsyncEnumerable<string> LlamarApiStreamAsync(
         IReadOnlyList<MensajeChatIA> historial, string mensajeNuevo,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        string? apiKey = _configuracion["Anthropic:ApiKey"];
-        if (string.IsNullOrWhiteSpace(apiKey))
+        ProveedorIA? proveedor = await ObtenerProveedorActivoAsync();
+        if (proveedor == null)
         {
-            _logger.LogWarning("API key de Anthropic no configurada. Usando respuesta de fallback (stream).");
-            string fallback = GenerarRespuestaFallback(mensajeNuevo);
-            yield return fallback;
+            yield return GenerarRespuestaFallback();
             yield return "{\"tokens\":0}";
             yield break;
         }
 
-        string modelo = _configuracion["Anthropic:ModeloChat"] ?? "claude-sonnet-4-20250514";
-        int maxTokens = int.TryParse(_configuracion["Anthropic:MaxTokens"], out int mt) ? mt : 1000;
-        double temperatura = double.TryParse(_configuracion["Anthropic:Temperatura"], out double t) ? t : 0.7;
+        IAsyncEnumerable<string> stream = EsFormatoOpenAI(proveedor.Tipo)
+            ? LlamarApiOpenAIStreamAsync(proveedor, historial, mensajeNuevo, cancellationToken)
+            : LlamarApiAnthropicStreamAsync(proveedor, historial, mensajeNuevo, cancellationToken);
+
+        await foreach (string fragmento in stream.WithCancellation(cancellationToken))
+        {
+            yield return fragmento;
+        }
+    }
+
+    // ======================== ANTHROPIC ========================
+
+    /// <summary>
+    /// Llama a la API de Anthropic sin streaming.
+    /// </summary>
+    private async Task<(string Respuesta, int TokensUsados)> LlamarApiAnthropicAsync(
+        ProveedorIA proveedor, IReadOnlyList<MensajeChatIA> historial, string mensajeNuevo)
+    {
+        string url = proveedor.UrlBase.TrimEnd('/') + "/messages";
 
         string promptSistema = historial
             .FirstOrDefault(m => m.Rol == "system")?.Contenido ?? PromptSistemaAria;
@@ -415,20 +482,79 @@ public class ServicioChatIA : IServicioChatIA
 
         object payload = new
         {
-            model = modelo,
-            max_tokens = maxTokens,
-            temperature = temperatura,
+            model = proveedor.ModeloChat,
+            max_tokens = proveedor.MaxTokens,
+            temperature = proveedor.Temperatura,
+            system = promptSistema,
+            messages = mensajesApi
+        };
+
+        HttpRequestMessage solicitud = new HttpRequestMessage(HttpMethod.Post, url)
+        {
+            Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
+        };
+        solicitud.Headers.Add("x-api-key", proveedor.ApiKey);
+        solicitud.Headers.Add("anthropic-version", "2023-06-01");
+
+        HttpResponseMessage respuesta = await _httpClient.SendAsync(solicitud);
+        string jsonRespuesta = await respuesta.Content.ReadAsStringAsync();
+
+        if (!respuesta.IsSuccessStatusCode)
+        {
+            _logger.LogError("Error de la API de Anthropic: {StatusCode} - {Body}",
+                respuesta.StatusCode, jsonRespuesta);
+            return (GenerarRespuestaFallback(), 0);
+        }
+
+        using JsonDocument documento = JsonDocument.Parse(jsonRespuesta);
+        JsonElement raiz = documento.RootElement;
+
+        string textoRespuesta = raiz
+            .GetProperty("content")[0]
+            .GetProperty("text")
+            .GetString() ?? "Lo siento, no pude generar una respuesta.";
+
+        int tokensEntrada = raiz.GetProperty("usage").GetProperty("input_tokens").GetInt32();
+        int tokensSalida = raiz.GetProperty("usage").GetProperty("output_tokens").GetInt32();
+
+        return (textoRespuesta, tokensEntrada + tokensSalida);
+    }
+
+    /// <summary>
+    /// Llama a la API de Anthropic con streaming.
+    /// </summary>
+    private async IAsyncEnumerable<string> LlamarApiAnthropicStreamAsync(
+        ProveedorIA proveedor, IReadOnlyList<MensajeChatIA> historial, string mensajeNuevo,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        string url = proveedor.UrlBase.TrimEnd('/') + "/messages";
+
+        string promptSistema = historial
+            .FirstOrDefault(m => m.Rol == "system")?.Contenido ?? PromptSistemaAria;
+
+        List<object> mensajesApi = new List<object>();
+        foreach (MensajeChatIA mensaje in historial.Where(m => m.Rol != "system"))
+        {
+            mensajesApi.Add(new { role = mensaje.Rol, content = mensaje.Contenido });
+        }
+        mensajesApi.Add(new { role = "user", content = mensajeNuevo });
+
+        object payload = new
+        {
+            model = proveedor.ModeloChat,
+            max_tokens = proveedor.MaxTokens,
+            temperature = proveedor.Temperatura,
             system = promptSistema,
             messages = mensajesApi,
             stream = true
         };
 
-        string jsonPayload = JsonSerializer.Serialize(payload);
-
-        HttpRequestMessage solicitud = new HttpRequestMessage(HttpMethod.Post, UrlApiAnthropic)
+        HttpRequestMessage solicitud = new HttpRequestMessage(HttpMethod.Post, url)
         {
-            Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json")
+            Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
         };
+        solicitud.Headers.Add("x-api-key", proveedor.ApiKey);
+        solicitud.Headers.Add("anthropic-version", "2023-06-01");
 
         HttpResponseMessage? respuesta = null;
         bool errorConexion = false;
@@ -445,7 +571,7 @@ public class ServicioChatIA : IServicioChatIA
 
         if (errorConexion)
         {
-            yield return GenerarRespuestaFallback(mensajeNuevo);
+            yield return GenerarRespuestaFallback();
             yield return "{\"tokens\":0}";
             yield break;
         }
@@ -455,7 +581,7 @@ public class ServicioChatIA : IServicioChatIA
             string cuerpoError = await respuesta.Content.ReadAsStringAsync(cancellationToken);
             _logger.LogError("Error de la API de Anthropic (stream): {StatusCode} - {Body}",
                 respuesta.StatusCode, cuerpoError);
-            yield return GenerarRespuestaFallback(mensajeNuevo);
+            yield return GenerarRespuestaFallback();
             yield return "{\"tokens\":0}";
             yield break;
         }
@@ -477,7 +603,7 @@ public class ServicioChatIA : IServicioChatIA
             if (datos == "[DONE]")
                 break;
 
-            string? textoExtraido = ProcesarEventoStream(datos, ref tokensTotal);
+            string? textoExtraido = ProcesarEventoStreamAnthropic(datos, ref tokensTotal);
             if (textoExtraido != null)
             {
                 yield return textoExtraido;
@@ -490,7 +616,7 @@ public class ServicioChatIA : IServicioChatIA
     /// <summary>
     /// Procesa un evento SSE de la API de Anthropic y extrae texto si es un content_block_delta.
     /// </summary>
-    private string? ProcesarEventoStream(string datosJson, ref int tokensTotal)
+    private string? ProcesarEventoStreamAnthropic(string datosJson, ref int tokensTotal)
     {
         try
         {
@@ -531,83 +657,215 @@ public class ServicioChatIA : IServicioChatIA
         return null;
     }
 
-    private async Task<(string Respuesta, int TokensUsados)> LlamarApiAnthropicAsync(
-        IReadOnlyList<MensajeChatIA> historial, string mensajeNuevo)
+    // ======================== OPENAI-COMPATIBLE (OpenAI, Groq, Mistral) ========================
+
+    /// <summary>
+    /// Llama a una API compatible con OpenAI sin streaming.
+    /// </summary>
+    private async Task<(string Respuesta, int TokensUsados)> LlamarApiOpenAIAsync(
+        ProveedorIA proveedor, IReadOnlyList<MensajeChatIA> historial, string mensajeNuevo)
     {
-        string? apiKey = _configuracion["Anthropic:ApiKey"];
-        if (string.IsNullOrWhiteSpace(apiKey))
+        string url = proveedor.UrlBase.TrimEnd('/') + "/chat/completions";
+
+        List<object> mensajesApi = ConstruirMensajesOpenAI(historial, mensajeNuevo);
+
+        object payload = new
         {
-            _logger.LogWarning("API key de Anthropic no configurada. Usando respuesta de fallback.");
-            return (GenerarRespuestaFallback(mensajeNuevo), 0);
+            model = proveedor.ModeloChat,
+            max_tokens = proveedor.MaxTokens,
+            temperature = proveedor.Temperatura,
+            messages = mensajesApi
+        };
+
+        HttpRequestMessage solicitud = new HttpRequestMessage(HttpMethod.Post, url)
+        {
+            Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
+        };
+        solicitud.Headers.Authorization = new AuthenticationHeaderValue("Bearer", proveedor.ApiKey);
+
+        HttpResponseMessage respuesta = await _httpClient.SendAsync(solicitud);
+        string jsonRespuesta = await respuesta.Content.ReadAsStringAsync();
+
+        if (!respuesta.IsSuccessStatusCode)
+        {
+            _logger.LogError("Error de la API de {Proveedor}: {StatusCode} - {Body}",
+                proveedor.Tipo, respuesta.StatusCode, jsonRespuesta);
+            return (GenerarRespuestaFallback(), 0);
         }
 
-        string modelo = _configuracion["Anthropic:ModeloChat"] ?? "claude-sonnet-4-20250514";
-        int maxTokens = int.TryParse(_configuracion["Anthropic:MaxTokens"], out int mt) ? mt : 1000;
-        double temperatura = double.TryParse(_configuracion["Anthropic:Temperatura"], out double t) ? t : 0.7;
+        using JsonDocument documento = JsonDocument.Parse(jsonRespuesta);
+        JsonElement raiz = documento.RootElement;
 
-        // Extraer prompt del sistema del historial
+        string textoRespuesta = raiz
+            .GetProperty("choices")[0]
+            .GetProperty("message")
+            .GetProperty("content")
+            .GetString() ?? "Lo siento, no pude generar una respuesta.";
+
+        int tokensUsados = 0;
+        if (raiz.TryGetProperty("usage", out JsonElement usage))
+        {
+            int tokensEntrada = usage.TryGetProperty("prompt_tokens", out JsonElement pt) ? pt.GetInt32() : 0;
+            int tokensSalida = usage.TryGetProperty("completion_tokens", out JsonElement ct) ? ct.GetInt32() : 0;
+            tokensUsados = tokensEntrada + tokensSalida;
+        }
+
+        return (textoRespuesta, tokensUsados);
+    }
+
+    /// <summary>
+    /// Llama a una API compatible con OpenAI con streaming.
+    /// </summary>
+    private async IAsyncEnumerable<string> LlamarApiOpenAIStreamAsync(
+        ProveedorIA proveedor, IReadOnlyList<MensajeChatIA> historial, string mensajeNuevo,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        string url = proveedor.UrlBase.TrimEnd('/') + "/chat/completions";
+
+        List<object> mensajesApi = ConstruirMensajesOpenAI(historial, mensajeNuevo);
+
+        object payload = new
+        {
+            model = proveedor.ModeloChat,
+            max_tokens = proveedor.MaxTokens,
+            temperature = proveedor.Temperatura,
+            messages = mensajesApi,
+            stream = true,
+            stream_options = new { include_usage = true }
+        };
+
+        HttpRequestMessage solicitud = new HttpRequestMessage(HttpMethod.Post, url)
+        {
+            Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
+        };
+        solicitud.Headers.Authorization = new AuthenticationHeaderValue("Bearer", proveedor.ApiKey);
+
+        HttpResponseMessage? respuesta = null;
+        bool errorConexion = false;
+
+        try
+        {
+            respuesta = await _httpClient.SendAsync(solicitud, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al conectar con la API de {Proveedor} (stream)", proveedor.Tipo);
+            errorConexion = true;
+        }
+
+        if (errorConexion)
+        {
+            yield return GenerarRespuestaFallback();
+            yield return "{\"tokens\":0}";
+            yield break;
+        }
+
+        if (!respuesta!.IsSuccessStatusCode)
+        {
+            string cuerpoError = await respuesta.Content.ReadAsStringAsync(cancellationToken);
+            _logger.LogError("Error de la API de {Proveedor} (stream): {StatusCode} - {Body}",
+                proveedor.Tipo, respuesta.StatusCode, cuerpoError);
+            yield return GenerarRespuestaFallback();
+            yield return "{\"tokens\":0}";
+            yield break;
+        }
+
+        using Stream stream = await respuesta.Content.ReadAsStreamAsync(cancellationToken);
+        using StreamReader lector = new StreamReader(stream);
+
+        int tokensTotal = 0;
+
+        while (!lector.EndOfStream)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            string? linea = await lector.ReadLineAsync(cancellationToken);
+            if (string.IsNullOrWhiteSpace(linea) || !linea.StartsWith("data: "))
+                continue;
+
+            string datos = linea.Substring(6);
+            if (datos == "[DONE]")
+                break;
+
+            string? textoExtraido = ProcesarEventoStreamOpenAI(datos, ref tokensTotal);
+            if (textoExtraido != null)
+            {
+                yield return textoExtraido;
+            }
+        }
+
+        yield return $"{{\"tokens\":{tokensTotal}}}";
+    }
+
+    /// <summary>
+    /// Construye el array de mensajes en formato OpenAI (system como primer mensaje del array).
+    /// </summary>
+    private List<object> ConstruirMensajesOpenAI(IReadOnlyList<MensajeChatIA> historial, string mensajeNuevo)
+    {
         string promptSistema = historial
             .FirstOrDefault(m => m.Rol == "system")?.Contenido ?? PromptSistemaAria;
 
-        // Construir mensajes para la API (sin el system message)
-        List<object> mensajesApi = new List<object>();
+        List<object> mensajesApi = new List<object>
+        {
+            new { role = "system", content = promptSistema }
+        };
+
         foreach (MensajeChatIA mensaje in historial.Where(m => m.Rol != "system"))
         {
             mensajesApi.Add(new { role = mensaje.Rol, content = mensaje.Contenido });
         }
-        // Añadir el mensaje nuevo
         mensajesApi.Add(new { role = "user", content = mensajeNuevo });
 
-        object payload = new
-        {
-            model = modelo,
-            max_tokens = maxTokens,
-            temperature = temperatura,
-            system = promptSistema,
-            messages = mensajesApi
-        };
-
-        string jsonPayload = JsonSerializer.Serialize(payload);
-        StringContent contenido = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-
-        try
-        {
-            HttpResponseMessage respuesta = await _httpClient.PostAsync(UrlApiAnthropic, contenido);
-            string jsonRespuesta = await respuesta.Content.ReadAsStringAsync();
-
-            if (!respuesta.IsSuccessStatusCode)
-            {
-                _logger.LogError("Error de la API de Anthropic: {StatusCode} - {Body}",
-                    respuesta.StatusCode, jsonRespuesta);
-                return (GenerarRespuestaFallback(mensajeNuevo), 0);
-            }
-
-            using JsonDocument documento = JsonDocument.Parse(jsonRespuesta);
-            JsonElement raiz = documento.RootElement;
-
-            string textoRespuesta = raiz
-                .GetProperty("content")[0]
-                .GetProperty("text")
-                .GetString() ?? "Lo siento, no pude generar una respuesta.";
-
-            int tokensEntrada = raiz.GetProperty("usage").GetProperty("input_tokens").GetInt32();
-            int tokensSalida = raiz.GetProperty("usage").GetProperty("output_tokens").GetInt32();
-
-            return (textoRespuesta, tokensEntrada + tokensSalida);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error al llamar a la API de Anthropic");
-            return (GenerarRespuestaFallback(mensajeNuevo), 0);
-        }
+        return mensajesApi;
     }
 
-    private static string GenerarRespuestaFallback(string mensajeUsuario)
+    /// <summary>
+    /// Procesa un evento SSE de una API compatible con OpenAI.
+    /// </summary>
+    private string? ProcesarEventoStreamOpenAI(string datosJson, ref int tokensTotal)
     {
-        return "¡Gracias por tu mensaje! En este momento estoy en modo de demostración. " +
-               "Cuando se configure la API key de Anthropic, podré mantener conversaciones completas contigo. " +
-               "Mientras tanto, te animo a seguir explorando las lecciones y practicando los ejercicios. " +
-               "¿Hay algo específico sobre habilidades profesionales que te gustaría aprender?";
+        try
+        {
+            using JsonDocument doc = JsonDocument.Parse(datosJson);
+            JsonElement raiz = doc.RootElement;
+
+            // Extraer tokens si hay usage
+            if (raiz.TryGetProperty("usage", out JsonElement usage) && usage.ValueKind != JsonValueKind.Null)
+            {
+                int tokensEntrada = usage.TryGetProperty("prompt_tokens", out JsonElement pt) ? pt.GetInt32() : 0;
+                int tokensSalida = usage.TryGetProperty("completion_tokens", out JsonElement ct) ? ct.GetInt32() : 0;
+                tokensTotal = tokensEntrada + tokensSalida;
+            }
+
+            // Extraer texto del delta
+            if (raiz.TryGetProperty("choices", out JsonElement choices) && choices.GetArrayLength() > 0)
+            {
+                JsonElement primerChoice = choices[0];
+                if (primerChoice.TryGetProperty("delta", out JsonElement delta))
+                {
+                    if (delta.TryGetProperty("content", out JsonElement content) && content.ValueKind == JsonValueKind.String)
+                    {
+                        string? texto = content.GetString();
+                        return string.IsNullOrEmpty(texto) ? null : texto;
+                    }
+                }
+            }
+        }
+        catch (JsonException)
+        {
+            // Ignorar líneas que no sean JSON válido
+        }
+
+        return null;
+    }
+
+    // ======================== HELPERS ========================
+
+    private static string GenerarRespuestaFallback()
+    {
+        return "Lo siento, en este momento no tengo un proveedor de IA configurado. " +
+               "Un administrador necesita activar y configurar un proveedor en el panel de administración. " +
+               "Mientras tanto, te animo a explorar las lecciones y practicar los ejercicios.";
     }
 
     private static string ConstruirPromptSistema(TipoSesionIA tipoSesion, int? leccionId)

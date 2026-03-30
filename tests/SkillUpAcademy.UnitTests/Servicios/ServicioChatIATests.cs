@@ -1,5 +1,5 @@
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SkillUpAcademy.Core.DTOs.IA;
@@ -8,6 +8,7 @@ using SkillUpAcademy.Core.Enums;
 using SkillUpAcademy.Core.Excepciones;
 using SkillUpAcademy.Core.Interfaces.Repositorios;
 using SkillUpAcademy.Core.Interfaces.Servicios;
+using SkillUpAcademy.Infrastructure.Datos;
 using SkillUpAcademy.Infrastructure.Servicios;
 
 namespace SkillUpAcademy.UnitTests.Servicios;
@@ -20,7 +21,7 @@ public class ServicioChatIATests : IDisposable
     private readonly Mock<IRepositorioChatIA> _repositorioMock;
     private readonly Mock<IServicioSeguridadIA> _seguridadMock;
     private readonly Mock<ILogger<ServicioChatIA>> _loggerMock;
-    private readonly IConfiguration _configuracion;
+    private readonly AppDbContext _contexto;
     private readonly HttpClient _httpClient;
     private readonly IServicioChatIA _servicio;
 
@@ -30,24 +31,18 @@ public class ServicioChatIATests : IDisposable
         _seguridadMock = new Mock<IServicioSeguridadIA>();
         _loggerMock = new Mock<ILogger<ServicioChatIA>>();
 
-        // Configuración sin API key → modo fallback
-        Dictionary<string, string?> configValues = new Dictionary<string, string?>
-        {
-            { "Anthropic:ApiKey", "" },
-            { "Anthropic:ModeloChat", "claude-sonnet-4-20250514" },
-            { "Anthropic:MaxTokens", "1000" },
-            { "Anthropic:Temperatura", "0.7" }
-        };
-        _configuracion = new ConfigurationBuilder()
-            .AddInMemoryCollection(configValues)
-            .Build();
+        // BD en memoria sin proveedor activo → modo fallback
+        DbContextOptions<AppDbContext> opciones = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+        _contexto = new AppDbContext(opciones);
 
         _httpClient = new HttpClient();
 
         _servicio = new ServicioChatIA(
             _repositorioMock.Object,
             _seguridadMock.Object,
-            _configuracion,
+            _contexto,
             _loggerMock.Object,
             _httpClient);
     }
@@ -355,7 +350,7 @@ public class ServicioChatIATests : IDisposable
     }
 
     [Fact]
-    public async Task EnviarMensajeAsync_MensajeSeguroSinApiKey_DebeRetornarFallback()
+    public async Task EnviarMensajeAsync_MensajeSeguroSinProveedorActivo_DebeRetornarFallback()
     {
         // Arrange
         Guid sesionId = Guid.NewGuid();
@@ -403,7 +398,7 @@ public class ServicioChatIATests : IDisposable
         RespuestaMensajeIADto resultado = await _servicio.EnviarMensajeAsync(sesionId, peticion, usuarioId);
 
         // Assert
-        resultado.Respuesta.Should().Contain("modo de demostración");
+        resultado.Respuesta.Should().Contain("no tengo un proveedor de IA configurado");
         resultado.FueMarcado.Should().BeFalse();
         resultado.TokensUsados.Should().Be(0);
         resultado.Sugerencias.Should().NotBeEmpty();
@@ -637,7 +632,7 @@ public class ServicioChatIATests : IDisposable
     }
 
     [Fact]
-    public async Task EnviarMensajeStreamAsync_FallbackSinApiKey_DebeRetornarEventosTextoYFin()
+    public async Task EnviarMensajeStreamAsync_FallbackSinProveedorActivo_DebeRetornarEventosTextoYFin()
     {
         // Arrange
         Guid sesionId = Guid.NewGuid();
@@ -699,7 +694,7 @@ public class ServicioChatIATests : IDisposable
         List<string> eventosTexto = eventos.Where(e => e.Contains("\"tipo\":\"texto\"")).ToList();
         eventosTexto.Should().NotBeEmpty();
         string textoCompleto = string.Join("", eventosTexto);
-        textoCompleto.Should().Contain("modo de demostraci");
+        textoCompleto.Should().Contain("no tengo un proveedor de IA configurado");
     }
 
     [Fact]
@@ -738,5 +733,6 @@ public class ServicioChatIATests : IDisposable
     public void Dispose()
     {
         _httpClient.Dispose();
+        _contexto.Dispose();
     }
 }

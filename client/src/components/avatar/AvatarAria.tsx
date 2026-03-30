@@ -1,6 +1,6 @@
 interface AvatarAriaProps {
   size?: number;
-  estado?: 'idle' | 'hablando' | 'pensando' | 'saludando';
+  estado?: 'idle' | 'hablando' | 'pensando' | 'saludando' | 'celebrando';
   className?: string;
 }
 
@@ -142,6 +142,58 @@ export default function AvatarAria({ size = 120, estado = 'idle', className = ''
         .aria-saludando .aria-hombros {
           animation: aria-respiracion 3s ease-in-out infinite;
         }
+
+        /* === CELEBRANDO: sonrisa amplia === */
+        .aria-celebrando .aria-boca-normal { display: none; }
+        .aria-celebrando .aria-boca-sonrisa { display: block; }
+
+        /* === CELEBRANDO: ojos brillantes === */
+        @keyframes aria-ojos-celebrar {
+          0%, 100% { transform: scaleY(0.75); }
+          50% { transform: scaleY(0.6); }
+        }
+        .aria-celebrando .aria-parpado,
+        .aria-celebrando .aria-parpado-der {
+          animation: aria-ojos-celebrar 1.2s ease-in-out infinite;
+          transform-origin: center;
+        }
+
+        /* === CELEBRANDO: aura intensa dorada === */
+        @keyframes aria-aura-celebrar {
+          0%, 100% { opacity: 0.6; r: 56; }
+          50% { opacity: 0.9; r: 59; }
+        }
+        .aria-celebrando .aria-aura {
+          animation: aria-aura-celebrar 1s ease-in-out infinite;
+        }
+
+        /* === CELEBRANDO: respiración animada === */
+        .aria-celebrando .aria-hombros {
+          animation: aria-respiracion 2s ease-in-out infinite;
+        }
+
+        /* === CELEBRANDO: partículas/confeti === */
+        @keyframes aria-confeti-1 {
+          0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+          100% { transform: translate(-12px, -20px) rotate(180deg); opacity: 0; }
+        }
+        @keyframes aria-confeti-2 {
+          0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+          100% { transform: translate(15px, -18px) rotate(-150deg); opacity: 0; }
+        }
+        @keyframes aria-confeti-3 {
+          0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+          100% { transform: translate(-8px, -24px) rotate(120deg); opacity: 0; }
+        }
+        @keyframes aria-confeti-4 {
+          0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+          100% { transform: translate(10px, -22px) rotate(-200deg); opacity: 0; }
+        }
+        .aria-celebrando .aria-confeti-1 { animation: aria-confeti-1 1.5s ease-out infinite; }
+        .aria-celebrando .aria-confeti-2 { animation: aria-confeti-2 1.5s ease-out infinite 0.2s; }
+        .aria-celebrando .aria-confeti-3 { animation: aria-confeti-3 1.5s ease-out infinite 0.4s; }
+        .aria-celebrando .aria-confeti-4 { animation: aria-confeti-4 1.5s ease-out infinite 0.6s; }
+        .aria-celebrando .aria-confeti { opacity: 1; }
 
         /* === Cabello flotando (siempre sutil) === */
         @keyframes aria-cabello {
@@ -308,6 +360,14 @@ export default function AvatarAria({ size = 120, estado = 'idle', className = ''
             <circle className="aria-punto2" cx="60" cy="74" r="1.5" fill="#9B59B6" />
             <circle className="aria-punto3" cx="68" cy="74" r="1.5" fill="#9B59B6" />
           </g>
+        </g>
+
+        {/* Partículas de confeti (solo visibles en celebrando) */}
+        <g className="aria-confeti" opacity="0">
+          <rect className="aria-confeti-1" x="40" y="25" width="4" height="4" rx="1" fill="#F1C40F" />
+          <rect className="aria-confeti-2" x="72" y="28" width="3" height="5" rx="1" fill="#E74C3C" />
+          <rect className="aria-confeti-3" x="50" y="20" width="4" height="3" rx="1" fill="#3498DB" />
+          <rect className="aria-confeti-4" x="65" y="22" width="3" height="4" rx="1" fill="#2ECC71" />
         </g>
 
         {/* Borde exterior */}

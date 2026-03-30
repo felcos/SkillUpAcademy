@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\SkillUpAcademy.Api\SkillUpAcademy.Api.csproj" />
     <ProjectReference Include="..\..\src\SkillUpAcademy.Core\SkillUpAcademy.Core.csproj" />
     <ProjectReference Include="..\..\src\SkillUpAcademy.Infrastructure\SkillUpAcademy.Infrastructure.csproj" />
   </ItemGroup>

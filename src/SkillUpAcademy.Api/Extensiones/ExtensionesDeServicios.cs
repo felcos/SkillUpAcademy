@@ -1,3 +1,4 @@
+using SkillUpAcademy.Api.Servicios;
 using SkillUpAcademy.Core.Interfaces.Repositorios;
 using SkillUpAcademy.Core.Interfaces.Servicios;
 using SkillUpAcademy.Infrastructure.Repositorios;
@@ -40,6 +41,9 @@ public static class ExtensionesDeServicios
         // Servicios con HttpClient
         servicios.AddHttpClient<IServicioChatIA, ServicioChatIA>();
         servicios.AddHttpClient<IServicioTts, ServicioTts>();
+
+        // Notificaciones en tiempo real
+        servicios.AddScoped<IServicioNotificaciones, ServicioNotificaciones>();
 
         // Cache en memoria
         servicios.AddMemoryCache();

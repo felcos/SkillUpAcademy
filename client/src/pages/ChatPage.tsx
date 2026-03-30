@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
-import { aiApi, type EventoStreamChat } from '../lib/api';
-import { Send, Sparkles, User } from 'lucide-react';
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
+import { aiApi, lessonsApi, ttsApi, type EventoStreamChat } from '../lib/api';
+import { limpiarParaTts } from '../lib/ttsUtils';
+import { useConfiguracionTts } from '../hooks/useTts';
+import { Send, Sparkles, User, Volume2, VolumeX, CheckCircle } from 'lucide-react';
 import AvatarAria from '../components/avatar/AvatarAria';
 
 interface Mensaje {
@@ -16,15 +18,28 @@ export default function ChatPage() {
 
   const tipoSesionParam = searchParams.get('tipo');
 
+  const navigate = useNavigate();
+
   const [sesionId, setSesionId] = useState<string | null>(sesionIdParam ?? null);
   const [mensajes, setMensajes] = useState<Mensaje[]>([]);
   const [input, setInput] = useState('');
   const [sugerencias, setSugerencias] = useState<string[]>([]);
   const [iniciando, setIniciando] = useState(false);
   const [enviando, setEnviando] = useState(false);
+  const [completando, setCompletando] = useState(false);
   const [estadoAria, setEstadoAria] = useState<'idle' | 'hablando' | 'pensando' | 'saludando'>('saludando');
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+
+  // TTS
+  const [vozActiva, setVozActiva] = useState(true);
+  const [reproduciendo, setReproduciendo] = useState(false);
+  const synthRef = useRef(window.speechSynthesis);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { data: configTts } = useConfiguracionTts();
+  // Ref para acceder al valor actual de vozActiva dentro de callbacks
+  const vozActivaRef = useRef(vozActiva);
+  useEffect(() => { vozActivaRef.current = vozActiva; }, [vozActiva]);
 
   // Saludo inicial: 2 segundos saludando, luego idle
   useEffect(() => {
@@ -32,7 +47,7 @@ export default function ChatPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Si hay leccionId con tipo de sesión, iniciar automáticamente
+  // Si hay leccionId con tipo de sesion, iniciar automaticamente
   useEffect(() => {
     if (leccionId && tipoSesionParam && !sesionId && !iniciando) {
       iniciarSesion(tipoSesionParam);
@@ -45,24 +60,129 @@ export default function ChatPage() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [mensajes]);
 
-  // Iniciar sesión
+  // Limpiar audio al desmontar
+  useEffect(() => {
+    return () => {
+      detenerAudio();
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ==================== UTILIDADES ====================
+
+  /** Renderiza markdown básico a HTML seguro (solo formato, sin scripts). */
+  const renderizarMarkdownSimple = (texto: string): string => {
+    return texto
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') // escapar HTML
+      .replace(/\*\*\*([^*]+)\*\*\*/g, '<strong><em>$1</em></strong>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+      .replace(/___([^_]+)___/g, '<strong><em>$1</em></strong>')
+      .replace(/__([^_]+)__/g, '<strong>$1</strong>')
+      .replace(/_([^_]+)_/g, '<em>$1</em>')
+      .replace(/`([^`]+)`/g, '<code class="bg-white/10 px-1 rounded text-xs">$1</code>')
+      .replace(/^#{1,3}\s+(.+)$/gm, '<strong>$1</strong>')
+      .replace(/^\s*[-*+]\s+(.+)$/gm, '• $1')
+      .replace(/^\s*\d+\.\s+(.+)$/gm, '‣ $1')
+      .replace(/\n/g, '<br/>');
+  };
+
+  // ==================== TTS ====================
+
+  const detenerAudio = useCallback(() => {
+    synthRef.current.cancel();
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
+    }
+    setReproduciendo(false);
+  }, []);
+
+  const reproducirConWebSpeech = useCallback((texto: string, velocidad: number) => {
+    synthRef.current.cancel();
+    const utterance = new SpeechSynthesisUtterance(texto);
+    utterance.lang = 'es-ES';
+    utterance.rate = velocidad;
+    utterance.onstart = () => { setReproduciendo(true); setEstadoAria('hablando'); };
+    utterance.onend = () => { setReproduciendo(false); setEstadoAria('idle'); };
+    utterance.onerror = () => { setReproduciendo(false); setEstadoAria('idle'); };
+    synthRef.current.speak(utterance);
+  }, []);
+
+  const reproducirRespuesta = useCallback(async (texto: string) => {
+    if (!vozActivaRef.current || !texto.trim()) return;
+
+    detenerAudio();
+
+    const textoLimpio = limpiarParaTts(texto);
+    if (!textoLimpio) return;
+
+    const proveedorPreferido = configTts?.proveedorPreferido ?? 'WebSpeechApi';
+    const velocidad = configTts?.velocidadVoz ?? 0.95;
+
+    if (proveedorPreferido === 'WebSpeechApi') {
+      reproducirConWebSpeech(textoLimpio, velocidad);
+      return;
+    }
+
+    try {
+      const resultado = await ttsApi.sintetizar(
+        textoLimpio,
+        configTts?.vozSeleccionada ?? undefined,
+        velocidad
+      );
+
+      if (resultado.audioUrl) {
+        const audio = new Audio(resultado.audioUrl);
+        audioRef.current = audio;
+        audio.onplay = () => { setReproduciendo(true); setEstadoAria('hablando'); };
+        audio.onended = () => { setReproduciendo(false); setEstadoAria('idle'); };
+        audio.onerror = () => { reproducirConWebSpeech(textoLimpio, velocidad); };
+        await audio.play();
+      } else {
+        reproducirConWebSpeech(textoLimpio, velocidad);
+      }
+    } catch {
+      reproducirConWebSpeech(textoLimpio, velocidad);
+    }
+  }, [configTts?.proveedorPreferido, configTts?.vozSeleccionada, configTts?.velocidadVoz, detenerAudio, reproducirConWebSpeech]);
+
+  const alternarVoz = useCallback(() => {
+    if (vozActiva) {
+      detenerAudio();
+    }
+    setVozActiva((prev) => !prev);
+  }, [vozActiva, detenerAudio]);
+
+  // ==================== SESION ====================
+
+  // Iniciar sesion
   const iniciarSesion = async (tipo: string) => {
     setIniciando(true);
     try {
       const sesion = await aiApi.iniciarSesion(tipo, leccionId);
       setSesionId(sesion.id);
       setMensajes([{ rol: 'asistente', contenido: sesion.mensajeInicial }]);
+      // Reproducir mensaje de bienvenida
+      reproducirRespuesta(sesion.mensajeInicial);
     } catch {
-      setMensajes([{ rol: 'asistente', contenido: 'Error al iniciar la sesión. Intenta de nuevo.' }]);
+      setMensajes([{ rol: 'asistente', contenido: 'Error al iniciar la sesion. Intenta de nuevo.' }]);
     } finally {
       setIniciando(false);
     }
   };
 
+  // Ref para capturar la respuesta completa del stream
+  const respuestaCompletaRef = useRef('');
+
   // Enviar mensaje con streaming
   const handleEnviar = useCallback(() => {
     const msg = input.trim();
     if (!msg || !sesionId || enviando) return;
+
+    detenerAudio();
+    respuestaCompletaRef.current = '';
 
     setMensajes((prev) => [...prev, { rol: 'usuario', contenido: msg }]);
     setInput('');
@@ -70,7 +190,7 @@ export default function ChatPage() {
     setEnviando(true);
     setEstadoAria('pensando');
 
-    // Añadir mensaje vacío del asistente que se irá llenando
+    // Añadir mensaje vacio del asistente que se ira llenando
     setMensajes((prev) => [...prev, { rol: 'asistente', contenido: '' }]);
 
     const abortController = new AbortController();
@@ -82,6 +202,7 @@ export default function ChatPage() {
       (evento: EventoStreamChat) => {
         if (evento.tipo === 'texto' && evento.contenido) {
           setEstadoAria('hablando');
+          respuestaCompletaRef.current += evento.contenido;
           setMensajes((prev) => {
             const copia = [...prev];
             const ultimo = copia[copia.length - 1];
@@ -92,6 +213,7 @@ export default function ChatPage() {
           });
         } else if (evento.tipo === 'reemplazo' && evento.contenido) {
           // La salida fue filtrada por seguridad, reemplazar todo el contenido
+          respuestaCompletaRef.current = evento.contenido;
           setMensajes((prev) => {
             const copia = [...prev];
             const ultimo = copia[copia.length - 1];
@@ -104,6 +226,8 @@ export default function ChatPage() {
           setSugerencias(evento.sugerencias || []);
           setEnviando(false);
           setEstadoAria('idle');
+          // Reproducir la respuesta completa con TTS
+          reproducirRespuesta(respuestaCompletaRef.current);
         }
       },
       abortController.signal,
@@ -119,9 +243,30 @@ export default function ChatPage() {
       setEnviando(false);
       setEstadoAria('idle');
     });
-  }, [input, sesionId, enviando]);
+  }, [input, sesionId, enviando, detenerAudio, reproducirRespuesta]);
 
-  // Si no hay sesión, mostrar selector
+  // Completar lección vinculada al chat (Autoevaluación, Roleplay, etc.)
+  const handleCompletarLeccion = useCallback(async () => {
+    if (!sesionId || !leccionId || completando) return;
+
+    setCompletando(true);
+    detenerAudio();
+
+    try {
+      // Cerrar sesión IA
+      await aiApi.cerrar(sesionId);
+      // Completar la lección
+      await lessonsApi.completar(leccionId);
+      // Volver atrás
+      navigate(-1);
+    } catch {
+      setMensajes((prev) => [...prev, { rol: 'asistente', contenido: 'Error al completar la lección. Intenta de nuevo.' }]);
+    } finally {
+      setCompletando(false);
+    }
+  }, [sesionId, leccionId, completando, detenerAudio, navigate]);
+
+  // Si no hay sesion, mostrar selector
   if (!sesionId) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
@@ -155,25 +300,52 @@ export default function ChatPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-4 flex flex-col" style={{ height: 'calc(100vh - 10rem)' }}>
+      {/* Header con boton de voz */}
+      <div className="flex items-center justify-end pb-2">
+        <button
+          onClick={alternarVoz}
+          className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-all active:scale-[0.95] ${
+            vozActiva
+              ? 'bg-[#3498DB]/10 border-[#3498DB]/30 text-[#3498DB]'
+              : 'bg-white/5 border-white/10 text-gray-500'
+          }`}
+          title={vozActiva ? 'Silenciar a Aria' : 'Activar voz de Aria'}
+        >
+          {vozActiva ? <Volume2 size={14} /> : <VolumeX size={14} />}
+          {vozActiva ? 'Voz activa' : 'Voz silenciada'}
+        </button>
+      </div>
+
       {/* Mensajes */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto space-y-4 py-4">
         {mensajes.map((msg, i) => (
           <div key={i} className={`flex gap-3 ${msg.rol === 'usuario' ? 'flex-row-reverse' : ''}`}>
             {msg.rol === 'asistente' ? (
               <div className="flex-shrink-0">
-                <AvatarAria size={32} estado={enviando && i === mensajes.length - 1 ? estadoAria : 'idle'} />
+                <AvatarAria size={32} estado={
+                  (enviando && i === mensajes.length - 1) ? estadoAria
+                  : (reproduciendo && i === mensajes.length - 1) ? 'hablando'
+                  : 'idle'
+                } />
               </div>
             ) : (
               <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-white/10">
                 <User size={16} />
               </div>
             )}
-            <div className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-              msg.rol === 'asistente'
-                ? 'bg-[#25254A] border border-white/5 text-gray-200'
-                : 'bg-[#3498DB] text-white'
-            }`}>
-              {msg.contenido}
+            <div
+              className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                msg.rol === 'asistente'
+                  ? 'bg-[#25254A] border border-white/5 text-gray-200'
+                  : 'bg-[#3498DB] text-white'
+              }`}
+              dangerouslySetInnerHTML={
+                msg.rol === 'asistente'
+                  ? { __html: renderizarMarkdownSimple(msg.contenido) }
+                  : undefined
+              }
+            >
+              {msg.rol === 'usuario' ? msg.contenido : undefined}
             </div>
           </div>
         ))}
@@ -207,6 +379,20 @@ export default function ChatPage() {
               {sug}
             </button>
           ))}
+        </div>
+      )}
+
+      {/* Botón completar lección (solo si viene de una lección y hay conversación suficiente) */}
+      {leccionId && mensajes.length >= 3 && !enviando && (
+        <div className="flex justify-center py-2">
+          <button
+            onClick={handleCompletarLeccion}
+            disabled={completando}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white font-medium transition-all active:scale-[0.97] disabled:opacity-50"
+          >
+            <CheckCircle size={18} />
+            {completando ? 'Completando...' : 'Completar lección'}
+          </button>
         </div>
       )}
 

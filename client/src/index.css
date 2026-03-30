@@ -111,3 +111,19 @@
   opacity: 0;
   animation: staggerFadeIn 300ms var(--ease-out) forwards;
 }
+
+/* Toast slide-in desde la derecha */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 300ms var(--ease-out) forwards;
+}

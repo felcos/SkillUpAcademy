@@ -15,7 +15,8 @@ namespace SkillUpAcademy.Infrastructure.Servicios;
 public class ServicioLecciones(
     IRepositorioLecciones _repositorioLecciones,
     IRepositorioProgreso _repositorioProgreso,
-    IServicioProgreso _servicioProgreso) : IServicioLecciones
+    IServicioProgreso _servicioProgreso,
+    IServicioNotificaciones _servicioNotificaciones) : IServicioLecciones
 {
     /// <inheritdoc />
     public async Task<LeccionDetalleDto> ObtenerLeccionAsync(int leccionId, Guid usuarioId)
@@ -135,6 +136,13 @@ public class ServicioLecciones(
 
         // Verificar logros
         IReadOnlyList<Core.DTOs.Progreso.LogroDto> logrosNuevos = await _servicioProgreso.VerificarLogrosAsync(usuarioId);
+
+        // Notificaciones en tiempo real
+        await _servicioNotificaciones.NotificarLeccionCompletadaAsync(usuarioId, leccion.Titulo, leccion.PuntosRecompensa);
+        foreach (Core.DTOs.Progreso.LogroDto logro in logrosNuevos)
+        {
+            await _servicioNotificaciones.NotificarLogroDesbloqueadoAsync(usuarioId, logro);
+        }
 
         return new ResultadoCompletarLeccion
         {

@@ -1,5 +1,71 @@
 # Changelog
 
+## [2026-03-30] — Sesión 10
+
+### fix: NuGet warnings MSB3277
+- Eliminado `JwtBearer` duplicado de Infrastructure.csproj (ya referenciado en Api.csproj)
+- De 4 warnings de conflicto de versión a 0
+
+### feat: chat IA multi-proveedor
+- `ServicioChatIA` reescrito para leer proveedor activo de BD (no hardcoded Anthropic)
+- Soporta Anthropic + OpenAI/Groq/Mistral (formato OpenAI-compatible)
+- Tests actualizados para nuevo constructor
+
+### feat: SignalR notificaciones en tiempo real
+- `NotificacionesHub` con auth JWT (query string para WebSocket)
+- `IServicioNotificaciones` / `ServicioNotificaciones` (vive en Api por dependencia del Hub)
+- 3 eventos: LogroDesbloqueado, LeccionCompletada, RachaActualizada
+- Integrado en `ServicioLecciones.CompletarLeccionAsync`
+- Frontend: hook `useNotificaciones` + componente `NotificacionToast` con auto-dismiss 5s
+- Paquete `@microsoft/signalr` añadido al frontend
+- Nginx configurado con WebSocket support para `/hubs/`
+
+### feat: Avatar V2 — estado "celebrando"
+- Nuevo 5º estado con sonrisa amplia, ojos brillantes, aura dorada intensa
+- 4 partículas de confeti animadas (dorado, rojo, azul, verde)
+
+### feat: limpieza markdown para TTS
+- Nueva utilidad compartida `ttsUtils.ts` — elimina `#`, `**`, `*`, backticks, bullets, links antes de TTS
+- Aplicada en ChatPage y LessonPage
+
+### feat: renderizado markdown en chat
+- Mensajes del asistente renderizan markdown básico (negrita, cursiva, listas, encabezados) como HTML
+- Función `renderizarMarkdownSimple()` en ChatPage
+
+### fix: autodiagnóstico no termina
+- ChatPage muestra botón "Completar lección" cuando sesión viene de lección (`leccionId` en URL)
+- Al pulsar: cierra sesión IA + completa lección + navega atrás
+
+### feat: TTS en chat
+- ChatPage integra TTS: reproduce respuestas de Aria con voz (servidor o Web Speech API fallback)
+- Botón toggle voz activa/silenciada, avatar refleja estado hablando
+
+### Archivos creados
+- `src/SkillUpAcademy.Api/Hubs/NotificacionesHub.cs`
+- `src/SkillUpAcademy.Api/Servicios/ServicioNotificaciones.cs`
+- `src/SkillUpAcademy.Core/Interfaces/Servicios/IServicioNotificaciones.cs`
+- `client/src/components/NotificacionToast.tsx`
+- `client/src/hooks/useNotificaciones.ts`
+- `client/src/lib/ttsUtils.ts`
+- `tests/SkillUpAcademy.UnitTests/Servicios/ServicioNotificacionesTests.cs`
+
+### Archivos modificados
+- `src/SkillUpAcademy.Api/Program.cs` — SignalR + JWT WebSocket auth
+- `src/SkillUpAcademy.Api/Extensiones/ExtensionesDeServicios.cs` — DI ServicioNotificaciones
+- `src/SkillUpAcademy.Infrastructure/SkillUpAcademy.Infrastructure.csproj` — eliminado JwtBearer duplicado
+- `src/SkillUpAcademy.Infrastructure/Servicios/ServicioChatIA.cs` — multi-proveedor
+- `src/SkillUpAcademy.Infrastructure/Servicios/ServicioLecciones.cs` — notificaciones al completar
+- `client/src/pages/ChatPage.tsx` — TTS, markdown render, botón completar, markdown cleanup
+- `client/src/pages/LessonPage.tsx` — limpieza markdown TTS
+- `client/src/components/avatar/AvatarAria.tsx` — 5º estado celebrando
+- `client/src/components/layout/Layout.tsx` — integración NotificacionToast
+- `client/src/index.css` — slideInRight animation
+- `client/package.json` — @microsoft/signalr
+- `tests/SkillUpAcademy.UnitTests/SkillUpAcademy.UnitTests.csproj` — referencia Api
+- `tests/SkillUpAcademy.UnitTests/Servicios/ServicioChatIATests.cs` — adaptado multi-proveedor
+
+---
+
 ## [2026-03-29] — Sesión 9
 
 ### feat: rediseño UI según principios Emil Kowalski (Design Engineering)

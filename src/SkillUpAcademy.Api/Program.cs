@@ -75,8 +75,26 @@ try
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret))
         };
+
+        // SignalR envía el JWT via query string en WebSocket
+        opciones.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = contexto =>
+            {
+                string? tokenAcceso = contexto.Request.Query["access_token"];
+                PathString ruta = contexto.HttpContext.Request.Path;
+                if (!string.IsNullOrWhiteSpace(tokenAcceso) && ruta.StartsWithSegments("/hubs"))
+                {
+                    contexto.Token = tokenAcceso;
+                }
+                return Task.CompletedTask;
+            }
+        };
     });
     builder.Services.AddAuthorization();
+
+    // SignalR — notificaciones en tiempo real
+    builder.Services.AddSignalR();
 
     // Controllers + Swagger
     builder.Services.AddControllers();
@@ -189,16 +207,33 @@ try
     app.UseAuthorization();
     app.UseRateLimiter();
 
-    // Servir archivos estáticos del SPA (wwwroot)
-    app.UseStaticFiles();
+    // Assets con hash de Vite (CSS, JS, imágenes) → caché larga (1 año, inmutable)
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        OnPrepareResponse = contexto =>
+        {
+            string ruta = contexto.Context.Request.Path.Value ?? "";
+            if (ruta.StartsWith("/assets/", StringComparison.OrdinalIgnoreCase))
+            {
+                contexto.Context.Response.Headers.CacheControl = "public, max-age=31536000, immutable";
+            }
+        }
+    });
 
     app.MapControllers();
+    app.MapHub<SkillUpAcademy.Api.Hubs.NotificacionesHub>("/hubs/notificaciones");
 
     // Fallback: en producción, cualquier ruta que no sea /api/* devuelve index.html
-    // para que el router del SPA (React Router) maneje la navegación client-side
+    // con Cache-Control no-cache para que el navegador siempre pida la versión actual
     if (!app.Environment.IsDevelopment())
     {
-        app.MapFallbackToFile("index.html");
+        app.MapFallbackToFile("index.html", new StaticFileOptions
+        {
+            OnPrepareResponse = contexto =>
+            {
+                contexto.Context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
+            }
+        });
     }
 
     Log.Information("SkillUp Academy iniciado correctamente");

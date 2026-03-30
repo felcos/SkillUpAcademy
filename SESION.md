@@ -1,5 +1,39 @@
 # Sesión — SkillUp Academy
 
+## Sesión 10 — 2026-03-30
+
+### Qué se hizo
+1. **Fix NuGet warnings (MSB3277)** — Eliminado `JwtBearer` duplicado de Infrastructure.csproj (ya viene transitivo via Api). De 4 warnings a 0.
+2. **Chat IA multi-proveedor** — `ServicioChatIA` reescrito para leer proveedor activo de BD (no hardcoded Anthropic). Soporta OpenAI, Groq, Mistral (formato OpenAI-compatible) y Anthropic. Tests actualizados.
+3. **TTS en chat** — ChatPage integra TTS: reproduce respuestas de Aria con voz (servidor o Web Speech API fallback). Botón toggle "Voz activa/silenciada". Avatar refleja estado hablando.
+4. **Limpieza markdown para TTS** — Nueva utilidad `ttsUtils.ts` que elimina `#`, `**`, `*`, `` ` ``, bullets, etc. antes de enviar texto al TTS. Aplicada en ChatPage y LessonPage.
+5. **Renderizado markdown en chat** — Mensajes del asistente renderizan markdown básico (negrita, cursiva, listas, encabezados) como HTML en vez de texto plano.
+6. **SignalR notificaciones en tiempo real** — Hub `NotificacionesHub` con auth JWT (query string para WebSocket). `ServicioNotificaciones` envía eventos: logro desbloqueado, lección completada, racha actualizada. Integrado en `ServicioLecciones.CompletarLeccionAsync`. Frontend: hook `useNotificaciones`, componente `NotificacionToast` con auto-dismiss 5s. Nginx configurado con WebSocket en `/hubs/`.
+7. **Avatar V2 — estado "celebrando"** — Nuevo estado con sonrisa amplia, ojos brillantes, aura intensa dorada y 4 partículas de confeti animadas (dorado, rojo, azul, verde).
+8. **Fix autodiagnóstico no termina** — ChatPage ahora muestra botón "Completar lección" cuando la sesión viene de una lección (`leccionId` en URL). Al pulsar: cierra sesión IA + completa lección + navega atrás.
+9. **Deploy a producción** — Build linux-arm64, deploy a rivendel (79.72.56.98), Nginx actualizado con WebSocket support para SignalR.
+
+### Estadísticas
+- **133 tests totales** (75 unit + 1 skip + 37 integration + 21 frontend) — 0 fallos
+- **44+ endpoints** — **16 páginas React** — **1 Hub SignalR**
+- **0 errores, 0 warnings**
+- **Producción**: https://skillupacademy.felcos.es — desplegado y respondiendo 200
+
+### Qué queda pendiente
+- Verificar visualmente los estilos UI (Emil Kowalski sesión 9) en producción
+- Mejoras admin (CRUD completo, gestión roles, estadísticas avanzadas)
+- Video AI generado para avatar (reemplazar SVG por video realista)
+- Más logros y verificación automática de nuevos tipos
+
+### Problemas encontrados
+- Assets viejos acumulados en wwwroot/assets/ (no afecta funcionalidad, los hashes de Vite los ignoran)
+- Cache-Control duplicado en Nginx + app para index.html (ambos `no-cache`, sin efecto negativo)
+
+### Siguiente paso sugerido
+Verificar visualmente que los cambios de UI se ven correctamente en el navegador (hard refresh Ctrl+Shift+R). Luego implementar más logros automáticos y mejorar el panel admin.
+
+---
+
 ## Sesión 9 — 2026-03-29
 
 ### Qué se hizo

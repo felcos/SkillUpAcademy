@@ -42,8 +42,12 @@ Para que profesionales mejoren habilidades clave (comunicación, liderazgo, trab
 | 2026-03-24 | Rate limiting nativo .NET 8 (no AspNetCoreRateLimit — paquete nativo es más simple y no requiere dependencia externa) |
 | 2026-03-24 | TTS multi-proveedor (Azure + ElevenLabs + WebSpeech) configurable desde admin, preferencias por usuario en BD |
 | 2026-03-24 | 12 áreas de habilidades (6 nuevas con partial class pattern para seeding modular) |
+| 2026-03-30 | Chat IA multi-proveedor: lee proveedor activo de BD, soporta Anthropic + OpenAI/Groq/Mistral (formato OpenAI-compatible) |
+| 2026-03-30 | SignalR para notificaciones en tiempo real (Hub con JWT auth via query string para WebSocket) |
+| 2026-03-30 | Avatar V2 con 5 estados (añadido "celebrando" con confeti) |
+| 2026-03-30 | Limpieza markdown para TTS centralizada en ttsUtils.ts |
 
-## Estado actual (actualizado 2026-03-24 — Sesión 8)
+## Estado actual (actualizado 2026-03-30 — Sesión 10)
 ### Backend ✅
 - ✅ Solución .NET 8 con Clean Architecture (Api, Core, Infrastructure)
 - ✅ 20 entidades, 10 enums, 20 configuraciones Fluent API (snake_case, jsonb)
@@ -59,18 +63,19 @@ Para que profesionales mejoren habilidades clave (comunicación, liderazgo, trab
 
 ### Frontend ✅
 - ✅ 16 páginas React + TypeScript + Tailwind CSS + Vite
-- ✅ 7 componentes reutilizables, 5 custom hooks (wrapping TanStack Query)
+- ✅ 9 componentes reutilizables, 7 custom hooks (wrapping TanStack Query + SignalR)
 - ✅ Cliente API tipado con 34 endpoints (29 REST + 1 streaming + 4 admin)
-- ✅ Motor de escenas con TTS (Web Speech API)
-- ✅ Chat con renderizado progresivo (streaming SSE)
-- ✅ Avatar SVG animado con 4 estados (idle, hablando, pensando, saludando)
+- ✅ Motor de escenas con TTS (Web Speech API) + limpieza markdown centralizada (ttsUtils.ts)
+- ✅ Chat con renderizado progresivo (streaming SSE) + renderizado markdown HTML + botón completar lección
+- ✅ Avatar SVG animado con 5 estados (idle, hablando, pensando, saludando, celebrando con confeti)
+- ✅ Notificaciones en tiempo real (SignalR + toast auto-dismiss)
 - ✅ Admin: dashboard + gestión usuarios + ProtectedAdminRoute
 
 ### Testing ✅
 - ✅ 54 tests unitarios backend (ServicioSeguridadIA, ServicioQuiz, ServicioChatIA, ServicioEscenas, ServicioAdmin)
 - ✅ 31 tests de integración (WebApplicationFactory + InMemory DB)
 - ✅ 21 tests frontend (Vitest + Testing Library)
-- ✅ **Total: 130 tests (129 pasando + 1 skip), 0 fallando**
+- ✅ **Total: 133 tests (132 pasando + 1 skip), 0 fallando**
 
 ### DevOps ✅
 - ✅ CI/CD GitHub Actions (backend + frontend en paralelo)
@@ -84,8 +89,12 @@ Para que profesionales mejoren habilidades clave (comunicación, liderazgo, trab
 - ✅ Despliegue a producción en skillupacademy.felcos.es
 - ✅ Rate limiting nativo .NET 8 con 3 políticas (general, ia, tts) desde appsettings
 - ✅ TTS multi-proveedor (Azure + ElevenLabs + WebSpeech) configurable desde admin
-- ✅ 12 áreas de habilidades (6 nuevas: Resolución de Conflictos, Pensamiento Crítico, Gestión del Tiempo, Negociación, Presentaciones en Público, Adaptabilidad y Resiliencia)
-- 📋 Desplegar nuevas áreas a producción (re-seed BD)
+- ✅ 12 áreas de habilidades (6 nuevas)
+- ✅ Notificaciones en tiempo real (SignalR Hub + toast frontend)
+- ✅ Avatar V2 con 5 estados (celebrando con confeti)
+- ✅ Chat IA multi-proveedor (Anthropic + OpenAI/Groq/Mistral)
+- ✅ Limpieza markdown para TTS (ttsUtils.ts)
+- ✅ Fix autodiagnóstico sin completar (botón completar lección en chat)
 - 📋 Mejoras admin (CRUD completo, gestión roles, estadísticas avanzadas)
-- 📋 Notificaciones en tiempo real
-- 📋 Video AI generado para avatar V2
+- 📋 Video AI generado para avatar (reemplazar SVG por video realista)
+- 📋 Más logros y verificación automática de nuevos tipos
